@@ -1,0 +1,199 @@
+﻿<ContentDialog
+    x:Class="MyBooks.App.Views.AddBookFromLibraryDialog"
+    x:Uid="AddBookFromLibraryDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MyBooks.App.Views"
+    xmlns:viewModels="using:MyBooks.App.ViewModels"
+    xmlns:converters="using:MyBooks.App.ValueConverters"
+    xmlns:telerik="using:Telerik.UI.Xaml.Controls.Input"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    PrimaryButtonClick="AddBookButton_Click"
+    SecondaryButtonClick="CancelButton_Click">
+
+    <ContentDialog.Resources>
+        <converters:StringVisibilityConverter x:Key="stringToVisibilityConverter"/>
+        <converters:TextToDoubleConverter x:Key="stringToDoubleConverter"/>
+        <converters:BooleanToVisibilityConverter x:Key="boolToVisConverter" />
+
+        <DataTemplate x:Key="BookTypeTemplate" x:DataType="viewModels:MediumTypeDescriptor">
+            <TextBlock Text="{x:Bind Name}"/>
+        </DataTemplate>
+
+        <Flyout x:Key="NameConversionSuggestionFlyout">
+            <RelativePanel>
+                <TextBox x:Name="InputToConvert"
+                         x:Uid="AuthorsToConvert"
+                         Text="{x:Bind ViewModel.AuthorNameConversion.OriginalAuthorsString,Mode=OneWay}"
+                         Visibility="{x:Bind ViewModel.AuthorNameConversion.ExtendedEditMode,Mode=OneWay,Converter={StaticResource boolToVisConverter}}"
+                         Width="400"
+                         RelativePanel.AlignTopWithPanel="True"
+                         RelativePanel.AlignLeftWithPanel="True"/>
+                <TextBox x:Name="NameSeperator"
+                         x:Uid="NameSeperator"
+                         Text="{x:Bind ViewModel.AuthorNameConversion.NameSeparator,Mode=TwoWay}"
+                         Visibility="{x:Bind ViewModel.AuthorNameConversion.ExtendedEditMode,Mode=OneWay,Converter={StaticResource boolToVisConverter}}"
+                         Margin="0, 10, 0, 0"
+                         RelativePanel.AlignLeftWithPanel="True"
+                         RelativePanel.Below="InputToConvert"/>
+                <Button x:Name="RecomputeButton"
+                        x:Uid="ConvertAuthorsButton"
+                         Visibility="{x:Bind ViewModel.AuthorNameConversion.ExtendedEditMode,Mode=OneWay,Converter={StaticResource boolToVisConverter}}"
+                         Margin="0, 20, 0, 30"
+                         RelativePanel.AlignLeftWithPanel="True"
+                         RelativePanel.Below="NameSeperator"
+                         Click="RecomputeAuthorConversion_Click"/>
+                <StackPanel Orientation="Horizontal"
+                         RelativePanel.AlignLeftWithPanel="True"
+                         RelativePanel.Below="RecomputeButton">
+                    <TextBox x:Name="SuggestedText"
+                         Text="{x:Bind ViewModel.AuthorNameConversion.Suggestion,Mode=TwoWay}"
+                         Width="280" Height="25"/>
+                    <AppBarButton  x:Name="AcceptSuggestion"
+                               Icon="Accept"
+                               Command="{x:Bind ViewModel.AuthorNameConversion.AcceptConvertedNameCommand}" 
+                               Click="AcceptSuggestion_Click" />
+                    <AppBarButton  x:Name="StartExtendedComputation"
+                               Icon="More"
+                               Command="{x:Bind ViewModel.AuthorNameConversion.OpenExtendedModeCommand}"
+                               Visibility="{x:Bind ViewModel.AuthorNameConversion.ExtendedEditMode,Mode=OneWay,Converter={StaticResource boolToVisConverter},ConverterParameter=True}"/>
+                </StackPanel>
+            </RelativePanel>
+        </Flyout>
+
+    </ContentDialog.Resources>
+
+    <Grid>
+        <RelativePanel>
+            <Grid
+                x:Name="errorPane"
+                Padding="12,0,0,0"
+                Background="Firebrick"
+                RelativePanel.AlignLeftWithPanel="True"
+                RelativePanel.AlignRightWithPanel="True"
+                RelativePanel.AlignTopWithPanel="True"
+                Visibility="{x:Bind ViewModel.ErrorText,Mode=OneWay,Converter={StaticResource stringToVisibilityConverter}}">
+                <TextBlock
+                    Foreground="White"
+                    Text="{x:Bind ViewModel.ErrorText,Mode=OneWay}"
+                    TextWrapping="WrapWholeWords" />
+            </Grid>
+
+            <ScrollViewer
+                x:Name="DetailPanel"
+                RelativePanel.AlignLeftWithPanel="True"
+                RelativePanel.AlignRightWithPanel="True"
+                RelativePanel.Below="errorPane"
+                VerticalScrollBarVisibility="Auto"
+                VerticalScrollMode="Auto">
+
+                <StackPanel
+                    Margin="0,40,4,0"
+                    DataContext="{x:Bind ViewModel.Book, Mode=OneWay}">
+
+                    <RelativePanel>
+                        <TextBox
+                           x:Name="Title"
+                           x:Uid="BookTitle"
+                           MinWidth="300"
+                           Margin="0,8,16,8"
+                           RelativePanel.AlignLeftWithPanel="True"
+                           Text="{x:Bind ViewModel.Book.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  />
+                        <TextBox
+                           x:Name="OriginalTitle"
+                           x:Uid="OriginalTitle"
+                           MinWidth="300"
+                           Margin="0,8,16,8"
+                           RelativePanel.AlignLeftWithPanel="True"
+                           RelativePanel.Below="Title"
+                           Text="{x:Bind ViewModel.Book.OriginalTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <telerik:RadAutoCompleteBox
+                           x:Name="Authors"
+                           x:Uid="Authors"
+                           Width="300"
+                           Margin="0,8,16,8"
+                           RelativePanel.AlignLeftWithPanel="True"
+                           RelativePanel.Below="OriginalTitle"
+                           Text="{x:Bind ViewModel.Book.Authors, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           TextChanged="OnAuthors_TextChanged"/>
+                        <Button
+                            x:Name="ReformatAuthorsLastNameFirstName"
+                            Click="ReformatAuthorsLastNameFirstName_Click"
+                            RelativePanel.RightOf="Authors"
+                            RelativePanel.AlignBottomWith="Authors"
+                            Margin="0,0,0,8"
+                            FlyoutBase.AttachedFlyout="{StaticResource NameConversionSuggestionFlyout}">
+                            <Button.Content>
+                                <TextBlock Text="A B → B, A"/>
+                            </Button.Content>
+                        </Button>
+                        <Button
+                            x:Name="ReformatAuthorsFirstNameLastName"
+                            Click="ReformatAuthorsFirstNameLastName_Click"
+                            RelativePanel.RightOf="ReformatAuthorsLastNameFirstName"
+                            RelativePanel.AlignBottomWith="Authors"
+                            Margin="10,0,0,8"
+                            FlyoutBase.AttachedFlyout="{StaticResource NameConversionSuggestionFlyout}">
+                            <Button.Content>
+                                <TextBlock Text="B, A → A B"/>
+                            </Button.Content>
+                        </Button>
+                        <telerik:RadAutoCompleteBox
+                           x:Name="Keywords"
+                           x:Uid="Keywords"
+                           Width="300"
+                           Margin="0,8,16,8"
+                           RelativePanel.AlignLeftWithPanel="True"
+                           RelativePanel.Below="Authors"
+                           Text="{x:Bind ViewModel.Book.Keywords, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           TextChanged="OnKeywords_TextChanged"/>
+                        <ComboBox
+                           x:Name="MediumType"
+                           x:Uid="MediumType"
+                           MinWidth="100"
+                           Margin="0,8,16,8"
+                           ItemsSource="{x:Bind ViewModel.Book.AllMediaTypes,Mode=OneWay}"
+                           ItemTemplate="{StaticResource BookTypeTemplate}"
+                           SelectedItem="{x:Bind ViewModel.Book.MediumDescriptor,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                           RelativePanel.AlignLeftWithPanel="True"
+                           RelativePanel.Below="Keywords"/>
+                        <telerik:RadAutoCompleteBox
+                           x:Name="Storage"
+                           x:Uid="Storage"
+                           Width="200"
+                           Margin="0,8,16,8"
+                           RelativePanel.AlignBottomWith="MediumType"
+                           RelativePanel.RightOf="MediumType"
+                           Text="{x:Bind ViewModel.Book.Storage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           TextChanged="OnStorage_TextChanged"/>
+                        <TextBox
+                           x:Name="Published"
+                           x:Uid="Published"
+                           Width="200"
+                           Margin="0,8,16,8"
+                           RelativePanel.AlignLeftWithPanel="True"
+                           RelativePanel.Below="Storage"
+                           Text="{x:Bind ViewModel.Book.Published, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           TextChanged="Published_TextChanged"/>
+                        <!--<telerik:RadNumericBox
+                           x:Name="Published"
+                           x:Uid="Published"
+                           Width="200"
+                           Margin="0,8,16,8"
+                           RelativePanel.AlignLeftWithPanel="True"
+                           RelativePanel.Below="Storage"
+                           AcceptsDecimalSeparator="False"
+                           ButtonsVisibility="Collapsed"
+                           AllowNullValue="True"
+                           Maximum="9999"
+                           ValueFormat="G"
+                           Value="{x:Bind ViewModel.Book.Published, Converter={StaticResource stringToDoubleConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           />-->
+                    </RelativePanel>
+                </StackPanel>
+            </ScrollViewer>
+        </RelativePanel>
+    </Grid>
+</ContentDialog>

@@ -1,0 +1,480 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AddBookFromLibraryDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Hinzufügen</value>
+  </data>
+  <data name="AddBookFromLibraryDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="AddBookFromLibraryDialog.Title" xml:space="preserve">
+    <value>Neues Buch</value>
+  </data>
+  <data name="AppName.Text" xml:space="preserve">
+    <value>Meine Bücher</value>
+  </data>
+  <data name="AudioBook" xml:space="preserve">
+    <value>Hörbuch</value>
+  </data>
+  <data name="Authors.Header" xml:space="preserve">
+    <value>Autor(en)</value>
+  </data>
+  <data name="AuthorSearchTextBox.Header" xml:space="preserve">
+    <value>Autor</value>
+  </data>
+  <data name="Book" xml:space="preserve">
+    <value>Buch</value>
+  </data>
+  <data name="BookDetailPageTitle.Text" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="BookListPageTitle.Text" xml:space="preserve">
+    <value>Meine Bücher</value>
+  </data>
+  <data name="BookTitle.Header" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="BorrowedAt.Header" xml:space="preserve">
+    <value>seit</value>
+  </data>
+  <data name="BorrowedTo.Header" xml:space="preserve">
+    <value>Ausgeliehen an</value>
+  </data>
+  <data name="DoYouWantToSave" xml:space="preserve">
+    <value>Möchten Sie die Änderungen speichern?</value>
+  </data>
+  <data name="EBook" xml:space="preserve">
+    <value>E-Book</value>
+  </data>
+  <data name="ErrorInvalidDate" xml:space="preserve">
+    <value>Ungültiges Datum</value>
+  </data>
+  <data name="ErrorInvalidPublished" xml:space="preserve">
+    <value>Ungültige Jahresangabe</value>
+  </data>
+  <data name="ErrorInvalidTitle" xml:space="preserve">
+    <value>Bitte geben Sie einen Titel ein</value>
+  </data>
+  <data name="Keywords.Header" xml:space="preserve">
+    <value>Schlagwörter / Serie</value>
+  </data>
+  <data name="LibrarySearch" xml:space="preserve">
+    <value>Externe Bibliotheken</value>
+  </data>
+  <data name="MediumType.Header" xml:space="preserve">
+    <value>Medientyp</value>
+  </data>
+  <data name="NewBook" xml:space="preserve">
+    <value>Neues Buch</value>
+  </data>
+  <data name="NewBookButton.Label" xml:space="preserve">
+    <value>Neues Buch</value>
+  </data>
+  <data name="NewBookButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Neues Buch hinzufügen</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Nein</value>
+  </data>
+  <data name="OriginalTitle.Header" xml:space="preserve">
+    <value>Originaltitel</value>
+  </data>
+  <data name="Published.Header" xml:space="preserve">
+    <value>Veröffentlichungsjahr</value>
+  </data>
+  <data name="SaveChangesButton.Label" xml:space="preserve">
+    <value>Speichern</value>
+  </data>
+  <data name="SaveChangesButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Änderungen speichern</value>
+  </data>
+  <data name="Settings.Label" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="Shelf" xml:space="preserve">
+    <value>Regal</value>
+  </data>
+  <data name="Storage.Header" xml:space="preserve">
+    <value>Speicherort / Quelle</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Ja</value>
+  </data>
+  <data name="AudioBooksHubSection.Header" xml:space="preserve">
+    <value>Hörbücher</value>
+  </data>
+  <data name="BookSearchBox.PlaceholderText" xml:space="preserve">
+    <value>Bücher durchsuchen...</value>
+  </data>
+  <data name="BooksHubSection.Header" xml:space="preserve">
+    <value>Bücher</value>
+  </data>
+  <data name="LibraryPicker.Header" xml:space="preserve">
+    <value>Bibliothek</value>
+  </data>
+  <data name="LibrarySearchHub.Header" xml:space="preserve">
+    <value>Gefundene Medien</value>
+  </data>
+  <data name="MaxHitsTextBox.Header" xml:space="preserve">
+    <value>Maximale Trefferanzahl</value>
+  </data>
+  <data name="DatabaseNotSaved" xml:space="preserve">
+    <value>Die Datenbank konnte nicht exportiert werden</value>
+  </data>
+  <data name="DatabaseSaved" xml:space="preserve">
+    <value>Die Datenbank wurde erfolgreich exportiert.</value>
+  </data>
+  <data name="ExportDb.Text" xml:space="preserve">
+    <value>Datenbank exportieren</value>
+  </data>
+  <data name="ImportDb.Text" xml:space="preserve">
+    <value>Datenbank importieren</value>
+  </data>
+  <data name="ImportExport.Label" xml:space="preserve">
+    <value>Export / Import</value>
+  </data>
+  <data name="AddImport" xml:space="preserve">
+    <value>Hinzufügen</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="DeleteBookButton.Label" xml:space="preserve">
+    <value>Eintrag löschen</value>
+  </data>
+  <data name="DeleteBookQuestion" xml:space="preserve">
+    <value>Möchten Sie den ausgewählten Titel löschen?</value>
+  </data>
+  <data name="EditBookButton.Label" xml:space="preserve">
+    <value>Eintrag bearbeiten</value>
+  </data>
+  <data name="ImportDecision" xml:space="preserve">
+    <value>Möchten Sie die importierten Medien der Sammlung hinzufügen, oder möchten Sie die Sammlung ersetzen?</value>
+  </data>
+  <data name="ReplaceCollection" xml:space="preserve">
+    <value>Ersetzen</value>
+  </data>
+  <data name="DuplicateBookButton.Label" xml:space="preserve">
+    <value>Titel duplizieren</value>
+  </data>
+  <data name="SearchButton.Content" xml:space="preserve">
+    <value>Suchen</value>
+  </data>
+  <data name="WorksFoundTextBox.Header" xml:space="preserve">
+    <value>Gefundene Titel</value>
+  </data>
+  <data name="AddSelectedBookButton.Label" xml:space="preserve">
+    <value>Titel hinzufügen</value>
+  </data>
+  <data name="HubDisplayButton.Label" xml:space="preserve">
+    <value>Kacheln</value>
+  </data>
+  <data name="LibrarySearchPageTitle.Text" xml:space="preserve">
+    <value>Bibliotheken</value>
+  </data>
+  <data name="LibSearchButton.Label" xml:space="preserve">
+    <value>Suchen</value>
+  </data>
+  <data name="ListDisplayButton.Label" xml:space="preserve">
+    <value>Liste</value>
+  </data>
+  <data name="NextPageButton.Label" xml:space="preserve">
+    <value>Nächste Seite</value>
+  </data>
+  <data name="OpenBrowserButton.Label" xml:space="preserve">
+    <value>Details anzeigen</value>
+  </data>
+  <data name="Page" xml:space="preserve">
+    <value>Seite</value>
+  </data>
+  <data name="PrevPageButton.Label" xml:space="preserve">
+    <value>Vorherige Seite</value>
+  </data>
+  <data name="SearchProgressRing.Content" xml:space="preserve">
+    <value>Lade..</value>
+  </data>
+  <data name="CancelEditButton.Label" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="StartEdit.Label" xml:space="preserve">
+    <value>Titel ändern</value>
+  </data>
+  <data name="Telerik_And" xml:space="preserve">
+    <value>und</value>
+  </data>
+  <data name="Telerik_Cancel" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="Telerik_CaseSensitiveMode" xml:space="preserve">
+    <value>Groß-/Kleinschreibung beachten:</value>
+  </data>
+  <data name="Telerik_ClearFilter" xml:space="preserve">
+    <value>Filter löschen</value>
+  </data>
+  <data name="Telerik_Contains" xml:space="preserve">
+    <value>enthält</value>
+  </data>
+  <data name="Telerik_DataOperationsButtonFilter" xml:space="preserve">
+    <value>Filtern</value>
+  </data>
+  <data name="Telerik_DataOperationsButtonGroup" xml:space="preserve">
+    <value>Gruppieren</value>
+  </data>
+  <data name="Telerik_DataOperationsButtonSort" xml:space="preserve">
+    <value>Sortieren</value>
+  </data>
+  <data name="Telerik_DataOperationsButtonUngroup" xml:space="preserve">
+    <value>Gruppierung aufheben</value>
+  </data>
+  <data name="Telerik_DateSelectorHeader" xml:space="preserve">
+    <value>Datum auswählen</value>
+  </data>
+  <data name="Telerik_DoesNotContain" xml:space="preserve">
+    <value>enthalt nicht</value>
+  </data>
+  <data name="Telerik_DoesNotEqualTo" xml:space="preserve">
+    <value>ist ungleich</value>
+  </data>
+  <data name="Telerik_DragToGroup" xml:space="preserve">
+    <value>Spaltentitel nach hier ziehen um zu gruppieren</value>
+  </data>
+  <data name="Telerik_EndsWith" xml:space="preserve">
+    <value>endet mit</value>
+  </data>
+  <data name="Telerik_EqualsTo" xml:space="preserve">
+    <value>ist gleich</value>
+  </data>
+  <data name="Telerik_Filter" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="Telerik_FilterButton" xml:space="preserve">
+    <value>Anwenden</value>
+  </data>
+  <data name="Telerik_FilterHeader" xml:space="preserve">
+    <value>FILTER</value>
+  </data>
+  <data name="Telerik_IsFalse" xml:space="preserve">
+    <value>trifft nicht zu</value>
+  </data>
+  <data name="Telerik_IsGreaterThan" xml:space="preserve">
+    <value>ist größer als</value>
+  </data>
+  <data name="Telerik_IsGreaterThanOrEqualTo" xml:space="preserve">
+    <value>ist gößer oder gleich</value>
+  </data>
+  <data name="Telerik_IsLessThan" xml:space="preserve">
+    <value>ist kleiner als</value>
+  </data>
+  <data name="Telerik_IsLessThanOrEqualTo" xml:space="preserve">
+    <value>ist kleiner oder gleich</value>
+  </data>
+  <data name="Telerik_IsTrue" xml:space="preserve">
+    <value>trifft zu</value>
+  </data>
+  <data name="Telerik_LeapYear" xml:space="preserve">
+    <value>Schaltjahr</value>
+  </data>
+  <data name="Telerik_Off" xml:space="preserve">
+    <value>aus</value>
+  </data>
+  <data name="Telerik_On" xml:space="preserve">
+    <value>an</value>
+  </data>
+  <data name="Telerik_Or" xml:space="preserve">
+    <value>oder</value>
+  </data>
+  <data name="Telerik_StartsWith" xml:space="preserve">
+    <value>beginnt mit</value>
+  </data>
+  <data name="DetailExpander.Label" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="DLCNo.Header" xml:space="preserve">
+    <value>Library of Congress Code (DLC)</value>
+  </data>
+  <data name="GoogleUrl.Header" xml:space="preserve">
+    <value>Link zum Titel bei GoogleBooks</value>
+  </data>
+  <data name="ISBN.Header" xml:space="preserve">
+    <value>International Standard Book Number (ISBN)</value>
+  </data>
+  <data name="NBACN.Header" xml:space="preserve">
+    <value>National Bibliographic Agency Control Number (NBACN)</value>
+  </data>
+  <data name="OCLCNo.Header" xml:space="preserve">
+    <value>Online Computer Library Code (OCLC)</value>
+  </data>
+  <data name="StandardUrl.Header" xml:space="preserve">
+    <value>Link zum Titel</value>
+  </data>
+  <data name="BarcodeImportPageTitle.Text" xml:space="preserve">
+    <value>Gescannte Barcodes</value>
+  </data>
+  <data name="ImportButton.Label" xml:space="preserve">
+    <value>Buchliste öffnen</value>
+  </data>
+  <data name="ImportFile.Header" xml:space="preserve">
+    <value>Buchliste</value>
+  </data>
+  <data name="NextBookButton.Label" xml:space="preserve">
+    <value>Nächstes Buch</value>
+  </data>
+  <data name="PrevBookButton.Label" xml:space="preserve">
+    <value>Vorheriges Buch</value>
+  </data>
+  <data name="BarcodeImport" xml:space="preserve">
+    <value>Barcodes importieren</value>
+  </data>
+  <data name="Barcodes" xml:space="preserve">
+    <value>Barcodes</value>
+  </data>
+  <data name="RestartAppForThemeChangeRequired" xml:space="preserve">
+    <value>Die Änderung des Farbschemas wird erst nach dem Neustart der App aktiv.</value>
+  </data>
+  <data name="SettingsDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Übernehmen</value>
+  </data>
+  <data name="SettingsDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="SettingsDialog.Title" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="ThemeComboBox.Header" xml:space="preserve">
+    <value>Farbschema</value>
+  </data>
+  <data name="ThemeDark.Content" xml:space="preserve">
+    <value>Dunkel</value>
+  </data>
+  <data name="ThemeLight.Content" xml:space="preserve">
+    <value>Hell</value>
+  </data>
+  <data name="AcceptButton.Content" xml:space="preserve">
+    <value>Übernehmen</value>
+  </data>
+  <data name="AuthorsToConvert.Header" xml:space="preserve">
+    <value>Autoren (Markieren Sie ggf. den umzuwandelnden Bereich)</value>
+  </data>
+  <data name="ConvertAuthorsButton.Content" xml:space="preserve">
+    <value>Umwandeln</value>
+  </data>
+  <data name="NameSeperator.Header" xml:space="preserve">
+    <value>Namen sind getrennt durch..</value>
+  </data>
+</root>

@@ -12,7 +12,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("")>
 <Assembly: AssemblyCompany("")>
 <Assembly: AssemblyProduct("MyBooks")>
-<Assembly: AssemblyCopyright("Copyright ©  2019")>
+<Assembly: AssemblyCopyright("Copyright ©  2018")>
 <Assembly: AssemblyTrademark("")>
 
 ' Version information for an assembly consists of the following four values:

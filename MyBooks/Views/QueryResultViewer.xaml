@@ -1,0 +1,115 @@
+﻿<Page
+    x:Class="MyBooks.App.Views.QueryResultViewer"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MyBooks.App.Views"
+    xmlns:viewmodels="using:MyBooks.App.ViewModels"
+    xmlns:converters="using:MyBooks.App.ValueConverters"
+    xmlns:telerikGrid="using:Telerik.UI.Xaml.Controls.Grid"        
+    xmlns:gridPrimitives="using:Telerik.UI.Xaml.Controls.Grid.Primitives"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="booleanVisConverter" />
+        
+        <!--  This style is applied implicitly to all data grid headers.  -->
+        <Style TargetType="gridPrimitives:DataGridColumnHeader">
+            <Setter Property="Background" Value="{ThemeResource AccentBackgroundColor}" />
+        </Style>
+        <DataTemplate x:Key="BibItemDataTemplate" x:DataType="viewmodels:BookBrowserViewModel">
+            <Grid Margin="6" Background="{ThemeResource AccentBackgroundColor}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="400"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="150"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="{x:Bind Model.Title, Mode=OneWay}" FontSize="16pt" FontWeight="Black" TextWrapping="WrapWholeWords" />
+                    <TextBlock Text="{x:Bind Model.Authors, Mode=OneWay}" TextWrapping="WrapWholeWords" />
+                    <TextBlock Text="{x:Bind Model.OriginalTitle, Mode=OneWay}" FontStyle="Italic" TextWrapping="WrapWholeWords" />
+                    <TextBlock Text="{x:Bind Model.Published, Mode=OneWay}" />
+                </StackPanel>
+                <AppBarButton Name="AddBookButton" Grid.Row="1" HorizontalAlignment="Right" Icon="Add" 
+                              Command="{x:Bind AddBookCommand,Mode=OneWay}"/>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+        <Hub x:Name="LibrarySearchHub" x:Uid="LibrarySearchHub" 
+                 Visibility="{x:Bind ViewModel.DisplayModeHub,Converter={StaticResource booleanVisConverter},Mode=OneWay}">
+            <HubSection  x:Name="BooksHubSection" x:Uid="BooksHubSection">
+                <DataTemplate x:DataType="viewmodels:LibraryBooksViewModel">
+                    <Grid Width="900">
+                        <GridView ItemsSource="{x:Bind BookItems,Mode=OneWay}" ItemTemplate="{StaticResource BibItemDataTemplate}"
+                                  ItemClick="BibItem_Click" IsItemClickEnabled="True" IsMultiSelectCheckBoxEnabled="False"/>
+                    </Grid>
+                </DataTemplate>
+            </HubSection>
+            <HubSection x:Name="AudioBooksHubSection" x:Uid="AudioBooksHubSection">
+                <DataTemplate x:DataType="viewmodels:LibraryBooksViewModel">
+                    <Grid Width="900">
+                        <GridView ItemsSource="{x:Bind AudioItems,Mode=OneWay}" ItemTemplate="{StaticResource BibItemDataTemplate}"
+                                  ItemClick="BibItem_Click" IsItemClickEnabled="True" IsMultiSelectCheckBoxEnabled="False"/>
+                    </Grid>
+                </DataTemplate>
+            </HubSection>
+        </Hub>
+
+        <telerikGrid:RadDataGrid
+                x:Name="DataGrid"
+                Visibility="{x:Bind ViewModel.DisplayModeHub,Converter={StaticResource booleanVisConverter},ConverterParameter=True,Mode=OneWay}"
+                
+                BorderThickness="0"
+                ColumnDataOperationsMode="Flyout"
+                GridLinesVisibility="Horizontal"
+                GridLinesBrush="DarkGray"
+                GridLinesThickness="1"
+                GroupPanelPosition="Left"
+                Margin="0,20,0,0"
+                ItemsSource="{x:Bind ViewModel.AllItems,Mode=OneWay}"
+                SelectedItem="{x:Bind ViewModel.CurrentItem,Mode=TwoWay}"
+                CurrentItemChanged="OnCurrentItemOfGridChanged"
+                UserEditMode="None"
+                AutoGenerateColumns="False"
+                >
+
+            <telerikGrid:RadDataGrid.Columns>
+                <telerikGrid:DataGridTextColumn x:Uid="BookTitle" PropertyName="Title" SizeMode="Fixed" Width="300">
+                    <telerikGrid:DataGridTextColumn.CellContentStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="TextWrapping" Value="WrapWholeWords"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </telerikGrid:DataGridTextColumn.CellContentStyle>
+                </telerikGrid:DataGridTextColumn>
+                <telerikGrid:DataGridTextColumn x:Uid="OriginalTitle" PropertyName="OriginalTitle" SizeMode="Fixed" Width="300">
+                    <telerikGrid:DataGridTextColumn.CellContentStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontStyle" Value="Italic"/>
+                            <Setter Property="TextWrapping" Value="WrapWholeWords"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </telerikGrid:DataGridTextColumn.CellContentStyle>
+                </telerikGrid:DataGridTextColumn>
+                <telerikGrid:DataGridTextColumn x:Uid="Authors" PropertyName="Authors" SizeMode="Fixed" Width="300">
+                    <telerikGrid:DataGridTextColumn.CellContentStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextWrapping" Value="WrapWholeWords"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </telerikGrid:DataGridTextColumn.CellContentStyle>
+                </telerikGrid:DataGridTextColumn>
+                <telerikGrid:DataGridTextColumn x:Uid="MediumType" PropertyName="MediumText" />
+                <telerikGrid:DataGridTextColumn x:Uid="Published" PropertyName="Published" />
+            </telerikGrid:RadDataGrid.Columns>
+        </telerikGrid:RadDataGrid>
+
+    </Grid>
+</Page>

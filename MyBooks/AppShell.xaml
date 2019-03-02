@@ -1,0 +1,255 @@
+﻿<Page
+    x:Class="MyBooks.App.AppShell"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converter="using:MyBooks.App.ValueConverters"
+    xmlns:local="using:MyBooks.App"
+    xmlns:nav="using:MyBooks.App.Navigation"
+    xmlns:telerikPrimitives="using:Telerik.UI.Xaml.Controls.Primitives"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <converter:StringVisibilityConverter x:Key="stringVisConverter" />
+        <converter:BooleanToVisibilityConverter x:Key="booleanVisConverter" />
+        <converter:StringToGeometryConverter x:Key="stringGeometryConverter" />
+
+        <DataTemplate
+            x:Key="NavMenuItemTemplate"
+            x:DataType="nav:NavMenuItem">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="48" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Rectangle
+                    x:Name="SelectedPipe"
+                    Width="6"
+                    Height="24"
+                    Margin="-2,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Fill="{ThemeResource AccentBackgroundColor}"
+                    Visibility="{x:Bind SelectedVis, Mode=TwoWay}" />
+                <!--
+                    Showing a ToolTip and the Label is redundant.  We put the ToolTip on the icon.
+                    It appears when the user hovers over the icon, but not the label which provides
+                    value when the SplitView is 'Compact' while reducing the likelihood of showing
+                    redundant information when the label is shown.
+                -->
+                <FontIcon
+                    x:Name="Glyph"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="16"
+                    Glyph="{x:Bind SymbolAsChar}"
+                    ToolTipService.ToolTip="{x:Bind Label}" >
+                </FontIcon>
+
+                <PathIcon Data="{x:Bind PathIconMarkup,Converter={StaticResource stringGeometryConverter}}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    ToolTipService.ToolTip="{x:Bind Label}" 
+                          />
+
+                <TextBlock
+                    x:Name="Text"
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource BodyTextBlockStyle}"
+                    Text="{x:Bind Label}"
+                    TextWrapping="NoWrap" />
+            </Grid>
+        </DataTemplate>
+
+    </Page.Resources>
+
+    <Grid
+        x:Name="LayoutRoot"
+        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="LargeSize">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource LargeWindowSnapPoint}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="BrowserSplitView.OpenPaneLength" Value="900" />
+                        <Setter Target="RootSplitView.DisplayMode" Value="CompactInline" />
+                        <Setter Target="RootSplitView.IsPaneOpen" Value="False" />
+                        <Setter Target="NavPaneDivider.Visibility" Value="Collapsed" />
+                        <Setter Target="SettingsButton.IsTabStop" Value="True" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="MediumSize">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource MediumWindowSnapPoint}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="BrowserSplitView.OpenPaneLength" Value="600" />
+                        <Setter Target="RootSplitView.DisplayMode" Value="CompactOverlay" />
+                        <Setter Target="RootSplitView.IsPaneOpen" Value="False" />
+                        <Setter Target="NavPaneDivider.Visibility" Value="Collapsed" />
+                        <Setter Target="SettingsButton.IsTabStop" Value="False" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="MinimumSize">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource MinWindowSnapPoint}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="BrowserSplitView.OpenPaneLength" Value="200" />
+                        <Setter Target="RootSplitView.DisplayMode" Value="CompactOverlay" />
+                        <Setter Target="RootSplitView.IsPaneOpen" Value="False" />
+                        <Setter Target="SettingsButton.IsTabStop" Value="True" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <!--  Declared first for screen reader navigation order, ZIndex specified to have it rendered above everything else.  -->
+        <ToggleButton
+            x:Name="TogglePaneButton"
+            AutomationProperties.Name="Navigation"
+            Canvas.ZIndex="100"
+            Checked="TogglePaneButton_Checked"
+            IsChecked="{Binding IsPaneOpen, ElementName=RootSplitView, Mode=TwoWay}"
+            Style="{StaticResource SplitViewTogglePaneButtonStyle}"
+            TabIndex="1"
+            ToolTipService.ToolTip="Navigation"
+            Unchecked="TogglePaneButton_Unchecked" />
+
+        <!--  Top-level navigation menu + app content.  -->
+        <!--  Initial value for IsPaneOpen is set in the VisualStates.  -->
+        <SplitView
+            x:Name="RootSplitView"
+            DisplayMode="CompactInline"
+            IsTabStop="False"
+            OpenPaneLength="320"
+            PaneBackground="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+            PaneClosed="RootSplitView_PaneClosed">
+
+            <SplitView.Pane>
+                <Grid
+                    x:Name="PaneContentGrid"
+                    Background="Transparent">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="6" />
+                    </Grid.RowDefinitions>
+
+                    <!--  A custom ListView to display the items in the pane.  The automation Name is set in the ContainerContentChanging event.  -->
+                    <nav:NavMenuListView
+                        x:Name="NavMenuList"
+                        Margin="0,52,0,0"
+                        ContainerContentChanging="NavMenuItemContainerContentChanging"
+                        IsEnabled="True"
+                        ItemContainerStyle="{StaticResource NavMenuItemContainerStyle}"
+                        ItemInvoked="NavMenuList_ItemInvoked"
+                        ItemTemplate="{StaticResource NavMenuItemTemplate}"
+                        ItemsSource="{x:Bind PrimaryMenuItems, Mode=OneTime}"
+                        TabIndex="3" />
+                    <Rectangle
+                        x:Name="NavPaneDivider"
+                        Grid.Row="1"
+                        Height="1"
+                        Margin="16,0,16,6"
+                        Fill="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                        Visibility="Collapsed" />
+
+                    <nav:NavMenuSecondaryButton
+                        x:Name="SettingsButton"
+                        x:Uid="Settings"
+                        Click="SettingsButton_Click"
+                        Grid.Row="2"
+                        Icon="&#xE713;" />
+
+                </Grid>
+            </SplitView.Pane>
+
+            <SplitView.Content>
+                <SplitView x:Name="BrowserSplitView" PanePlacement="Right"
+                                    IsPaneOpen="{x:Bind ViewModel.BrowserPaneOpen,Mode=TwoWay}">
+                    <SplitView.Pane>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Orientation="Vertical" Grid.Column="0">
+                                <AppBarButton FontFamily="Segoe MDL2 Assets" FontSize="16" Content="&#xE89F;" Command="{x:Bind ViewModel.CloseBrowserPane,Mode=OneWay}"/>
+
+                                <AppBarButton x:Name="BackToLibraryButton" Icon="Home" Command="{x:Bind ViewModel.DisplayStandardLibCommand,Mode=OneWay}"/>
+
+                                <Button x:Name="GoogleBooksButton" Command="{x:Bind ViewModel.DisplayGoogleBooksCommand,Mode=OneWay}" 
+                            Visibility="{x:Bind ViewModel.IsGoogleBooksItemAvailable,Converter={StaticResource booleanVisConverter},Mode=OneWay}"
+                            Background="Transparent"
+                            >
+                                    <ContentControl Height="50" Width="50" VerticalAlignment="Center" HorizontalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+                                        <Canvas Height="40" Width="50">
+                                            <StackPanel Orientation="Horizontal" Canvas.Left="0">
+                                                <TextBlock Text="G" Foreground="{StaticResource GoogleBlueForegroundBrush}" FontSize="16"/>
+                                                <TextBlock Text="o" Foreground="{StaticResource GoogleRedForegroundBrush}" FontSize="16"/>
+                                                <TextBlock Text="o" Foreground="{StaticResource GoogleYellowForegroundBrush}" FontSize="16"/>
+                                                <TextBlock Text="g" Foreground="{StaticResource GoogleBlueForegroundBrush}" FontSize="16"/>
+                                                <TextBlock Text="l" Foreground="{StaticResource GoogleGreenForegroundBrush}" FontSize="16"/>
+                                                <TextBlock Text="e" Foreground="{StaticResource GoogleRedForegroundBrush}" FontSize="16"/>
+                                            </StackPanel>
+                                            <TextBlock Text="Books" Foreground="{StaticResource GoogleBlueForegroundBrush}" FontSize="13" Canvas.Top="15" Canvas.Left="18"/>
+                                        </Canvas>
+                                    </ContentControl>
+                                </Button>
+
+                                <telerikPrimitives:RadBusyIndicator x:Name="WebPageLoadingProgressRing" 
+                                                        AnimationStyle="AnimationStyle4" 
+                                                        Margin="10,0,10,0" Content="" />
+                            </StackPanel>
+                            <Grid Grid.Column="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <StackPanel Orientation="Horizontal" Grid.Row="0">
+                                    <AppBarButton Icon="Back" Click="WebPageGoBack_Click" IsEnabled="{x:Bind ViewModel.CanGoBack,Mode=OneWay}"/>
+                                    <AppBarButton Icon="Forward" Click="WebPageGoForward_Click" IsEnabled="{x:Bind ViewModel.CanGoForward,Mode=OneWay}"/>
+                                    <AppBarButton Icon="Copy" Click="CopyLinkToClipboard" />
+                                </StackPanel>
+                                <ScrollContentPresenter Grid.Row="1">
+                                    <WebView x:Name="WebViewer" Source="{x:Bind ViewModel.BibItemUri,Mode=OneWay}" NavigationStarting="WebView_NavigationStarting" NavigationCompleted="WebView_NavigationCompleted"/>
+                                </ScrollContentPresenter>
+                            </Grid>
+                        </Grid>
+                    </SplitView.Pane>
+                    <SplitView.Content>
+                        <Grid>
+                            <!--  OnNavigatingToPage we synchronize the selected item in the nav menu with the current page.  -->
+                            <Frame
+                        x:Name="frame"
+                        Grid.Row="1"
+                        Margin="0,4,0,0"
+                        Navigating="OnNavigatingToPage">
+                                <Frame.ContentTransitions>
+                                    <TransitionCollection>
+                                        <NavigationThemeTransition>
+                                            <NavigationThemeTransition.DefaultNavigationTransitionInfo>
+                                                <EntranceNavigationTransitionInfo />
+                                            </NavigationThemeTransition.DefaultNavigationTransitionInfo>
+                                        </NavigationThemeTransition>
+                                    </TransitionCollection>
+                                </Frame.ContentTransitions>
+                            </Frame>
+                        </Grid>
+                    </SplitView.Content>
+                </SplitView>
+            </SplitView.Content>
+        </SplitView>
+        <!--  Adaptive triggers  -->
+    </Grid>
+</Page>

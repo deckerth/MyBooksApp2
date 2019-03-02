@@ -1,4 +1,4 @@
-﻿Imports MARC
+﻿'Imports MyBooks.MARC
 
 Namespace Global.MyBooks.Models
 

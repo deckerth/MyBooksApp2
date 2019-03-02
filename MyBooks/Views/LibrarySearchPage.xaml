@@ -1,0 +1,286 @@
+﻿<Page
+    x:Class="MyBooks.App.Views.LibrarySearchPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MyBooks.App.Views"
+    xmlns:model="using:MyBooks.Models"
+    xmlns:viewmodels="using:MyBooks.App.ViewModels"
+    xmlns:converters="using:MyBooks.App.ValueConverters"
+    xmlns:lib="using:MyBooks.Repository.Libraries"
+    xmlns:telerikInput="using:Telerik.UI.Xaml.Controls.Input"
+    xmlns:telerikGrid="using:Telerik.UI.Xaml.Controls.Grid"        
+    xmlns:gridPrimitives="using:Telerik.UI.Xaml.Controls.Grid.Primitives"
+    xmlns:telerikPrimitives="using:Telerik.UI.Xaml.Controls.Primitives"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="booleanVisConverter" />
+        <!--  This style is applied implicitly to all data grid headers.  -->
+        <Style TargetType="gridPrimitives:DataGridColumnHeader">
+            <Setter Property="Background" Value="{ThemeResource AccentBackgroundColor}" />
+        </Style>
+        <DataTemplate x:Key="LibraryDataTemplate" x:DataType="lib:ILibraryAccess">
+            <TextBlock Width="300" Text="{x:Bind LibraryName,Mode=OneTime}"/>
+        </DataTemplate>
+        <DataTemplate x:Key="BibItemDataTemplate" x:DataType="viewmodels:BookBrowserViewModel">
+            <Grid Margin="6" Background="{ThemeResource AccentBackgroundColor}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="400"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="150"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="{x:Bind Model.Title, Mode=OneWay}" FontSize="16pt" FontWeight="Black" TextWrapping="WrapWholeWords" />
+                    <TextBlock Text="{x:Bind Model.Authors, Mode=OneWay}" TextWrapping="WrapWholeWords" />
+                    <TextBlock Text="{x:Bind Model.OriginalTitle, Mode=OneWay}" FontStyle="Italic" TextWrapping="WrapWholeWords" />
+                    <TextBlock Text="{x:Bind Model.Published, Mode=OneWay}" />
+                </StackPanel>
+                <AppBarButton Name="AddBookButton" Grid.Row="1" HorizontalAlignment="Right" Icon="Add" 
+                              Command="{x:Bind AddBookCommand,Mode=OneWay}"/>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup CurrentStateChanged="VisualStates_CurrentStateChanged">
+                <VisualState x:Name="LargeSize">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource LargeWindowSnapPoint}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="MediumSize">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource MediumWindowSnapPoint}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="LibraryPicker.(RelativePanel.AlignBottomWith)" Value="" />
+                        <Setter Target="LibraryPicker.(RelativePanel.RightOf)" Value="" />
+                        <Setter Target="LibraryPicker.(Margin)" Value="0,20,0,0" />
+                        <Setter Target="LibraryPicker.(RelativePanel.AlignLeftWithPanel)" Value="True" />
+                        <Setter Target="LibraryPicker.(RelativePanel.Below)" Value="AuthorSearchTextBox" />
+                        <Setter Target="MaxHitsTextBox.(RelativePanel.Below)" Value="LibraryPicker" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="MinimumSize">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource MinWindowSnapPoint}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="LibraryPicker.(RelativePanel.AlignBottomWith)" Value="" />
+                        <Setter Target="LibraryPicker.(RelativePanel.RightOf)" Value="" />
+                        <Setter Target="LibraryPicker.(Margin)" Value="0,20,0,0" />
+                        <Setter Target="LibraryPicker.(RelativePanel.Below)" Value="AuthorSearchTextBox" />
+                        <Setter Target="LibraryPicker.(RelativePanel.AlignLeftWithPanel)" Value="True" />
+                        <Setter Target="MaxHitsTextBox.(RelativePanel.Below)" Value="LibraryPicker" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <RelativePanel Grid.Row="0" >
+            <CommandBar
+                    x:Name="mainCommandBar"
+                    HorizontalAlignment="Stretch"
+                    Background="Transparent"
+                    RelativePanel.AlignLeftWithPanel="True"
+                    RelativePanel.AlignRightWithPanel="True">
+
+                <CommandBar.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock
+                          x:Name="PageTitle"
+                          x:Uid="LibrarySearchPageTitle"
+                          Margin="0,0,0,2"
+                          Style="{StaticResource PageTitleTextBlockStyle}"
+                          />
+                        <telerikPrimitives:RadBusyIndicator x:Name="SearchProgressRing" x:Uid="SearchProgressRing" 
+                              Margin="20,0,0,0"
+                              IsActive="{x:Bind ViewModel.SearchIsInProgress,Mode=OneWay}"  
+                              AnimationStyle="AnimationStyle5"
+                              Content="              "                      />
+                    </StackPanel>
+                </CommandBar.Content>
+
+                <AppBarButton x:Name="SearchButton" x:Uid="LibSearchButton"
+                              Icon="Find" Command="{x:Bind ViewModel.SearchCommand}"
+                              />
+
+                <AppBarButton x:Name="PrevPageButton" x:Uid="PrevPageButton" 
+                       Command="{x:Bind ViewModel.PrevPageCommand}"
+                       IsEnabled="{x:Bind ViewModel.QueryResult.HasPreviousPage,Mode=OneWay}"
+                       Icon="Previous"
+                        />
+                <!--RelativePanel.RightOf="WorksFoundTextBox"-->
+                
+                <AppBarButton x:Name="NextPageButton" x:Uid="NextPageButton"
+                      Command="{x:Bind ViewModel.NextPageCommand}"
+                      IsEnabled="{x:Bind ViewModel.QueryResult.HasNextPage,Mode=OneWay}"
+                      Icon="Next"
+                       />
+                <!--RelativePanel.RightOf="CurrentPageTextBlock"-->
+                
+                <AppBarButton
+                       x:Name="AddSelectedBookButton"
+                       x:Uid="AddSelectedBookButton"
+                       IsEnabled="{x:Bind ViewModel.CurrentItem.BrowserAdapter.BibItemUriIsValid,Mode=OneWay}"
+                       Visibility="{x:Bind ViewModel.DisplayModeHub,Converter={StaticResource booleanVisConverter},ConverterParameter=True,Mode=OneWay}"
+                       Command="{x:Bind ViewModel.CurrentItem.AddBookCommand,Mode=OneWay}"
+                       Icon="Add"
+                        />
+                <!--RelativePanel.RightOf="NextPageButton"-->
+                
+                <AppBarButton
+                       x:Name="OpenBrowserButton"
+                       x:Uid="OpenBrowserButton"
+                       Visibility="{x:Bind ViewModel.DisplayModeHub,Converter={StaticResource booleanVisConverter},ConverterParameter=True,Mode=OneWay}"
+                       IsEnabled="{x:Bind ViewModel.CurrentItem.BrowserAdapter.BibItemUriIsValid,Mode=OneWay}"
+                       Command="{x:Bind ViewModel.OpenBrowserPane,Mode=OneWay}"
+                    >
+                    <AppBarButton.Icon>
+                        <PathIcon Data="F0 M7,17 h14 v2 h-14 v-2 M13,5 h2 v12 h-2 v-12 M8,5 h5 v2 h-5 v-2 M13,0 h2 v2 h-2 v-2" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <!--RelativePanel.RightOf="AddSelectedBookButton"-->
+
+
+                <!--M 5,10 h 30 v 10 h-30 v-10 M 5,30 h 30 v10 h-30 v-10 M 5 50 h 30 v10 h-30 v-10 M 45 10 h 30 v10 h-30 v-10 M 45 30 h 30 v10 h-30 v-10-->
+                <!--"M2,3L14,3 14,6 2,6 2,3 M2,9L14,9 14,12 2,12 2,9 M2,15.0000009536743L14,15.0000009536743 14,18 2,18 2,15.0000009536743 M18,3L30,3 30,6 18,6 18,3 M18,9L30,9 30,12 18,12 18,9" -->
+                <AppBarButton x:Name="HubDisplayButton" x:Uid="HubDisplayButton"
+                      Command="{x:Bind ViewModel.EnableHubDisplay}"
+                      Visibility="{x:Bind ViewModel.DisplayModeHub,Converter={StaticResource booleanVisConverter},ConverterParameter=True,Mode=OneWay}"                    RelativePanel.AlignBottomWith="MaxHitsTextBox">
+                    <AppBarButton.Icon>
+                        <PathIcon Data="M2,3L14,3 14,6 2,6 2,3 M2,9L14,9 14,12 2,12 2,9 M2,15.0000009536743L14,15.0000009536743 14,18 2,18 2,15.0000009536743 M18,3L30,3 30,6 18,6 18,3 M18,9L30,9 30,12 18,12 18,9"  />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <!--RelativePanel.RightOf="OpenBrowserButton">-->
+
+                <AppBarButton x:Name="ListDisplayButton" x:Uid="ListDisplayButton"
+                      Command="{x:Bind ViewModel.EnableListDisplay}"
+                      Visibility="{x:Bind ViewModel.DisplayModeHub,Converter={StaticResource booleanVisConverter},Mode=OneWay}"
+                      Icon="List"
+                      VerticalAlignment="Top" HorizontalAlignment="Left" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" />
+                <!--RelativePanel.RightOf="OpenBrowserButton"-->
+            </CommandBar>
+
+            <AutoSuggestBox
+                           x:Name="AuthorSearchTextBox"
+                           x:Uid="AuthorSearchTextBox"
+                           Width="200"
+                           RelativePanel.Below="mainCommandBar"
+                           RelativePanel.AlignLeftWithPanel="True"
+                           Text="{x:Bind ViewModel.SearchAuthor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  
+                           TextChanged="OnAuthorSearchTextBox_TextChanged"/>
+
+            <TextBox x:Name="TitleSearchTextBox" x:Uid="BookTitle" Width="200"
+                     RelativePanel.AlignBottomWith="AuthorSearchTextBox"
+                     RelativePanel.RightOf="AuthorSearchTextBox"
+                     Text="{x:Bind ViewModel.SearchTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="20,0,0,0"/>
+
+            <ComboBox x:Name="LibraryPicker" x:Uid="LibraryPicker"  Width="350" 
+                           RelativePanel.AlignBottomWith="AuthorSearchTextBox"
+                           RelativePanel.RightOf="TitleSearchTextBox" Margin="20,0,0,0"
+                           ItemsSource="{x:Bind ViewModel.Libraries,Mode=OneTime}" ItemTemplate="{StaticResource LibraryDataTemplate}"
+                           SelectedItem="{x:Bind ViewModel.Library,Mode=TwoWay}"
+                           />
+            <TextBox x:Name="MaxHitsTextBox" x:Uid="MaxHitsTextBox" 
+                     RelativePanel.Below="AuthorSearchTextBox"
+                     RelativePanel.AlignLeftWithPanel="True"
+                     Text="{x:Bind ViewModel.MaxHits, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     InputScope="Digits" Margin="0,20,0,20"/>
+
+            <TextBox x:Name="WorksFoundTextBox" x:Uid="WorksFoundTextBox" Width="130"
+                         RelativePanel.RightOf="MaxHitsTextBox"
+                         RelativePanel.AlignBottomWith="MaxHitsTextBox"
+                         Text="{x:Bind ViewModel.QueryResult.NoOfEntries,Mode=OneWay}"
+                         IsEnabled="False" Margin="20,20,0,20"/>
+
+            <TextBlock x:Name="CurrentPageTextBlock" Text="{x:Bind ViewModel.QueryResult.CurrentPosition,Mode=OneWay}" Width="200"
+                       HorizontalAlignment="Center"
+                       RelativePanel.AlignBottomWith="MaxHitsTextBox"
+                       RelativePanel.RightOf="WorksFoundTextBox" Margin="10,0,0,20"/>
+
+        </RelativePanel>
+
+        <Hub x:Name="LibrarySearchHub" x:Uid="LibrarySearchHub" Grid.Row="1"
+                 Visibility="{x:Bind ViewModel.DisplayModeHub,Converter={StaticResource booleanVisConverter},Mode=OneWay}">
+            <HubSection  x:Name="BooksHubSection" x:Uid="BooksHubSection">
+                <DataTemplate x:DataType="viewmodels:LibrarySearchResultViewModel">
+                    <Grid Width="900">
+                        <GridView ItemsSource="{x:Bind QueryResult.BookItems,Mode=OneWay}" ItemTemplate="{StaticResource BibItemDataTemplate}"
+                                  ItemClick="BibItem_Click" IsItemClickEnabled="True" IsMultiSelectCheckBoxEnabled="False"/>
+                    </Grid>
+                </DataTemplate>
+            </HubSection>
+            <HubSection x:Name="AudioBooksHubSection" x:Uid="AudioBooksHubSection">
+                <DataTemplate x:DataType="viewmodels:LibrarySearchResultViewModel">
+                    <Grid Width="900">
+                        <GridView ItemsSource="{x:Bind QueryResult.AudioItems,Mode=OneWay}" ItemTemplate="{StaticResource BibItemDataTemplate}"
+                                  ItemClick="BibItem_Click" IsItemClickEnabled="True" IsMultiSelectCheckBoxEnabled="False"/>
+                    </Grid>
+                </DataTemplate>
+            </HubSection>
+        </Hub>
+
+        <telerikGrid:RadDataGrid
+                x:Name="DataGrid"
+                Visibility="{x:Bind ViewModel.DisplayModeHub,Converter={StaticResource booleanVisConverter},ConverterParameter=True,Mode=OneWay}"
+                Grid.Row="1"
+                BorderThickness="0"
+                ColumnDataOperationsMode="Flyout"
+                GridLinesVisibility="Horizontal"
+                GridLinesBrush="DarkGray"
+                GridLinesThickness="1"
+                GroupPanelPosition="Left"
+                Margin="0,20,0,0"
+                ItemsSource="{x:Bind ViewModel.QueryResult.AllItems,Mode=OneWay}"
+                SelectedItem="{x:Bind ViewModel.CurrentItem,Mode=TwoWay}"
+                CurrentItemChanged="OnCurrentItemOfGridChanged"
+                UserEditMode="None"
+                AutoGenerateColumns="False"
+                >
+
+            <telerikGrid:RadDataGrid.Columns>
+                <telerikGrid:DataGridTextColumn x:Uid="BookTitle" PropertyName="Title" SizeMode="Fixed" Width="300">
+                    <telerikGrid:DataGridTextColumn.CellContentStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="TextWrapping" Value="WrapWholeWords"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </telerikGrid:DataGridTextColumn.CellContentStyle>
+                </telerikGrid:DataGridTextColumn>
+                <telerikGrid:DataGridTextColumn x:Uid="OriginalTitle" PropertyName="OriginalTitle" SizeMode="Fixed" Width="300">
+                    <telerikGrid:DataGridTextColumn.CellContentStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontStyle" Value="Italic"/>
+                            <Setter Property="TextWrapping" Value="WrapWholeWords"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </telerikGrid:DataGridTextColumn.CellContentStyle>
+                </telerikGrid:DataGridTextColumn>
+                <telerikGrid:DataGridTextColumn x:Uid="Authors" PropertyName="Authors" SizeMode="Fixed" Width="300">
+                    <telerikGrid:DataGridTextColumn.CellContentStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextWrapping" Value="WrapWholeWords"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </telerikGrid:DataGridTextColumn.CellContentStyle>
+                </telerikGrid:DataGridTextColumn>
+                <telerikGrid:DataGridTextColumn x:Uid="MediumType" PropertyName="MediumText" />
+                <telerikGrid:DataGridTextColumn x:Uid="Published" PropertyName="Published" />
+            </telerikGrid:RadDataGrid.Columns>
+        </telerikGrid:RadDataGrid>
+    </Grid>
+</Page>

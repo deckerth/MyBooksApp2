@@ -1,0 +1,179 @@
+﻿<Page
+    x:Class="MyBooks.App.Views.BarcodeImportPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:telerikPrimitives="using:Telerik.UI.Xaml.Controls.Primitives"
+    xmlns:local="using:MyBooks.App.Views"
+    xmlns:converters="using:MyBooks.App.ValueConverters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="booleanVisConverter" />
+        <converters:NullToBooleanConverter x:Key="nullBooleanConverter" />
+        <converters:StringToGeometryConverter x:Key="stringToGeometryConverter"/>
+    </Page.Resources>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup CurrentStateChanged="CurrentStateChanged">
+                <VisualState x:Name="LargeSize">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource LargeWindowSnapPoint}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="MediumSize">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource MediumWindowSnapPoint}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="MinimumSize">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource MinWindowSnapPoint}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="PrevBookButton.(RelativePanel.AlignBottomWith)" Value="" />
+                        <Setter Target="PrevBookButton.(RelativePanel.RightOf)" Value="" />
+                        <Setter Target="PrevBookButton.(RelativePanel.AlignLeftWithPanel)" Value="True" />
+                        <Setter Target="PrevBookButton.(RelativePanel.Below)" Value="ImportFileTextBox" />
+                        <Setter Target="PrevBookButton.(Margin)" Value="-20,20,0,0" />
+                        <Setter Target="PositionBox.(RelativePanel.AlignBottomWith)" Value="" />
+                        <Setter Target="PositionBox.(RelativePanel.AlignVerticalCenterWith)" Value="PrevBookButton" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <RelativePanel Grid.Row="0" >
+            <CommandBar
+                    x:Name="mainCommandBar"
+                    HorizontalAlignment="Stretch"
+                    Background="Transparent"
+                    RelativePanel.AlignRightWithPanel="True"
+                    RelativePanel.AlignLeftWithPanel="True">
+
+                <CommandBar.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock
+                          x:Name="PageTitle"
+                          x:Uid="LibrarySearchPageTitle"
+                          Margin="0,0,0,2"
+                          Style="{StaticResource PageTitleTextBlockStyle}"
+                          />
+                        <telerikPrimitives:RadBusyIndicator x:Name="SearchProgressRing" x:Uid="SearchProgressRing" 
+                              Margin="20,0,0,0"
+                              IsActive="{x:Bind ViewModel.SearchIsInProgress,Mode=OneWay}"  
+                              AnimationStyle="AnimationStyle5"
+                              Content="              "                      />
+                    </StackPanel>
+                </CommandBar.Content>
+
+                <AppBarButton x:Name="ImportButton" x:Uid="ImportButton"
+                              Command="{x:Bind ViewModel.ImportScannedBooksCommand}"
+                              >
+                    <AppBarButton.Icon>
+                        <PathIcon Data="{x:Bind BarcodeImportIcon,Mode=OneTime,Converter={StaticResource stringToGeometryConverter}}"/>
+                    </AppBarButton.Icon>
+                </AppBarButton>
+
+                <AppBarButton
+                      x:Name="AddSelectedBookButton"
+                       x:Uid="AddSelectedBookButton"
+                       IsEnabled="{x:Bind ViewModel.QueryResult.CurrentItem,Mode=OneWay,Converter={StaticResource nullBooleanConverter}}"
+                       Visibility="{x:Bind ViewModel.QueryResult.DisplayModeHub,Converter={StaticResource booleanVisConverter},ConverterParameter=True,Mode=OneWay}"
+                       Command="{x:Bind ViewModel.QueryResult.CurrentItem.AddBookCommand,Mode=OneWay}"
+                       Icon="Add"
+                       RelativePanel.RightOf="PrevBookButton"  
+                      />
+
+                <AppBarButton
+                       x:Name="OpenBrowserButton"
+                       x:Uid="OpenBrowserButton"
+                       IsEnabled="{x:Bind ViewModel.QueryResult.CurrentItem.BrowserAdapter.BibItemUriIsValid,Mode=OneWay}"
+                       Visibility="{x:Bind ViewModel.QueryResult.DisplayModeHub,Converter={StaticResource booleanVisConverter},ConverterParameter=True,Mode=OneWay}"
+                       Command="{x:Bind ViewModel.OpenBrowserPane,Mode=OneWay}"
+                       RelativePanel.RightOf="AddSelectedBookButton"  
+                      >
+                    <AppBarButton.Icon>
+                        <PathIcon Data="F0 M7,17 h14 v2 h-14 v-2 M13,5 h2 v12 h-2 v-12 M8,5 h5 v2 h-5 v-2 M13,0 h2 v2 h-2 v-2" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+
+                <!--M 5,10 h 30 v 10 h-30 v-10 M 5,30 h 30 v10 h-30 v-10 M 5 50 h 30 v10 h-30 v-10 M 45 10 h 30 v10 h-30 v-10 M 45 30 h 30 v10 h-30 v-10-->
+                <AppBarButton x:Name="HubDisplayButton" x:Uid="HubDisplayButton"
+                      Command="{x:Bind ViewModel.EnableHubDisplay}"
+                      Visibility="{x:Bind ViewModel.QueryResult.DisplayModeHub,Converter={StaticResource booleanVisConverter},ConverterParameter=True,Mode=OneWay}"                    RelativePanel.AlignBottomWith="MaxHitsTextBox"
+                      RelativePanel.RightOf="OpenBrowserButton">
+                    <AppBarButton.Icon>
+                        <PathIcon Data="M2,3L14,3 14,6 2,6 2,3 M2,9L14,9 14,12 2,12 2,9 M2,15.0000009536743L14,15.0000009536743 14,18 2,18 2,15.0000009536743 M18,3L30,3 30,6 18,6 18,3 M18,9L30,9 30,12 18,12 18,9"/>
+                    </AppBarButton.Icon>
+                </AppBarButton>
+
+                <AppBarButton x:Name="ListDisplayButton" x:Uid="ListDisplayButton"
+                      Command="{x:Bind ViewModel.EnableListDisplay}"
+                      Visibility="{x:Bind ViewModel.QueryResult.DisplayModeHub,Converter={StaticResource booleanVisConverter},Mode=OneWay}"
+                      Icon="List"
+                      RelativePanel.RightOf="OpenBrowserButton"  
+                      VerticalAlignment="Top" 
+                      HorizontalAlignment="Left" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" />
+               
+            </CommandBar>
+
+            <TextBox x:Name="ImportFileTextBox" x:Uid="ImportFile" Width="300"
+                     RelativePanel.Below="mainCommandBar"
+                     RelativePanel.AlignLeftWithPanel="True"
+                     IsEnabled="False"
+                     Text="{x:Bind ViewModel.Filename, Mode=OneWay}" />
+
+            <AppBarButton x:Name="PrevBookButton"  
+                       Command="{x:Bind ViewModel.PrevBookCommand}"
+                       IsEnabled="{x:Bind ViewModel.HasPrevBook,Mode=OneWay}"
+                       Icon="Previous"
+                       RelativePanel.AlignBottomWith="ImportFileTextBox"
+                       RelativePanel.RightOf="ImportFileTextBox" Margin="0,60,0,0"/>
+
+            <StackPanel x:Name="PositionBox" Orientation="Vertical"
+                      RelativePanel.AlignBottomWith="PrevBookButton"
+                      RelativePanel.RightOf="PrevBookButton" >
+                <TextBlock x:Name="ISBNSearchTextBox" Width="80"
+                     Text="{x:Bind ViewModel.SearchISBN, Mode=OneWay}" 
+                     HorizontalAlignment="Center" FontSize="10" FontStyle="Normal" FontFamily="Segoe UI"/>
+                <TextBox x:Name="PositionTextBox"  Width="80"
+                     IsEnabled="False"
+                     Text="{x:Bind ViewModel.CurrentBookPosition, Mode=OneWay}" HorizontalAlignment="Center"/>
+            </StackPanel>
+
+            <AppBarButton x:Name="NextBookButton" 
+                      Command="{x:Bind ViewModel.NextBookCommand}"
+                      IsEnabled="{x:Bind ViewModel.HasNextBook,Mode=OneWay}"
+                      Icon="Next"
+                      RelativePanel.AlignBottomWith="PrevBookButton"
+                      RelativePanel.RightOf="PositionBox" Margin="0,60,0,0" />
+
+        </RelativePanel>
+
+        <Frame x:Name="contentFrame"
+               Grid.Row="1"
+               Margin="0,4,0,0"
+               Navigating="OnNavigatingToPage">
+            <Frame.ContentTransitions>
+                <TransitionCollection>
+                    <NavigationThemeTransition>
+                        <NavigationThemeTransition.DefaultNavigationTransitionInfo>
+                            <EntranceNavigationTransitionInfo />
+                        </NavigationThemeTransition.DefaultNavigationTransitionInfo>
+                    </NavigationThemeTransition>
+                </TransitionCollection>
+            </Frame.ContentTransitions>
+        </Frame>
+    </Grid>
+</Page>
