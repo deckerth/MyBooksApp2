@@ -42,9 +42,10 @@ Namespace Global.MyBooks.App.Views
             Return True
         End Function
 
-        Public Overrides Sub Execute(parameter As Object)
+        Public Overrides Async Sub Execute(parameter As Object)
             Dim context As EditContext = DirectCast(parameter, EditContext)
             BookListPage.Current.ViewModel.SelectedBook.IsInEdit = False
+            Await BookListPage.Current.ViewModel.SelectedBook.Refresh()
             Owner.CommandService.ExecuteDefaultCommand(CommandId.CancelEdit, context)
         End Sub
     End Class
@@ -274,15 +275,16 @@ Namespace Global.MyBooks.App.Views
         End Sub
 
         Private _currentAuthorBox As RadAutoCompleteBox
+        Private _internalTextBox As AutoCompleteTextBox
 
         ' Traverse the child visual tree to find the AutoCompleteTextBox
         ' And SUBSCRIBE the ContextMenuOpening event handler
         Private Sub OnAuthors_Loaded(sender As Object, e As RoutedEventArgs)
             _currentAuthorBox = DirectCast(sender, RadAutoCompleteBox)
             Dim descendants = _currentAuthorBox.FindDescendants(Of AutoCompleteTextBox)
-            Dim internalTextBox As AutoCompleteTextBox = descendants.FirstOrDefault()
+            _internalTextBox = descendants.FirstOrDefault()
 
-            AddHandler internalTextBox.ContextMenuOpening, AddressOf InternalTextBox_ContextMenuOpening
+            AddHandler _internalTextBox.ContextMenuOpening, AddressOf InternalTextBox_ContextMenuOpening
         End Sub
 
         Private Sub OnAuthors_Unloaded(sender As Object, e As RoutedEventArgs)
@@ -292,6 +294,7 @@ Namespace Global.MyBooks.App.Views
 
             RemoveHandler internalTextBox.ContextMenuOpening, AddressOf InternalTextBox_ContextMenuOpening
             _currentAuthorBox = Nothing
+            _internalTextBox = Nothing
         End Sub
 
         Private Sub InternalTextBox_ContextMenuOpening(sender As Object, e As ContextMenuEventArgs)
@@ -302,7 +305,13 @@ Namespace Global.MyBooks.App.Views
 
         Private Sub ConvertToLastNameFirstName_Click(sender As Object, e As RoutedEventArgs)
             If ViewModel.SelectedBook IsNot Nothing Then
-                ViewModel.SelectedBook.AuthorNameConversion.SetAuthors(ViewModel.SelectedBook.Authors)
+                Dim start = 0
+                Dim length = ViewModel.SelectedBook.Authors.Length
+                If _internalTextBox IsNot Nothing Then
+                    start = _internalTextBox.SelectionStart
+                    length = _internalTextBox.SelectionLength
+                End If
+                ViewModel.SelectedBook.AuthorNameConversion.SetAuthors(ViewModel.SelectedBook.Authors, start, length)
                 ViewModel.SelectedBook.AuthorNameConversion.SetConversionMode(AuthorSuggestionsViewModel.ConversionMode.LastNameFirstName)
                 ViewModel.SelectedBook.AuthorNameConversion.ComputeSuggestion()
                 ReformatAuthorsFlyoutBase = FlyoutBase.GetAttachedFlyout(sender)
@@ -333,6 +342,14 @@ Namespace Global.MyBooks.App.Views
             ViewModel.SelectedBook.AuthorNameConversion.ComputeSuggestion()
         End Sub
 
+        'Private Sub CopyToClipboard_Click(sender As Object, e As RoutedEventArgs)
+        '    If _internalTextBox IsNot Nothing Then
+        '        Dim descendants = _internalTextBox.FindDescendants(Of TextBox)
+        '        Dim box As TextBox = descendants.FirstOrDefault()
+        '        box.copytoclipboard..Only available As Of 1809!
+
+        '    End If
+        'End Sub
     End Class
 
 End Namespace

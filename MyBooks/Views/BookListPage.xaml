@@ -227,16 +227,18 @@
                                     >
                                 <telerikInput:RadAutoCompleteBox.ContextFlyout>
                                     <MenuFlyout>
+                                        <!--<MenuFlyoutItem x:Name="Copy"
+                                                        Text="Kopieren" 
+                                                        Click="CopyToClipboard_Click" 
+                                                        />-->
                                         <MenuFlyoutItem x:Name="ReformatAuthorsLastNameFirstName" 
                                                         Text="A B → B, A" 
                                                         Click="ConvertToLastNameFirstName_Click" 
-                                                        CommandParameter="{x:Bind Id}"
                                                         FlyoutBase.AttachedFlyout="{StaticResource NameConversionSuggestionFlyout}"
                                                         />
                                         <MenuFlyoutItem x:Name="ReformatAuthorsFirstNameLastName"
                                                         Text="B, A → A B" 
                                                         Click="ConvertToFirstNameLastName_Click" 
-                                                        CommandParameter="{x:Bind Id}"
                                                         FlyoutBase.AttachedFlyout="{StaticResource NameConversionSuggestionFlyout}"
                                                         />
                                     </MenuFlyout>

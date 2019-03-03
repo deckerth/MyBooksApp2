@@ -54,6 +54,11 @@ Namespace Global.MyBooks.App.ViewModels
             End Get
         End Property
 
+        Public Async Function Refresh() As Task
+            Model = Await App.Repository.Books.GetAsync(Id)
+            IsModified = False
+        End Function
+
         Public Async Function Save() As Task
             Await App.Repository.Books.Upsert(Model)
             IsModified = False

@@ -71,11 +71,6 @@ Namespace Global.MyBooks.App.ViewModels
             End Set
         End Property
 
-        Public Async Function Refresh() As Task
-            Book.Model = Await App.Repository.Books.GetAsync(Book.Id)
-            Book.IsModified = False
-        End Function
-
         Private errorBuffer As String
 
         Private Sub AppendErrors(msgs As IEnumerable)
@@ -119,7 +114,6 @@ Namespace Global.MyBooks.App.ViewModels
         End Property
 
         Public Property SaveCommand As RelayCommand
-
 
         ' <summary>
         ' Saves book data that has been edited.

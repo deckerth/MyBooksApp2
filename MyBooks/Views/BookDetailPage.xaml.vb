@@ -1,5 +1,7 @@
 ﻿Imports MyBooks.App.ViewModels
 Imports Telerik.UI.Xaml.Controls.Input
+Imports Microsoft.Toolkit.Uwp.UI.Extensions
+Imports Telerik.UI.Xaml.Controls.Input.AutoCompleteBox
 
 Namespace Global.MyBooks.App.Views
 
@@ -72,7 +74,7 @@ Namespace Global.MyBooks.App.Views
                 If result = ContentDialogResult.Primary Then
                     ViewModel.SaveCommand.Execute(Nothing)
                 Else
-                    Await ViewModel.Refresh()
+                    Await ViewModel.Book.Refresh()
                 End If
             End If
 
@@ -133,7 +135,18 @@ Namespace Global.MyBooks.App.Views
         Private ReformatAuthorsFlyoutBase As FlyoutBase
 
         Private Sub ReformatAuthorsLastNameFirstName_Click(sender As Object, e As RoutedEventArgs)
-            ViewModel.Book.AuthorNameConversion.SetAuthors(ViewModel.Book.Authors)
+
+            Dim descendants = Authors.FindDescendants(Of AutoCompleteTextBox)
+            Dim internalTextBox = descendants.FirstOrDefault()
+            Dim start = 0
+            Dim length = ViewModel.Book.Authors
+
+            If internalTextBox IsNot Nothing Then
+                start = internalTextBox.SelectionStart
+                length = internalTextBox.SelectionLength
+            End If
+
+            ViewModel.Book.AuthorNameConversion.SetAuthors(ViewModel.Book.Authors, start, length)
             ViewModel.Book.AuthorNameConversion.SetConversionMode(AuthorSuggestionsViewModel.ConversionMode.LastNameFirstName)
             ViewModel.Book.AuthorNameConversion.ComputeSuggestion()
             ReformatAuthorsFlyoutBase = FlyoutBase.GetAttachedFlyout(ReformatAuthorsLastNameFirstName)
@@ -141,7 +154,17 @@ Namespace Global.MyBooks.App.Views
         End Sub
 
         Private Sub ReformatAuthorsFirstNameLastName_Click(sender As Object, e As RoutedEventArgs)
-            ViewModel.Book.AuthorNameConversion.SetAuthors(ViewModel.Book.Authors)
+            Dim descendants = Authors.FindDescendants(Of AutoCompleteTextBox)
+            Dim internalTextBox = descendants.FirstOrDefault()
+            Dim start = 0
+            Dim length = ViewModel.Book.Authors
+
+            If internalTextBox IsNot Nothing Then
+                start = internalTextBox.SelectionStart
+                length = internalTextBox.SelectionLength
+            End If
+
+            ViewModel.Book.AuthorNameConversion.SetAuthors(ViewModel.Book.Authors, start, length)
             ViewModel.Book.AuthorNameConversion.SetConversionMode(AuthorSuggestionsViewModel.ConversionMode.FirstNameLastName)
             ViewModel.Book.AuthorNameConversion.ComputeSuggestion()
             ReformatAuthorsFlyoutBase = FlyoutBase.GetAttachedFlyout(ReformatAuthorsFirstNameLastName)
