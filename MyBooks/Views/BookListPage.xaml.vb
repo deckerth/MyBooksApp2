@@ -1,5 +1,6 @@
 ﻿Imports System.Globalization
 Imports Microsoft.Toolkit.Uwp.Helpers
+Imports Microsoft.Toolkit.Uwp.UI.Extensions
 Imports MyBooks.App.TelerikStrings
 Imports MyBooks.App.ViewModels
 Imports MyBooks.Models
@@ -7,6 +8,7 @@ Imports Telerik.Data.Core
 Imports Telerik.UI.Xaml.Controls.Grid
 Imports Telerik.UI.Xaml.Controls.Grid.Commands
 Imports Telerik.UI.Xaml.Controls.Input
+Imports Telerik.UI.Xaml.Controls.Input.AutoCompleteBox
 
 Namespace Global.MyBooks.App.Views
 
@@ -271,13 +273,66 @@ Namespace Global.MyBooks.App.Views
             End If
         End Sub
 
-        Private Sub OnAuthors_ContextRequested(sender As UIElement, args As ContextRequestedEventArgs)
-            'Dim autoCompleteBox = DirectCast(sender, RadAutoCompleteBox)
-            'Dim menu = New MenuFlyout()
-            'menu.Items.Add(New MenuFlyoutItem() With {.Text = "AB -> A,B"})
-            'autoCompleteBox.ContextFlyout = menu
-            'args.Handled = True
+        Private _currentAuthorBox As RadAutoCompleteBox
+
+        ' Traverse the child visual tree to find the AutoCompleteTextBox
+        ' And SUBSCRIBE the ContextMenuOpening event handler
+        Private Sub OnAuthors_Loaded(sender As Object, e As RoutedEventArgs)
+            _currentAuthorBox = DirectCast(sender, RadAutoCompleteBox)
+            Dim descendants = _currentAuthorBox.FindDescendants(Of AutoCompleteTextBox)
+            Dim internalTextBox As AutoCompleteTextBox = descendants.FirstOrDefault()
+
+            AddHandler internalTextBox.ContextMenuOpening, AddressOf InternalTextBox_ContextMenuOpening
         End Sub
+
+        Private Sub OnAuthors_Unloaded(sender As Object, e As RoutedEventArgs)
+            Dim box = DirectCast(sender, RadAutoCompleteBox)
+            Dim descendants = box.FindDescendants(Of AutoCompleteTextBox)
+            Dim internalTextBox As AutoCompleteTextBox = descendants.FirstOrDefault()
+
+            RemoveHandler internalTextBox.ContextMenuOpening, AddressOf InternalTextBox_ContextMenuOpening
+            _currentAuthorBox = Nothing
+        End Sub
+
+        Private Sub InternalTextBox_ContextMenuOpening(sender As Object, e As ContextMenuEventArgs)
+            e.Handled = True
+        End Sub
+
+        Private ReformatAuthorsFlyoutBase As FlyoutBase
+
+        Private Sub ConvertToLastNameFirstName_Click(sender As Object, e As RoutedEventArgs)
+            If ViewModel.SelectedBook IsNot Nothing Then
+                ViewModel.SelectedBook.AuthorNameConversion.SetAuthors(ViewModel.SelectedBook.Authors)
+                ViewModel.SelectedBook.AuthorNameConversion.SetConversionMode(AuthorSuggestionsViewModel.ConversionMode.LastNameFirstName)
+                ViewModel.SelectedBook.AuthorNameConversion.ComputeSuggestion()
+                ReformatAuthorsFlyoutBase = FlyoutBase.GetAttachedFlyout(sender)
+                ReformatAuthorsFlyoutBase.ShowAt(_currentAuthorBox)
+            End If
+        End Sub
+
+        Private Sub ConvertToFirstNameLastName_Click(sender As Object, e As RoutedEventArgs)
+            If ViewModel.SelectedBook IsNot Nothing Then
+                ViewModel.SelectedBook.AuthorNameConversion.SetAuthors(ViewModel.SelectedBook.Authors)
+                ViewModel.SelectedBook.AuthorNameConversion.SetConversionMode(AuthorSuggestionsViewModel.ConversionMode.FirstNameLastName)
+                ViewModel.SelectedBook.AuthorNameConversion.ComputeSuggestion()
+                ReformatAuthorsFlyoutBase = FlyoutBase.GetAttachedFlyout(sender)
+                ReformatAuthorsFlyoutBase.ShowAt(_currentAuthorBox)
+            End If
+        End Sub
+
+        Private Sub AcceptSuggestion_Click(sender As Object, e As RoutedEventArgs)
+            ReformatAuthorsFlyoutBase.Hide()
+        End Sub
+
+        Private Sub RecomputeAuthorConversion_Click(sender As Object, e As RoutedEventArgs)
+            Dim start = InputToConvert.SelectionStart
+            Dim length = InputToConvert.SelectionLength
+            InputToConvert.SelectionStart = 0
+            InputToConvert.SelectionLength = 0
+            ViewModel.SelectedBook.AuthorNameConversion.SetAuthors(InputToConvert.Text, start, length)
+            ViewModel.SelectedBook.AuthorNameConversion.ComputeSuggestion()
+        End Sub
+
     End Class
 
 End Namespace

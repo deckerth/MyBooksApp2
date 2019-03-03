@@ -133,17 +133,17 @@ Namespace Global.MyBooks.App.Views
         Private ReformatAuthorsFlyoutBase As FlyoutBase
 
         Private Sub ReformatAuthorsLastNameFirstName_Click(sender As Object, e As RoutedEventArgs)
-            ViewModel.AuthorNameConversion.SetAuthors(ViewModel.Book.Authors)
-            ViewModel.AuthorNameConversion.SetConversionMode(AuthorSuggestionsViewModel.ConversionMode.LastNameFirstName)
-            ViewModel.AuthorNameConversion.ComputeSuggestion()
+            ViewModel.Book.AuthorNameConversion.SetAuthors(ViewModel.Book.Authors)
+            ViewModel.Book.AuthorNameConversion.SetConversionMode(AuthorSuggestionsViewModel.ConversionMode.LastNameFirstName)
+            ViewModel.Book.AuthorNameConversion.ComputeSuggestion()
             ReformatAuthorsFlyoutBase = FlyoutBase.GetAttachedFlyout(ReformatAuthorsLastNameFirstName)
             ReformatAuthorsFlyoutBase.ShowAt(ReformatAuthorsLastNameFirstName)
         End Sub
 
         Private Sub ReformatAuthorsFirstNameLastName_Click(sender As Object, e As RoutedEventArgs)
-            ViewModel.AuthorNameConversion.SetAuthors(ViewModel.Book.Authors)
-            ViewModel.AuthorNameConversion.SetConversionMode(AuthorSuggestionsViewModel.ConversionMode.FirstNameLastName)
-            ViewModel.AuthorNameConversion.ComputeSuggestion()
+            ViewModel.Book.AuthorNameConversion.SetAuthors(ViewModel.Book.Authors)
+            ViewModel.Book.AuthorNameConversion.SetConversionMode(AuthorSuggestionsViewModel.ConversionMode.FirstNameLastName)
+            ViewModel.Book.AuthorNameConversion.ComputeSuggestion()
             ReformatAuthorsFlyoutBase = FlyoutBase.GetAttachedFlyout(ReformatAuthorsFirstNameLastName)
             ReformatAuthorsFlyoutBase.ShowAt(ReformatAuthorsFirstNameLastName)
         End Sub
@@ -157,8 +157,8 @@ Namespace Global.MyBooks.App.Views
             Dim length = InputToConvert.SelectionLength
             InputToConvert.SelectionStart = 0
             InputToConvert.SelectionLength = 0
-            ViewModel.AuthorNameConversion.SetAuthors(InputToConvert.Text, start, length)
-            ViewModel.AuthorNameConversion.ComputeSuggestion()
+            ViewModel.Book.AuthorNameConversion.SetAuthors(InputToConvert.Text, start, length)
+            ViewModel.Book.AuthorNameConversion.ComputeSuggestion()
         End Sub
 #End Region
     End Class

@@ -15,16 +15,6 @@ Namespace Global.MyBooks.App.ViewModels
             StartEditCommand = New RelayCommand(AddressOf OnStartEdit)
         End Sub
 
-        Private _authorNameConversion As AuthorSuggestionsViewModel
-        Public ReadOnly Property AuthorNameConversion As AuthorSuggestionsViewModel
-            Get
-                If _authorNameConversion Is Nothing Then
-                    _authorNameConversion = New AuthorSuggestionsViewModel(Me)
-                End If
-                Return _authorNameConversion
-            End Get
-        End Property
-
         Public Shared Event OnNewBookCreated(eNewBookCreatedArgs As BookViewModel)
 
         Private _isLoading As Boolean = False

@@ -27,21 +27,21 @@
             <RelativePanel>
                 <TextBox x:Name="InputToConvert"
                          x:Uid="AuthorsToConvert"
-                         Text="{x:Bind ViewModel.AuthorNameConversion.OriginalAuthorsString,Mode=OneWay}"
-                         Visibility="{x:Bind ViewModel.AuthorNameConversion.ExtendedEditMode,Mode=OneWay,Converter={StaticResource boolToVisConverter}}"
+                         Text="{x:Bind ViewModel.Book.AuthorNameConversion.OriginalAuthorsString,Mode=OneWay}"
+                         Visibility="{x:Bind ViewModel.Book.AuthorNameConversion.ExtendedEditMode,Mode=OneWay,Converter={StaticResource boolToVisConverter}}"
                          Width="400"
                          RelativePanel.AlignTopWithPanel="True"
                          RelativePanel.AlignLeftWithPanel="True"/>
                 <TextBox x:Name="NameSeperator"
                          x:Uid="NameSeperator"
-                         Text="{x:Bind ViewModel.AuthorNameConversion.NameSeparator,Mode=TwoWay}"
-                         Visibility="{x:Bind ViewModel.AuthorNameConversion.ExtendedEditMode,Mode=OneWay,Converter={StaticResource boolToVisConverter}}"
+                         Text="{x:Bind ViewModel.Book.AuthorNameConversion.NameSeparator,Mode=TwoWay}"
+                         Visibility="{x:Bind ViewModel.Book.AuthorNameConversion.ExtendedEditMode,Mode=OneWay,Converter={StaticResource boolToVisConverter}}"
                          Margin="0, 10, 0, 0"
                          RelativePanel.AlignLeftWithPanel="True"
                          RelativePanel.Below="InputToConvert"/>
                 <Button x:Name="RecomputeButton"
                         x:Uid="ConvertAuthorsButton"
-                         Visibility="{x:Bind ViewModel.AuthorNameConversion.ExtendedEditMode,Mode=OneWay,Converter={StaticResource boolToVisConverter}}"
+                         Visibility="{x:Bind ViewModel.Book.AuthorNameConversion.ExtendedEditMode,Mode=OneWay,Converter={StaticResource boolToVisConverter}}"
                          Margin="0, 20, 0, 30"
                          RelativePanel.AlignLeftWithPanel="True"
                          RelativePanel.Below="NameSeperator"
@@ -50,16 +50,16 @@
                          RelativePanel.AlignLeftWithPanel="True"
                          RelativePanel.Below="RecomputeButton">
                     <TextBox x:Name="SuggestedText"
-                         Text="{x:Bind ViewModel.AuthorNameConversion.Suggestion,Mode=TwoWay}"
+                         Text="{x:Bind ViewModel.Book.AuthorNameConversion.Suggestion,Mode=TwoWay}"
                          Width="280" Height="25"/>
                     <AppBarButton  x:Name="AcceptSuggestion"
                                Icon="Accept"
-                               Command="{x:Bind ViewModel.AuthorNameConversion.AcceptConvertedNameCommand}" 
+                               Command="{x:Bind ViewModel.Book.AuthorNameConversion.AcceptConvertedNameCommand}" 
                                Click="AcceptSuggestion_Click" />
                     <AppBarButton  x:Name="StartExtendedComputation"
                                Icon="More"
-                               Command="{x:Bind ViewModel.AuthorNameConversion.OpenExtendedModeCommand}"
-                               Visibility="{x:Bind ViewModel.AuthorNameConversion.ExtendedEditMode,Mode=OneWay,Converter={StaticResource boolToVisConverter},ConverterParameter=True}"/>
+                               Command="{x:Bind ViewModel.Book.AuthorNameConversion.OpenExtendedModeCommand}"
+                               Visibility="{x:Bind ViewModel.Book.AuthorNameConversion.ExtendedEditMode,Mode=OneWay,Converter={StaticResource boolToVisConverter},ConverterParameter=True}"/>
                 </StackPanel>
             </RelativePanel>
         </Flyout>

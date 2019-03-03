@@ -107,15 +107,15 @@ Namespace Global.MyBooks.App.ViewModels
         Public Property SyncCommand As RelayCommand
 
         Private Async Function Synchronize() As Task
-            IsLoading = True
+            Await DispatcherHelper.ExecuteOnUIThreadAsync(Sub() IsLoading = True)
 
             Dim modifiedViewModels = Books.Where(Function(x) x.IsModified)
             For Each m In modifiedViewModels
                 Await m.Save()
             Next
-            Await DispatcherHelper.ExecuteOnUIThreadAsync(Sub() IsModified = False)
 
-            IsLoading = False
+            Await DispatcherHelper.ExecuteOnUIThreadAsync(Sub() IsModified = False)
+            Await DispatcherHelper.ExecuteOnUIThreadAsync(Sub() IsLoading = False)
         End Function
 
         Private Sub OnSync()

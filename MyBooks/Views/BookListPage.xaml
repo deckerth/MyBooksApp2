@@ -22,6 +22,47 @@
         <Style TargetType="gridPrimitives:DataGridColumnHeader">
             <Setter Property="Background" Value="{ThemeResource AccentBackgroundColor}" />
         </Style>
+
+        <Flyout x:Key="NameConversionSuggestionFlyout">
+            <RelativePanel>
+                <TextBox x:Name="InputToConvert"
+                         x:Uid="AuthorsToConvert"
+                         Text="{x:Bind ViewModel.SelectedBook.AuthorNameConversion.OriginalAuthorsString,Mode=OneWay}"
+                         Visibility="{x:Bind ViewModel.SelectedBook.AuthorNameConversion.ExtendedEditMode,Mode=OneWay,Converter={StaticResource booleanVisConverter}}"
+                         Width="400"
+                         RelativePanel.AlignTopWithPanel="True"
+                         RelativePanel.AlignLeftWithPanel="True"/>
+                <TextBox x:Name="NameSeperator"
+                         x:Uid="NameSeperator"
+                         Text="{x:Bind ViewModel.SelectedBook.AuthorNameConversion.NameSeparator,Mode=TwoWay}"
+                         Visibility="{x:Bind ViewModel.SelectedBook.AuthorNameConversion.ExtendedEditMode,Mode=OneWay,Converter={StaticResource booleanVisConverter}}"
+                         Margin="0, 10, 0, 0"
+                         RelativePanel.AlignLeftWithPanel="True"
+                         RelativePanel.Below="InputToConvert"/>
+                <Button x:Name="RecomputeButton"
+                        x:Uid="ConvertAuthorsButton"
+                         Visibility="{x:Bind ViewModel.SelectedBook.AuthorNameConversion.ExtendedEditMode,Mode=OneWay,Converter={StaticResource booleanVisConverter}}"
+                         Margin="0, 20, 0, 30"
+                         RelativePanel.AlignLeftWithPanel="True"
+                         RelativePanel.Below="NameSeperator"
+                         Click="RecomputeAuthorConversion_Click"/>
+                <StackPanel Orientation="Horizontal"
+                         RelativePanel.AlignLeftWithPanel="True"
+                         RelativePanel.Below="RecomputeButton">
+                    <TextBox x:Name="SuggestedText"
+                         Text="{x:Bind ViewModel.SelectedBook.AuthorNameConversion.Suggestion,Mode=TwoWay}"
+                         Width="280" Height="25"/>
+                    <AppBarButton  x:Name="AcceptSuggestion"
+                               Icon="Accept"
+                               Command="{x:Bind ViewModel.SelectedBook.AuthorNameConversion.AcceptConvertedNameCommand,Mode=OneWay}" 
+                               Click="AcceptSuggestion_Click" />
+                    <AppBarButton  x:Name="StartExtendedComputation"
+                               Icon="More"
+                               Command="{x:Bind ViewModel.SelectedBook.AuthorNameConversion.OpenExtendedModeCommand,Mode=OneWay}"
+                               Visibility="{x:Bind ViewModel.SelectedBook.AuthorNameConversion.ExtendedEditMode,Mode=OneWay,Converter={StaticResource booleanVisConverter},ConverterParameter=True}"/>
+                </StackPanel>
+            </RelativePanel>
+        </Flyout>
     </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -181,14 +222,25 @@
                                     Margin="0,4,0,0"
                                     Text="{x:Bind Authors, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     TextChanged="OnAuthors_TextChanged"
-                                    ContextRequested="OnAuthors_ContextRequested"
+                                    Loaded="OnAuthors_Loaded"
+                                    Unloaded="OnAuthors_Unloaded"
                                     >
-                                <!--<telerikInput:RadAutoCompleteBox.ContextFlyout>
+                                <telerikInput:RadAutoCompleteBox.ContextFlyout>
                                     <MenuFlyout>
-                                        <MenuFlyoutItem Text="A B → B, A"/>
-                                        <MenuFlyoutItem Text="B, A → A B"/>
+                                        <MenuFlyoutItem x:Name="ReformatAuthorsLastNameFirstName" 
+                                                        Text="A B → B, A" 
+                                                        Click="ConvertToLastNameFirstName_Click" 
+                                                        CommandParameter="{x:Bind Id}"
+                                                        FlyoutBase.AttachedFlyout="{StaticResource NameConversionSuggestionFlyout}"
+                                                        />
+                                        <MenuFlyoutItem x:Name="ReformatAuthorsFirstNameLastName"
+                                                        Text="B, A → A B" 
+                                                        Click="ConvertToFirstNameLastName_Click" 
+                                                        CommandParameter="{x:Bind Id}"
+                                                        FlyoutBase.AttachedFlyout="{StaticResource NameConversionSuggestionFlyout}"
+                                                        />
                                     </MenuFlyout>
-                                </telerikInput:RadAutoCompleteBox.ContextFlyout>-->
+                                </telerikInput:RadAutoCompleteBox.ContextFlyout>
                             </telerikInput:RadAutoCompleteBox>
                                 
                         </DataTemplate>

@@ -57,17 +57,19 @@ Namespace Global.MyBooks.App.ViewModels
 
         Public Property AcceptConvertedNameCommand As RelayCommand
         Public Property OpenExtendedModeCommand As RelayCommand
+        'Public Property ConvertToLastNameFirstName As RelayCommand
+        'Public Property ConvertToFirstNameLastName As RelayCommand
 
-        Private ReadOnly _bookViewModel As BookDetailPageViewModel
+        Private ReadOnly _bookViewModel As BookViewModel
 
-        Public Sub New(viewModel As BookDetailPageViewModel)
+        Public Sub New(viewModel As BookViewModel)
             _bookViewModel = viewModel
             AcceptConvertedNameCommand = New RelayCommand(AddressOf OnAcceptConvertedName)
             OpenExtendedModeCommand = New RelayCommand(AddressOf OnOpenExtendedMode)
         End Sub
 
         Private Sub OnAcceptConvertedName()
-            _bookViewModel.Book.Authors = Suggestion
+            _bookViewModel.Authors = Suggestion
         End Sub
 
         Private Sub OnOpenExtendedMode()
@@ -258,14 +260,14 @@ Namespace Global.MyBooks.App.ViewModels
             End If
 
             ' glue name prefixes to the trailings parts, e.g. van, Gogh => van Gogh
-            Dim namePrefix As String = " "
+            Dim namePrefix As String = ""
             For Each part In parts
                 If Char.IsLower(part.First()) Then
                     namePrefix = namePrefix + part + " "
                 Else
                     ReDim Preserve validParts(validParts.Length)
                     validParts(validParts.Length - 1) = namePrefix + part
-                    namePrefix = " "
+                    namePrefix = ""
                 End If
             Next
             parts = validParts

@@ -17,6 +17,16 @@ Namespace Global.MyBooks.App.ViewModels
         ' </summary>
         Friend Property Model As Book
 
+        Private _authorNameConversion As AuthorSuggestionsViewModel
+        Public ReadOnly Property AuthorNameConversion As AuthorSuggestionsViewModel
+            Get
+                If _authorNameConversion Is Nothing Then
+                    _authorNameConversion = New AuthorSuggestionsViewModel(Me)
+                End If
+                Return _authorNameConversion
+            End Get
+        End Property
+
         ' <summary>
         ' Creates a New customer model.
         ' </summary>
