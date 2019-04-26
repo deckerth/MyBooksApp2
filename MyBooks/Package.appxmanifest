@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="16412ThomasDecker.MeineBcher" Publisher="CN=1330FAFF-275D-4496-A785-CC38B2A4FE2F" Version="1.1.3.0" />
+  <Identity Name="16412ThomasDecker.MeineBcher" Publisher="CN=1330FAFF-275D-4496-A785-CC38B2A4FE2F" Version="1.1.4.0" />
   <mp:PhoneIdentity PhoneProductId="6368cbac-9236-4539-80da-7d374d8f2546" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Meine Bücher</DisplayName>

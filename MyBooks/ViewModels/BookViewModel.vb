@@ -320,6 +320,19 @@ Namespace Global.MyBooks.App.ViewModels
             End Set
         End Property
 
+        Public Property ASIN As String
+            Get
+                Return Model.ASIN
+            End Get
+            Set(value As String)
+                If Not value.Equals(Model.ASIN) Then
+                    Model.ASIN = value
+                    IsModified = True
+                    OnPropertyChanged("ASIN")
+                End If
+            End Set
+        End Property
+
         Public Property Url As String
             Get
                 Return Model.Url

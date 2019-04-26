@@ -50,6 +50,7 @@ Namespace Global.MyBooks.Models
         Public Property DLCNo As String = ""
         Public Property ISBN As String = ""
         Public Property NBACN As String = "" 'National Bibliographic Agency Control Number
+        Public Property ASIN As String = "" 'Amazon article number
         Public Property Url As String = ""
         Public Property GoogleBooksUrl As String = ""
 

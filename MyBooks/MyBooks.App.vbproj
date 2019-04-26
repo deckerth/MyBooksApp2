@@ -343,6 +343,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MyBooks.ContextProvider\MyBooks.ContextProvider.csproj">
+      <Project>{1970d9f3-750f-45af-a134-942b0cdfdcb8}</Project>
+      <Name>MyBooks.ContextProvider</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MyBooks.Models\MyBooks.Models.vbproj">
       <Project>{94fa7e81-f169-43ea-b6bc-c3188704a003}</Project>
       <Name>MyBooks.Models</Name>

@@ -2,6 +2,7 @@
 Imports Microsoft.EntityFrameworkCore
 Imports MyBooks.App.TelerikStrings
 Imports MyBooks.App.Views
+Imports MyBooks.ContextProvider
 Imports MyBooks.Repository
 Imports MyBooks.Repository.Sql
 Imports Telerik.UI.Xaml.Controls.Grid
@@ -38,10 +39,9 @@ Namespace Global.MyBooks.App
                 RequestedTheme = ApplicationTheme.Light
             End If
 
-            ' Dieser Aufruf ist für den Designer erforderlich.
             InitializeComponent()
 
-            ' Fügen Sie Initialisierungen nach dem InitializeComponent()-Aufruf hinzu.
+            UseSqlite()
 
         End Sub
 
@@ -52,8 +52,6 @@ Namespace Global.MyBooks.App
         ''' </summary>
         ''' <param name="e">Details über Startanforderung und -prozess.</param>
         Protected Overrides Sub OnLaunched(e As Windows.ApplicationModel.Activation.LaunchActivatedEventArgs)
-
-            UseSqlite()
 
             ' Prepare the app shell and window content.
             Dim shell As AppShell = TryCast(Window.Current.Content, AppShell)

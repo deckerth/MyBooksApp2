@@ -7,11 +7,13 @@
 
   <ItemGroup>
     <PackageReference Include="EPPlus" Version="4.5.2.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\MARCTest\MARCLib\MyBooks.MARC.csproj" />
+    <ProjectReference Include="..\MyBooks.ContextProvider\MyBooks.ContextProvider.csproj" />
     <ProjectReference Include="..\MyBooks.Models\MyBooks.Models.vbproj" />
     <ProjectReference Include="..\MyBooks.OCLCClassify\MyBooks.OCLCClassify.vbproj" />
   </ItemGroup>

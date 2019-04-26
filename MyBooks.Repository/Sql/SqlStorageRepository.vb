@@ -1,5 +1,6 @@
 ﻿Imports MyBooks.Models
 Imports Microsoft.EntityFrameworkCore
+Imports MyBooks.ContextProvider
 
 Namespace Global.MyBooks.Repository.Sql
 

@@ -1,4 +1,6 @@
 ﻿Imports Microsoft.EntityFrameworkCore
+Imports Microsoft.EntityFrameworkCore.Design
+Imports MyBooks.ContextProvider
 
 Namespace Global.MyBooks.Repository.Sql
 
@@ -10,7 +12,7 @@ Namespace Global.MyBooks.Repository.Sql
         Public Sub New(dbOptionsBuilder As DbContextOptionsBuilder(Of MyBooksContext))
             _dbOptions = dbOptionsBuilder.Options
             Using db As New MyBooksContext(_dbOptions)
-                db.Database.EnsureCreated()
+                db.Database.Migrate()
             End Using
         End Sub
 
@@ -43,6 +45,7 @@ Namespace Global.MyBooks.Repository.Sql
                 Return New SqlExportImportService(Me)
             End Get
         End Property
+
     End Class
 
 End Namespace

@@ -289,6 +289,17 @@
                                         />
 
                                     <TextBox
+                                        x:Uid="ASIN"
+                                        x:Name="ASIN"
+                                        RelativePanel.AlignLeftWithPanel="True"
+                                        RelativePanel.Below="NBACN"
+                                        IsReadOnly="{x:Bind ViewModel.IsInEdit, Converter={StaticResource boolInverterConverter}, Mode=OneWay}"
+                                        MinWidth="500"
+                                        Margin="0,8,16,8"
+                                        Text="{x:Bind ViewModel.Book.ASIN,Mode=TwoWay}"
+                                        />
+
+                                    <TextBox
                                         x:Uid="StandardUrl"
                                         x:Name="StandardUrl"
                                         RelativePanel.AlignLeftWithPanel="True"
