@@ -8,6 +8,9 @@
         ReadOnly Property Authors As IAuthorRepository
         ReadOnly Property ImportExportService As IImportExportService
 
+        Sub StartMassUpdate()
+        Function EndMassUpdateAsync() As Task
+
     End Interface
 
 End Namespace

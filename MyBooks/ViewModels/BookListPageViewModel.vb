@@ -1,5 +1,7 @@
-﻿Imports Microsoft.Toolkit.Uwp.Helpers
+﻿Imports System.Threading
+Imports Microsoft.Toolkit.Uwp.Helpers
 Imports MyBooks.App.Commands
+Imports MyBooks.App.Views
 Imports MyBooks.Repository
 Imports MyBooks.Repository.Sql
 Imports Windows.Storage
@@ -12,7 +14,18 @@ Namespace Global.MyBooks.App.ViewModels
     Public Class BookListPageViewModel
         Inherits BindableBase
 
+        Private Shared _current As BookListPageViewModel
+        Public Shared ReadOnly Property Current As BookListPageViewModel
+            Get
+                If _current Is Nothing Then
+                    _current = New BookListPageViewModel()
+                End If
+                Return _current
+            End Get
+        End Property
+
         Public Sub New()
+            _current = Me
             Task.Run(AddressOf GetBooksListAsync)
             SyncCommand = New RelayCommand(AddressOf OnSync)
             ImportDbCommand = New RelayCommand(AddressOf OnImportDB)
@@ -22,6 +35,8 @@ Namespace Global.MyBooks.App.ViewModels
             AddHandler BookViewModel.Modified, AddressOf OnBookModified
             AddHandler BookDetailPageViewModel.OnNewBookCreated, AddressOf OnBookCreated
         End Sub
+
+#Region "Properties"
 
         Private _isModified As Boolean
         Public Property IsModified As Boolean
@@ -37,9 +52,8 @@ Namespace Global.MyBooks.App.ViewModels
             IsModified = True
         End Sub
 
-        Private Sub OnBookCreated(newBook As BookViewModel)
-            _books.Add(newBook)
-            IsModified = True
+        Private Async Sub OnBookCreated(newBook As BookViewModel)
+            Await DispatcherHelper.ExecuteOnUIThreadAsync(Sub() _books.Add(newBook))
         End Sub
 
         Private _books As ObservableCollection(Of BookViewModel) = New ObservableCollection(Of BookViewModel)
@@ -75,21 +89,13 @@ Namespace Global.MyBooks.App.ViewModels
             End Set
         End Property
 
-        Private _isLoading As Boolean = False
-        ' <summary>
-        ' Gets Or sets whether to show the data loading progress wheel. 
-        ' </summary>
-        Public Property IsLoading As Boolean
-            Get
-                Return _isLoading
-            End Get
-            Set(value As Boolean)
-                SetProperty(Of Boolean)(_isLoading, value)
-            End Set
-        End Property
+        Public Property Progress As New ProgressRingViewModel
 
+#End Region
+
+#Region "DataAccess"
         Public Async Function GetBooksListAsync() As Task
-            Await DispatcherHelper.ExecuteOnUIThreadAsync(Sub() IsLoading = True)
+            Await Progress.SetIndeterministicAsync()
             Dim repo = Await App.Repository.Books.GetAsync()
             If repo Is Nothing Then
                 Return
@@ -101,13 +107,13 @@ Namespace Global.MyBooks.App.ViewModels
                         Books.Add(New BookViewModel(b) With {.Validate = True})
                     Next
                 End Sub)
-            Await DispatcherHelper.ExecuteOnUIThreadAsync(Sub() IsLoading = False)
+            Await Progress.HideAsync()
         End Function
 
         Public Property SyncCommand As RelayCommand
 
         Private Async Function Synchronize() As Task
-            Await DispatcherHelper.ExecuteOnUIThreadAsync(Sub() IsLoading = True)
+            Await Progress.SetIndeterministicAsync()
 
             Dim modifiedViewModels = Books.Where(Function(x) x.IsModified)
             For Each m In modifiedViewModels
@@ -115,7 +121,7 @@ Namespace Global.MyBooks.App.ViewModels
             Next
 
             Await DispatcherHelper.ExecuteOnUIThreadAsync(Sub() IsModified = False)
-            Await DispatcherHelper.ExecuteOnUIThreadAsync(Sub() IsLoading = False)
+            Await Progress.HideAsync()
         End Function
 
         Private Sub OnSync()
@@ -143,10 +149,13 @@ Namespace Global.MyBooks.App.ViewModels
             End If
         End Sub
 
+#End Region
+
+#Region "ImportExport"
         Public ImportDbCommand As RelayCommand
         Public ExportDbCommand As RelayCommand
 
-        Private Async Sub OnExportDB()
+        Public Async Function OnExportDB() As Task
 
             Dim savepicker As New FileSavePicker With {
             .SuggestedStartLocation = PickerLocationId.DocumentsLibrary
@@ -173,7 +182,7 @@ Namespace Global.MyBooks.App.ViewModels
                     End If
                 End Using
             End If
-        End Sub
+        End Function
 
         Private ImportDecisionDialogResult As IImportExportService.ImportOptions
         Private Cancelled As Boolean
@@ -194,7 +203,7 @@ Namespace Global.MyBooks.App.ViewModels
 
         End Function
 
-        Private Async Sub OnImportDB()
+        Public Async Function OnImportDB() As Task
 
             If Await ImportDialog() Then
                 Dim openPicker As FileOpenPicker = New FileOpenPicker()
@@ -202,14 +211,39 @@ Namespace Global.MyBooks.App.ViewModels
                 openPicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary
                 openPicker.FileTypeFilter.Add(".xlsx")
                 Dim File As StorageFile = Await openPicker.PickSingleFileAsync()
-
+                Dim Counters As UpdateCounters
                 If File IsNot Nothing Then
-                    Await App.Repository.ImportExportService.ImportAsync(Await File.OpenStreamForReadAsync(), ImportDecisionDialogResult)
+                    Await Progress.SetIndeterministicAsync()
+                    Counters = Await App.Repository.ImportExportService.ImportAsync(Await File.OpenStreamForReadAsync(), ImportDecisionDialogResult)
                     Await GetBooksListAsync()
+                    Await Progress.HideAsync()
+                    Dim dialog = New ImportResultDialog(Counters)
+                    Await dialog.ShowAsync()
                 End If
             End If
 
-        End Sub
+        End Function
+
+#End Region
+
+#Region "UpdateIndex"
+
+        Public Async Function UpdateIndexAsync() As Task
+            Await Progress.SetDeterministicAsync(Books.Count)
+            App.Repository.StartMassUpdate()
+            Await App.Repository.Authors.ClearAsync()
+            Await App.Repository.Keywords.ClearAsync()
+            Await App.Repository.Storages.ClearAsync()
+            For Each b In Books
+                Await b.UpdateIndex()
+                Await Progress.IncrementAsync(1)
+            Next
+            Await App.Repository.EndMassUpdateAsync()
+
+            Await Progress.HideAsync()
+        End Function
+
+#End Region
 
 #Region "BrowserPane"
 

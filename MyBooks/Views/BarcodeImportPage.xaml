@@ -13,6 +13,7 @@
         <converters:BooleanToVisibilityConverter x:Key="booleanVisConverter" />
         <converters:NullToBooleanConverter x:Key="nullBooleanConverter" />
         <converters:StringToGeometryConverter x:Key="stringToGeometryConverter"/>
+        <converters:BooleanInverterConverter x:Key="booleanInverterConverter"/>
     </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -65,32 +66,39 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock
                           x:Name="PageTitle"
-                          x:Uid="LibrarySearchPageTitle"
+                          x:Uid="DataImportPageTitle"
                           Margin="0,0,0,2"
                           Style="{StaticResource PageTitleTextBlockStyle}"
                           />
                         <telerikPrimitives:RadBusyIndicator x:Name="SearchProgressRing" x:Uid="SearchProgressRing" 
                               Margin="20,0,0,0"
-                              IsActive="{x:Bind ViewModel.SearchIsInProgress,Mode=OneWay}"  
+                              IsActive="{x:Bind ViewModel.Progress.Active,Mode=OneWay}"  
                               AnimationStyle="AnimationStyle5"
-                              Content="              "                      />
+                              Content="{x:Bind ViewModel.Progress.ProgressString,Mode=OneWay}"                      />
                     </StackPanel>
                 </CommandBar.Content>
 
                 <AppBarButton x:Name="ImportButton" x:Uid="ImportButton"
-                              Command="{x:Bind ViewModel.ImportScannedBooksCommand}"
-                              >
-                    <AppBarButton.Icon>
-                        <PathIcon Data="{x:Bind BarcodeImportIcon,Mode=OneTime,Converter={StaticResource stringToGeometryConverter}}"/>
-                    </AppBarButton.Icon>
+                               Icon="OpenFile"
+                               IsEnabled="{x:Bind ViewModel.Progress.Active,Mode=OneWay,Converter={StaticResource booleanInverterConverter}}">
+                    <AppBarButton.Flyout>
+                        <MenuFlyout>
+                            <MenuFlyoutItem x:Uid="ImportBarcodes" Command="{x:Bind ViewModel.ImportScannedBooksCommand}">
+                                <MenuFlyoutItem.Icon>
+                                    <PathIcon Data="{x:Bind BarcodeImportIcon,Mode=OneTime,Converter={StaticResource stringToGeometryConverter}}"/>
+                                </MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+                            <MenuFlyoutItem x:Uid="ImportKindle" Command="{x:Bind ViewModel.ImportKindleBooksCommand}" />
+                        </MenuFlyout>
+                    </AppBarButton.Flyout>
                 </AppBarButton>
 
                 <AppBarButton
                       x:Name="AddSelectedBookButton"
                        x:Uid="AddSelectedBookButton"
-                       IsEnabled="{x:Bind ViewModel.QueryResult.CurrentItem,Mode=OneWay,Converter={StaticResource nullBooleanConverter}}"
+                       IsEnabled="{x:Bind converters:BooleanOperator.OpNotNullAndNot(ViewModel.QueryResult.CurrentItem,ViewModel.Progress.Active),Mode=OneWay}"
                        Visibility="{x:Bind ViewModel.QueryResult.DisplayModeHub,Converter={StaticResource booleanVisConverter},ConverterParameter=True,Mode=OneWay}"
-                       Command="{x:Bind ViewModel.QueryResult.CurrentItem.AddBookCommand,Mode=OneWay}"
+                       Command="{x:Bind ViewModel.AddBooksCommand,Mode=OneWay}"
                        Icon="Add"
                        RelativePanel.RightOf="PrevBookButton"  
                       />
@@ -98,7 +106,7 @@
                 <AppBarButton
                        x:Name="OpenBrowserButton"
                        x:Uid="OpenBrowserButton"
-                       IsEnabled="{x:Bind ViewModel.QueryResult.CurrentItem.BrowserAdapter.BibItemUriIsValid,Mode=OneWay}"
+                       IsEnabled="{x:Bind ViewModel.QueryResult.CurrentItem.BrowserAdapter.BibItemUriIsValid,Mode=OneWay,FallbackValue=False}"
                        Visibility="{x:Bind ViewModel.QueryResult.DisplayModeHub,Converter={StaticResource booleanVisConverter},ConverterParameter=True,Mode=OneWay}"
                        Command="{x:Bind ViewModel.OpenBrowserPane,Mode=OneWay}"
                        RelativePanel.RightOf="AddSelectedBookButton"  
@@ -125,7 +133,7 @@
                       RelativePanel.RightOf="OpenBrowserButton"  
                       VerticalAlignment="Top" 
                       HorizontalAlignment="Left" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" />
-               
+
             </CommandBar>
 
             <TextBox x:Name="ImportFileTextBox" x:Uid="ImportFile" Width="300"
@@ -158,6 +166,22 @@
                       Icon="Next"
                       RelativePanel.AlignBottomWith="PrevBookButton"
                       RelativePanel.RightOf="PositionBox" Margin="0,60,0,0" />
+
+            <AppBarButton x:Name="SelectAllButton" 
+                          x:Uid="SelectAllButton" 
+                      Command="{x:Bind ViewModel.QueryResult.SelectAllCommand}"
+                      Visibility="{x:Bind ViewModel.SelectAllVisibility,Mode=OneWay}"
+                      Icon="SelectAll"
+                      RelativePanel.AlignBottomWith="PrevBookButton"
+                      RelativePanel.RightOf="NextBookButton" Margin="0,60,0,0" />
+
+            <AppBarButton x:Name="DeselectAllButton" 
+                          x:Uid="DeselectAllButton" 
+                      Command="{x:Bind ViewModel.QueryResult.DeselectAllCommand}"
+                      Visibility="{x:Bind ViewModel.SelectAllVisibility,Mode=OneWay}"
+                      Icon="ClearSelection"
+                      RelativePanel.AlignBottomWith="PrevBookButton"
+                      RelativePanel.RightOf="SelectAllButton" Margin="0,60,0,0" />
 
         </RelativePanel>
 

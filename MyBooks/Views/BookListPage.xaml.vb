@@ -126,9 +126,9 @@ Namespace Global.MyBooks.App.Views
         Public Sub New()
             InitializeComponent()
             Current = Me
-            DataContext = ViewModel
             NavigationCacheMode = NavigationCacheMode.Enabled
             ViewModel = New BookListPageViewModel()
+            DataContext = ViewModel
         End Sub
 
         Protected Overrides Sub OnNavigatedTo(e As NavigationEventArgs)

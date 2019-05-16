@@ -40,13 +40,30 @@ Namespace Global.MyBooks.Repository.Sql
             Return Await _db.Books.AsNoTracking().FirstOrDefaultAsync(Function(x As Book) x.Id = id)
         End Function
 
-        Public Async Function Upsert(book As Book) As Task Implements IBookRepository.Upsert
+        Public Async Function GetAsync(title As String, author As String, mediatype As Book.MediaType, storage As String) As Task(Of Book) Implements IBookRepository.GetAsync
+            Return Await _db.Books.AsNoTracking().FirstOrDefaultAsync(Function(x As Book) x.Title = title And x.Authors = author And x.Storage = storage And x.Medium = mediatype)
+        End Function
+
+        Public Async Function Upsert(book As Book) As Task(Of IBookRepository.UpsertResult) Implements IBookRepository.Upsert
+            Dim result As IBookRepository.UpsertResult = IBookRepository.UpsertResult.skipped
+
             If Await GetAsync(book.Id) IsNot Nothing Then
                 _db.Books.Update(book)
+                result = IBookRepository.UpsertResult.updated
             Else
-                Await _db.Books.AddAsync(book)
+                Dim existing = Await GetAsync(book.Title, book.Authors, book.Medium, book.Storage)
+                If existing Is Nothing Then
+                    Await _db.Books.AddAsync(book)
+                    result = IBookRepository.UpsertResult.added
+                Else
+                    If existing.UpdateFrom(book) Then
+                        _db.Books.Update(existing)
+                        result = IBookRepository.UpsertResult.updated
+                    End If
+                End If
             End If
             Await _db.SaveChangesAsync()
+            Return result
         End Function
 
         Public Async Function DeleteAsync(id As Guid) As Task Implements IBookRepository.DeleteAsync
@@ -57,29 +74,28 @@ Namespace Global.MyBooks.Repository.Sql
             End If
         End Function
 
-        Public Async Function SetBooks(books As List(Of Book)) As Task
+        Public Async Function SetBooks(books As List(Of Book)) As Task(Of UpdateCounters)
             For Each b In _db.Books
                 _db.Entry(b).State = EntityState.Deleted
             Next
-            Await _db.SaveChangesAsync()
-            _db.Books.AddRange(books)
-            Await _db.SaveChangesAsync()
+            Try
+                Await _db.SaveChangesAsync()
+                _db.Books.AddRange(books)
+                Await _db.SaveChangesAsync()
+            Catch ex As Exception
+                Return New UpdateCounters()
+            End Try
+            Return New UpdateCounters With {.Added = books.Count}
         End Function
 
-        Public Async Function AddBooks(books As List(Of Book)) As Task
-            Dim saveRequired As Boolean
-
+        Public Async Function AddBooks(books As List(Of Book)) As Task(Of UpdateCounters)
+            Dim counters As New UpdateCounters
+            _db.StartMassUpdate()
             For Each b In books
-                If Await GetAsync(b.Id) IsNot Nothing Then
-                    _db.Entry(b).State = EntityState.Deleted
-                    saveRequired = True
-                End If
+                counters.Increment(Await Upsert(b))
             Next
-            If saveRequired Then
-                Await _db.SaveChangesAsync()
-            End If
-            _db.Books.AddRange(books)
-            Await _db.SaveChangesAsync()
+            Await _db.EndMassUpdateModeAsync()
+            Return counters
         End Function
 
     End Class

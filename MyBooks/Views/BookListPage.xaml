@@ -5,6 +5,7 @@
     xmlns:local="using:MyBooks.App.Views"
     xmlns:converter="using:MyBooks.App.ValueConverters"
     xmlns:viewModels="using:MyBooks.App.ViewModels"
+    xmlns:uc="using:MyBooks.App.UserControls"
     xmlns:gridPrimitives="using:Telerik.UI.Xaml.Controls.Grid.Primitives"
     xmlns:telerikGrid="using:Telerik.UI.Xaml.Controls.Grid"    
     xmlns:telerikInput="using:Telerik.UI.Xaml.Controls.Input"
@@ -94,7 +95,7 @@
                 />
                 <telerikPrimitives:RadBusyIndicator x:Name="SearchProgressRing" x:Uid="SearchProgressRing" 
                             Margin="20,0,0,0"
-                            IsActive="{x:Bind ViewModel.IsLoading,Mode=OneWay}" 
+                            IsActive="{x:Bind ViewModel.Progress.Active,Mode=OneWay}" 
                             AnimationStyle="AnimationStyle5"
                             Content="              "                      />
 
@@ -103,12 +104,14 @@
 
             <AppBarButton x:Name="CreateBook"
                     Click="CreateBook_Click"
+                    IsEnabled="{x:Bind converter:BooleanOperator.OpNot(ViewModel.Progress.Active),Mode=OneWay}"
                     x:Uid="NewBookButton"
                     Icon="Add"
                     />
 
             <AppBarButton x:Name="DuplicateBook"
                     Click="DuplicateBook_Click"
+                    IsEnabled="{x:Bind converter:BooleanOperator.OpNot(ViewModel.Progress.Active),Mode=OneWay}"
                     x:Uid="DuplicateBookButton">
                 <AppBarButton.Icon>
                     <PathIcon Data="F0 M0,5 h1 v14 h-1 v-14 h3 v1 h-3 v-1 M0,18 h13 v1 h-13 v-1 M12,16 h1 v3 h-1 v-3 M5,0 h1 v15 h-1 v-15 h13 v1 h-13 v-1 M17,0 h1 v15 h-1 v-15 M5,14 h13 v1 h-13 v-1 M8,7 h7 v1 h-7 v-1 M11,4 h1 v7 h-1 v-7" />
@@ -117,12 +120,14 @@
 
             <AppBarButton x:Name="EditBook"
                     Click="EditBook_Click"
+                    IsEnabled="{x:Bind converter:BooleanOperator.OpNot(ViewModel.Progress.Active),Mode=OneWay}"
                     x:Uid="EditBookButton"
                     Icon="Edit"
                     />
 
             <AppBarButton x:Name="DeleteBook"
                     Command="{x:Bind ViewModel.DeleteBookCommand,Mode=OneWay}"
+                    IsEnabled="{x:Bind converter:BooleanOperator.OpNot(ViewModel.Progress.Active),Mode=OneWay}"
                     x:Uid="DeleteBookButton"
                     Icon="Delete"
                     />
@@ -130,9 +135,9 @@
             <AppBarButton
                     Name="SaveButton"
                     Command="{x:Bind ViewModel.SyncCommand}"
+                    IsEnabled="{x:Bind converter:BooleanOperator.OpAndNot(ViewModel.IsModified,ViewModel.Progress.Active),Mode=OneWay}"
                     x:Uid="SaveChangesButton"
                     Icon="Save"
-                    IsEnabled="{x:Bind ViewModel.IsModified,Mode=OneWay}"
                     />
 
             <AppBarButton x:Name="OpenBrowser"
@@ -147,6 +152,7 @@
 
             <CommandBar.SecondaryCommands>
                 <AppBarButton
+                        IsEnabled="{x:Bind converter:BooleanOperator.OpNot(ViewModel.Progress.Active),Mode=OneWay}"
                         x:Name="ImportExportButton"
                         x:Uid="ImportExport" >
                     <AppBarButton.Flyout>
@@ -164,13 +170,13 @@
                 Grid.Column="1"
                 x:Name="BookSearchBox"
                 x:Uid="BookSearchBox"
+                IsEnabled="{x:Bind converter:BooleanOperator.OpNot(ViewModel.Progress.Active),Mode=OneWay}"
                 Width="240"
                 Margin="12,8,12,0"
                 Loaded="BookSearchBox_Loaded"
                 QueryIcon="Filter"
                 TextChanged="BookSearchBox_TextChanged"
                 QuerySubmitted="BookSearchBox_QuerySubmitted"/>
-
 
         <Grid   Grid.Row="1"
                 Grid.ColumnSpan="2"
@@ -190,7 +196,7 @@
                 x:Name="DataGrid"
                 BorderThickness="0"
                 ColumnDataOperationsMode="Flyout"
-                GridLinesVisibility="None"
+                GridLinesVisibility="Horizontal"
                 GroupPanelPosition="Left"
                 Margin="0,40,0,0"
                 ItemsSource="{x:Bind ViewModel.Books}"
@@ -203,6 +209,7 @@
                 <local:CustomCommitEditCommand />
                 <local:CustomCancelEditCommand />
                 <local:CustomBeginEditCommand />
+                <uc:CustomFilterButtonTapCommand/>
             </telerikGrid:RadDataGrid.Commands>
 
             <telerikGrid:RadDataGrid.Resources>
@@ -211,15 +218,17 @@
                         <DataTemplate x:DataType="viewModels:BookViewModel">
                             <TextBlock
                                    Width="300"
-                                   Margin="0,8,0,0"
-                                   Text="{x:Bind Authors, Mode=OneWay}"/>
+                                   Text="{x:Bind Authors, Mode=OneWay}"
+                                   TextWrapping="WrapWholeWords"
+                                   Padding="0,5"
+                                   VerticalAlignment="Center"/>
                         </DataTemplate>
                     </local:AuthorsDataTemplateSelector.AuthorsDisplayTemplate>
                     <local:AuthorsDataTemplateSelector.AuthorsEditTemplate>
                         <DataTemplate x:DataType="viewModels:BookViewModel">
                             <telerikInput:RadAutoCompleteBox
                                     Width="300"
-                                    Margin="0,4,0,0"
+                                    VerticalAlignment="Center"
                                     Text="{x:Bind Authors, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     TextChanged="OnAuthors_TextChanged"
                                     Loaded="OnAuthors_Loaded"
@@ -254,15 +263,17 @@
                         <DataTemplate x:DataType="viewModels:BookViewModel">
                             <TextBlock
                                    Width="300"
-                                   Margin="0,8,0,0"
-                                   Text="{x:Bind Storage, Mode=OneWay}"/>
+                                   Text="{x:Bind Storage, Mode=OneWay}"
+                                   TextWrapping="WrapWholeWords"
+                                   Padding="0,5"
+                                   VerticalAlignment="Center"/>
                         </DataTemplate>
                     </local:StorageDataTemplateSelector.DisplayTemplate>
                     <local:StorageDataTemplateSelector.EditTemplate>
                         <DataTemplate x:DataType="viewModels:BookViewModel">
                             <telerikInput:RadAutoCompleteBox
                                     Width="300"
-                                    Margin="0,4,0,0"
+                                    VerticalAlignment="Center"                                
                                     Text="{x:Bind Storage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     TextChanged="OnStorage_TextChanged"/>
                         </DataTemplate>
@@ -274,15 +285,17 @@
                         <DataTemplate x:DataType="viewModels:BookViewModel">
                             <TextBlock
                                    Width="300"
-                                   Margin="0,8,0,0"
-                                   Text="{x:Bind Keywords, Mode=OneWay}"/>
+                                   Text="{x:Bind Keywords, Mode=OneWay}"
+                                   TextWrapping="WrapWholeWords"
+                                   Padding="0,5"
+                                   VerticalAlignment="Center"/>
                         </DataTemplate>
                     </local:KeywordsDataTemplateSelector.DisplayTemplate>
                     <local:KeywordsDataTemplateSelector.EditTemplate>
                         <DataTemplate x:DataType="viewModels:BookViewModel">
                             <telerikInput:RadAutoCompleteBox
                                     Width="300"
-                                    Margin="0,4,0,0"
+                                    VerticalAlignment="Center"
                                     Text="{x:Bind Keywords, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     TextChanged="OnKeywords_TextChanged"/>
                         </DataTemplate>
@@ -292,12 +305,33 @@
             </telerikGrid:RadDataGrid.Resources>
 
             <telerikGrid:RadDataGrid.Columns>
-                <telerikGrid:DataGridTextColumn x:Uid="BookTitle" PropertyName="Title" />
-                <telerikGrid:DataGridTextColumn x:Uid="OriginalTitle" PropertyName="OriginalTitle"/>
+                <telerikGrid:DataGridTextColumn x:Uid="BookTitle" PropertyName="Title" SizeMode="Fixed" Width="300">
+                    <telerikGrid:DataGridTextColumn.CellContentStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="TextWrapping" Value="WrapWholeWords"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="Padding" Value="10,5"/>
+                        </Style>
+                    </telerikGrid:DataGridTextColumn.CellContentStyle>
+                </telerikGrid:DataGridTextColumn>
 
-                <telerikGrid:DataGridTemplateColumn x:Uid="Authors" 
-                                                        CellContentTemplateSelector="{StaticResource AuthorsDataTemplateSelector}" 
-                                                        CanUserSort="True">
+                <telerikGrid:DataGridTextColumn x:Uid="OriginalTitle" PropertyName="OriginalTitle" SizeMode="Fixed" Width="300">
+                    <telerikGrid:DataGridTextColumn.CellContentStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontStyle" Value="Italic"/>
+                            <Setter Property="TextWrapping" Value="WrapWholeWords"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="Padding" Value="0,5"/>
+                        </Style>
+                    </telerikGrid:DataGridTextColumn.CellContentStyle>
+                </telerikGrid:DataGridTextColumn>
+
+                <telerikGrid:DataGridTemplateColumn x:Name="Authors" x:Uid="Authors" 
+                                                    CellContentTemplateSelector="{StaticResource AuthorsDataTemplateSelector}" 
+                                                    CanUserSort="True"
+                                                    uc:ColumnMarker.RequiresCustomFiltering="True"
+                                                    uc:ColumnMarker.ColumnName="Authors">
                     <telerikGrid:DataGridTemplateColumn.SortDescriptor>
                         <telerikCore:PropertySortDescriptor PropertyName="Authors"/>
                     </telerikGrid:DataGridTemplateColumn.SortDescriptor>
@@ -306,9 +340,11 @@
                     </telerikGrid:DataGridTemplateColumn.GroupDescriptor>
                 </telerikGrid:DataGridTemplateColumn>
 
-                <telerikGrid:DataGridTemplateColumn x:Uid="Keywords" 
+                <telerikGrid:DataGridTemplateColumn x:Name="Keywords" x:Uid="Keywords"
                                                         CellContentTemplateSelector="{StaticResource KeywordsDataTemplateSelector}"
-                                                        CanUserSort="True">
+                                                        CanUserSort="True"
+                                                        uc:ColumnMarker.RequiresCustomFiltering="True"
+                                                        uc:ColumnMarker.ColumnName="Keywords">
                     <telerikGrid:DataGridTemplateColumn.SortDescriptor>
                         <telerikCore:PropertySortDescriptor PropertyName="Keywords"/>
                     </telerikGrid:DataGridTemplateColumn.SortDescriptor>
@@ -317,11 +353,16 @@
                     </telerikGrid:DataGridTemplateColumn.GroupDescriptor>
                 </telerikGrid:DataGridTemplateColumn>
 
-                <telerikGrid:DataGridComboBoxColumn x:Uid="MediumType" PropertyName="MediumDescriptor" DisplayMemberPath="Name" ItemsSource="{x:Bind ViewModel.SelectedBook.AllMediaTypes}" />
+                <telerikGrid:DataGridComboBoxColumn x:Uid="MediumType" PropertyName="MediumDescriptor" DisplayMemberPath="Name" Width="100"
+                                                    ItemsSource="{x:Bind ViewModel.SelectedBook.AllMediaTypes}" 
+                                                    uc:ColumnMarker.RequiresCustomFiltering="True"
+                                                    uc:ColumnMarker.ColumnName="MediumDescriptor"/>
 
-                <telerikGrid:DataGridTemplateColumn x:Uid="Storage" 
+                <telerikGrid:DataGridTemplateColumn x:Name="Storage" x:Uid="Storage" 
                                                         CellContentTemplateSelector="{StaticResource StorageDataTemplateSelector}"
-                                                        CanUserSort="True">
+                                                        CanUserSort="True"
+                                                        uc:ColumnMarker.RequiresCustomFiltering="True"
+                                                        uc:ColumnMarker.ColumnName="Storage">
                     <telerikGrid:DataGridTemplateColumn.SortDescriptor>
                         <telerikCore:PropertySortDescriptor PropertyName="Storage"/>
                     </telerikGrid:DataGridTemplateColumn.SortDescriptor>
@@ -330,8 +371,25 @@
                     </telerikGrid:DataGridTemplateColumn.GroupDescriptor>
                 </telerikGrid:DataGridTemplateColumn>
 
-                <telerikGrid:DataGridTextColumn x:Uid="BorrowedTo" PropertyName="BorrowedTo"/>
-                <telerikGrid:DataGridTextColumn x:Uid="BorrowedAt" PropertyName="BorrowedDate"/>
+                <telerikGrid:DataGridTextColumn x:Uid="BorrowedTo" PropertyName="BorrowedTo" SizeMode="Fixed" Width="200"
+                                                uc:ColumnMarker.RequiresCustomFiltering="True"
+                                                uc:ColumnMarker.ColumnName="BorrowedTo">
+                    <telerikGrid:DataGridTextColumn.CellContentStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </telerikGrid:DataGridTextColumn.CellContentStyle>
+                </telerikGrid:DataGridTextColumn>
+                
+                <telerikGrid:DataGridTextColumn x:Uid="BorrowedAt" PropertyName="BorrowedDate" SizeMode="Fixed" Width="100"
+                                                uc:ColumnMarker.RequiresCustomFiltering="True"
+                                                uc:ColumnMarker.ColumnName="BorrowedDate">
+                    <telerikGrid:DataGridTextColumn.CellContentStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </telerikGrid:DataGridTextColumn.CellContentStyle>
+                </telerikGrid:DataGridTextColumn>
             </telerikGrid:RadDataGrid.Columns>
         </telerikGrid:RadDataGrid>
 

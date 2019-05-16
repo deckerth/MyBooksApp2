@@ -9,7 +9,7 @@ Namespace Global.MyBooks.Repository
             ReplaceBooks
         End Enum
 
-        Function ImportAsync(InputStream As Stream, ImportOption As ImportOptions) As Task
+        Function ImportAsync(InputStream As Stream, ImportOption As ImportOptions) As Task(Of UpdateCounters)
         Function ExportAsync(OutputStream As Stream) As Task
 
     End Interface

@@ -48,6 +48,8 @@ Namespace Global.MyBooks.App.ViewModels
             End Set
         End Property
 
+        Public Property Progress As New ProgressRingViewModel()
+
         Public Sub SetCurrentItem(item As BookBrowserViewModel)
             CurrentItem = item
             CurrentItem.InitializeBookLinks()
@@ -97,16 +99,6 @@ Namespace Global.MyBooks.App.ViewModels
             End Get
             Set(value As ILibraryAccess)
                 SetProperty(Of ILibraryAccess)(_library, value)
-            End Set
-        End Property
-
-        Private _searchIsInProgress As Boolean
-        Public Property SearchIsInProgress As Boolean
-            Get
-                Return _searchIsInProgress
-            End Get
-            Set(value As Boolean)
-                SetProperty(Of Boolean)(_searchIsInProgress, value, "SearchIsInProgress")
             End Set
         End Property
 
@@ -185,7 +177,7 @@ Namespace Global.MyBooks.App.ViewModels
                 Return
             End If
 
-            SearchIsInProgress = True
+            Await Progress.SetIndeterministicAsync()
 
             libraryAccess = Library
 
@@ -193,20 +185,19 @@ Namespace Global.MyBooks.App.ViewModels
 
             Await libraryAccess.ExecuteQueryAsync(MaxHits)
 
-            QueryResult.SetItems(libraryAccess)
+            Await QueryResult.SetItemsAsync(Progress, libraryAccess)
             QueryResult.NoOfEntries = libraryAccess.NoOfEntries
             QueryResult.NoOfPages = libraryAccess.NoOfPages
             QueryResult.CurrentPosition = App.Texts.GetString("Page") + " : " + libraryAccess.CurrentPage.ToString + " / " + libraryAccess.NoOfPages.ToString
             QueryResult.HasNextPage = libraryAccess.HasNextPage
             QueryResult.HasPreviousPage = libraryAccess.HasPreviousPage
 
-            SearchIsInProgress = False
-
+            Await Progress.HideAsync()
         End Function
 
         Private Async Function OnPrevPageAsync() As Task
 
-            SearchIsInProgress = True
+            Await Progress.SetIndeterministicAsync()
 
             If libraryAccess Is Nothing OrElse Not libraryAccess.HasPreviousPage Then
                 Return
@@ -214,18 +205,17 @@ Namespace Global.MyBooks.App.ViewModels
 
             Await libraryAccess.ReadPreviousPageAsync()
 
-            QueryResult.SetItems(libraryAccess)
+            Await QueryResult.SetItemsAsync(Progress, libraryAccess)
             QueryResult.CurrentPosition = App.Texts.GetString("Page") + " : " + libraryAccess.CurrentPage.ToString + " / " + libraryAccess.NoOfPages.ToString
             QueryResult.HasNextPage = libraryAccess.HasNextPage
             QueryResult.HasPreviousPage = libraryAccess.HasPreviousPage
-
-            SearchIsInProgress = False
+            Await Progress.HideAsync()
 
         End Function
 
         Private Async Function OnNextPageAsync() As Task
 
-            SearchIsInProgress = True
+            Await Progress.SetIndeterministicAsync()
 
             If libraryAccess Is Nothing OrElse Not libraryAccess.HasNextPage Then
                 Return
@@ -233,12 +223,11 @@ Namespace Global.MyBooks.App.ViewModels
 
             Await libraryAccess.ReadNextPageAsync()
 
-            QueryResult.SetItems(libraryAccess)
+            Await QueryResult.SetItemsAsync(Progress, libraryAccess)
             QueryResult.CurrentPosition = App.Texts.GetString("Page") + " : " + libraryAccess.CurrentPage.ToString + " / " + libraryAccess.NoOfPages.ToString
             QueryResult.HasNextPage = libraryAccess.HasNextPage
             QueryResult.HasPreviousPage = libraryAccess.HasPreviousPage
-
-            SearchIsInProgress = False
+            Await Progress.HideAsync()
 
         End Function
 

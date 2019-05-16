@@ -3,6 +3,7 @@ Imports MyBooks.Models
 Imports MyBooks.Repository.Libraries
 Imports MyBooks.App.Views
 Imports MyBooks.App.ValueConverters
+Imports MyBooks.Repository
 
 Namespace Global.MyBooks.App.ViewModels
 
@@ -88,7 +89,7 @@ Namespace Global.MyBooks.App.ViewModels
             End If
         End Sub
 
-        Public Async Sub OnAddBookCommand()
+        Private Sub InitializeModelLinks()
             InitializeBookLinks()
             If BrowserAdapter.BibItemLibraryUri IsNot Nothing Then
                 Model.Url = BrowserAdapter.BibItemLibraryUri.ToString
@@ -96,9 +97,22 @@ Namespace Global.MyBooks.App.ViewModels
             If BrowserAdapter.BibItemGoogleBooksUri IsNot Nothing Then
                 Model.GoogleBooksUrl = BrowserAdapter.BibItemGoogleBooksUri.ToString
             End If
+        End Sub
+
+
+        Public Async Sub OnAddBookCommand()
+            InitializeModelLinks()
             Dim AddBookDialog As New AddBookFromLibraryDialog(Model)
             Await AddBookDialog.ShowAsync()
         End Sub
+
+        Public Async Function AddBookAsync() As Task(Of IBookRepository.UpsertResult)
+            InitializeModelLinks()
+
+            Dim BookDetailViewModel As BookDetailPageViewModel
+            BookDetailViewModel = New BookDetailPageViewModel() With {.IsNewBook = True, .Book = New BookViewModel(Model)}
+            Return Await BookDetailViewModel.Save()
+        End Function
     End Class
 
 End Namespace

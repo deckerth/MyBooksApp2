@@ -11,6 +11,7 @@ Imports Windows.Storage.Provider
 Imports Windows.UI.Popups
 Imports MyBooks.App.ViewModels
 Imports Windows.UI.Xaml.Markup
+Imports System.Threading
 
 Namespace Global.MyBooks.App
 
@@ -29,9 +30,18 @@ Namespace Global.MyBooks.App
             End Set
         End Property
 
+        Private _coreView As CoreApplicationView
+        Public ReadOnly Property CoreView As CoreApplicationView
+            Get
+                Return _coreView
+            End Get
+        End Property
+
         Public Property ViewModel As BrowserSupportViewModel = New BrowserSupportViewModel()
 
         Public Property QueryResult As LibraryBooksViewModel = New LibraryBooksViewModel()
+
+        Public Property AppViewModel As New AppShellViewModel
 
         Public Sub New()
             InitializeComponent()
@@ -42,6 +52,7 @@ Namespace Global.MyBooks.App
         Private Sub OnLoadedHandler(sender As Object, e As RoutedEventArgs)
             Current = Me
             CheckTogglePaneButtonSizeChanged()
+            _coreView = CoreApplication.GetCurrentView()
             Dim titleBar = CoreApplication.GetCurrentView().TitleBar
             AddHandler titleBar.IsVisibleChanged, AddressOf TitleBar_IsVisibleChanged
 
@@ -52,6 +63,12 @@ Namespace Global.MyBooks.App
                                                                                          End Sub)
             AddHandler SystemNavigationManager.GetForCurrentView().BackRequested, AddressOf SystemNavigationManager_BackRequested
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible
+
+            'Make sure that the first menu items is selected
+            Dim container = DirectCast(NavMenuList.ContainerFromItem(PrimaryMenuItems.ElementAt(0)), ListViewItem)
+            If container IsNot Nothing Then
+                NavMenuList.SetSelectedItem(DirectCast(container, ListViewItem))
+            End If
         End Sub
 
         Private ImportIconMarkup As String = "F0 M 1,1 h10 v4 h-1 v-3 h-8 v13 h8 v-3 h1 v4 h-10 v-15 M 14,7 h-8 v2 h8 v-2 M 6,7 l2,-2 l-1,-1 l-4,4 l4,4 l1,-1 l-2,-2"
@@ -63,11 +80,14 @@ Namespace Global.MyBooks.App
                                           "M14,0 h1 v16 h-1 v-16 " &
                                           "M18,0 h2 v19 h-2 v-19"
 
+        'New NavMenuItem With {.PathIconMarkup = BarcodeMarkup, .Label = App.Texts.GetString("Barcodes"), .DestPage = GetType(BarcodeImportPage), .IsSelected = False}
+
+
         Public PrimaryMenuItems As IReadOnlyCollection(Of NavMenuItem) = New ReadOnlyCollection(Of NavMenuItem)(
     {
-      New NavMenuItem With {.Symbol = Symbol.Library, .Label = App.Texts.GetString("Shelf"), .DestPage = GetType(BookListPage)},
+      New NavMenuItem With {.Symbol = Symbol.Library, .Label = App.Texts.GetString("Shelf"), .DestPage = GetType(BookListPage), .IsSelected = True},
       New NavMenuItem With {.Symbol = Symbol.World, .Label = App.Texts.GetString("LibrarySearch"), .DestPage = GetType(LibrarySearchPage), .IsSelected = False},
-      New NavMenuItem With {.PathIconMarkup = BarcodeMarkup, .Label = App.Texts.GetString("Barcodes"), .DestPage = GetType(BarcodeImportPage), .IsSelected = False}
+      New NavMenuItem With {.Symbol = Symbol.Import, .Label = App.Texts.GetString("DataImport"), .DestPage = GetType(BarcodeImportPage), .IsSelected = False}
     })
 
         Public Sub AppShell_KeyDown(sender As Object, e As KeyRoutedEventArgs)

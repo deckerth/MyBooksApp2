@@ -29,9 +29,7 @@ Namespace Global.MyBooks.Repository.Sql
         End Function
 
         Public Async Function GetAsyncExact(search As String) As Task(Of Author) Implements IAuthorRepository.GetAsyncExact
-
             Return Await _db.Authors.AsNoTracking().FirstOrDefaultAsync(Function(x As Author) x.Name = search)
-
         End Function
 
         Public Async Function GetAsync(id As Guid) As Task(Of Author) Implements IAuthorRepository.GetAsync
@@ -46,30 +44,25 @@ Namespace Global.MyBooks.Repository.Sql
         End Function
 
         Public Async Function SetAuthors(authors As List(Of Author)) As Task
-            For Each b In _db.Authors
-                _db.Entry(b).State = EntityState.Deleted
-            Next
-            Await _db.SaveChangesAsync()
+            Await ClearAsync()
             _db.Authors.AddRange(authors)
             Await _db.SaveChangesAsync()
         End Function
 
         Public Async Function AddAuthors(authors As List(Of Author)) As Task
-            Dim saveRequired As Boolean
-
+            _db.StartMassUpdate()
             For Each i In authors
-                If Await GetAsync(i.Id) IsNot Nothing Then
-                    _db.Entry(i).State = EntityState.Deleted
-                    saveRequired = True
-                End If
+                Await Insert(i)
             Next
-            If saveRequired Then
-                Await _db.SaveChangesAsync()
-            End If
-            _db.Authors.AddRange(authors)
-            Await _db.SaveChangesAsync()
+            Await _db.EndMassUpdateModeAsync()
         End Function
 
+        Public Async Function ClearAsync() As Task Implements IAuthorRepository.ClearAsync
+            For Each b In _db.Authors
+                _db.Entry(b).State = EntityState.Deleted
+            Next
+            Await _db.SaveChangesAsync()
+        End Function
     End Class
 
 End Namespace

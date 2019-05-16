@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:MyBooks.App"
+    xmlns:telerik="using:Telerik.UI.Xaml.Controls"
     >
     <!--RequestedTheme="Dark"-->
 
@@ -13,16 +14,36 @@
                 <ResourceDictionary Source="/Styles/NavStyles.xaml" />
                 <ResourceDictionary Source="/Styles/GoogleColors.xaml" />
                 <ResourceDictionary>
+                    <telerik:UserThemeResources x:Key="themeResourceInitializer" 
+                                                LightResourcesPath="ms-appx:///Themes/GridLightTheme.xaml" 
+                                                DarkResourcesPath="ms-appx:///Themes/GridDarkTheme.xaml" 
+                                                />
                     <ResourceDictionary.ThemeDictionaries>
+                        <ResourceDictionary x:Key="Default">
+                            <ResourceDictionary.MergedDictionaries>
+                                <!--Merges all Telrik Named Brushes defined in respective binary-->
+                                <!--the resources used by every UI component defined in the Input binary will be available-->
+                                <ResourceDictionary Source="ms-appx:///Telerik.UI.Xaml.Grid.UWP/Themes/ThemeResourcesDark.xaml"/>
+                                <!--Merges the custom resource dictioanly set as DarkResourcesPath of the themeResourceInitializer-->
+                                <!--In this particular case the default resource dictionaly is merged-->
+                                <ResourceDictionary Source="{CustomResource DarkResourcesPath}"/>
+                            </ResourceDictionary.MergedDictionaries>
+                        </ResourceDictionary>
                         <ResourceDictionary x:Key="Light">
-                            <SolidColorBrush
-                                x:Key="AccentBackgroundColor"
-                                Color="LightSteelBlue" />
+                            <SolidColorBrush x:Key="AccentBackgroundColor" Color="LightSteelBlue" />
+                            <SolidColorBrush x:Key="NavMenuAccentForegroundColor" Color="SteelBlue" />
+                            <SolidColorBrush x:Key="MenuBarForegroundBrush" Color="Black"/>
+                            <SolidColorBrush x:Key="MenuBarBackgroundBrush" Color="White"/>
+                            <ResourceDictionary.MergedDictionaries>
+                                <ResourceDictionary Source="ms-appx:///Telerik.UI.Xaml.Grid.UWP/Themes/ThemeResourcesLight.xaml"/>
+                                <ResourceDictionary Source="{CustomResource LightResourcesPath}"/>
+                            </ResourceDictionary.MergedDictionaries>
                         </ResourceDictionary>
                         <ResourceDictionary x:Key="Dark">
-                            <SolidColorBrush
-                                x:Key="AccentBackgroundColor"
-                                Color="SteelBlue" />
+                            <SolidColorBrush x:Key="AccentBackgroundColor" Color="SteelBlue" />
+                            <SolidColorBrush x:Key="NavMenuAccentForegroundColor" Color="SteelBlue" />
+                            <SolidColorBrush x:Key="MenuBarForegroundBrush" Color="White"/>
+                            <SolidColorBrush x:Key="MenuBarBackgroundBrush" Color="Black"/>
                         </ResourceDictionary>
                     </ResourceDictionary.ThemeDictionaries>
                 </ResourceDictionary>

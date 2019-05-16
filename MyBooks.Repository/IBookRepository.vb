@@ -4,6 +4,12 @@ Namespace Global.MyBooks.Repository
 
     Public Interface IBookRepository
 
+        Enum UpsertResult
+            added
+            updated
+            skipped
+        End Enum
+
         ' Returns all books. 
         Function GetAsync() As Task(Of IEnumerable(Of Book))
 
@@ -13,9 +19,12 @@ Namespace Global.MyBooks.Repository
         ' Returns the book with the given id. 
         Function GetAsync(id As Guid) As Task(Of Book)
 
+        ' Returns a book with the given title, author, mediatype, storage. 
+        Function GetAsync(title As String, author As String, mediatype As Book.MediaType, storage As String) As Task(Of Book)
+
         ' Adds a new book if it does not exist, updates the 
         ' existing book otherwise.
-        Function Upsert(book As Book) As Task
+        Function Upsert(book As Book) As Task(Of UpsertResult)
 
         ' Deletes a book.
         Function DeleteAsync(id As Guid) As Task

@@ -1,6 +1,9 @@
 ﻿Imports MyBooks.Models
 Imports MyBooks.App.ValueComparers
 Imports MyBooks.Repository.Libraries
+Imports Telerik.UI.Xaml.Controls.Grid
+Imports MyBooks.App.Commands
+Imports Microsoft.Toolkit.Uwp.Helpers
 
 Namespace Global.MyBooks.App.ViewModels
 
@@ -12,6 +15,10 @@ Namespace Global.MyBooks.App.ViewModels
         Public Property AllItems As New ObservableCollection(Of BookBrowserViewModel)
         Public Property NoOfEntries As Integer
         Public Property NoOfPages As Integer
+
+        Public Sub New()
+            InitalizeSelectionCommands()
+        End Sub
 
         Private _displayModeHub As Boolean = False
         Public Property DisplayModeHub As Boolean
@@ -55,7 +62,13 @@ Namespace Global.MyBooks.App.ViewModels
 
         Private Library As ILibraryAccess
 
-        Public Sub SetItems(library As ILibraryAccess, Optional sort As Boolean = True)
+        Public Async Function SetItemsAsync(progress As ProgressRingViewModel, library As ILibraryAccess, Optional sort As Boolean = True) As Task
+            Await Task.Run(Async Function() As Task
+                               Await SetItemsTaskAsync(progress, library)
+                           End Function)
+        End Function
+
+        Private Async Function SetItemsTaskAsync(progress As ProgressRingViewModel, library As ILibraryAccess, Optional sort As Boolean = True) As Task
 
             Me.Library = library
             Dim _comparer As IComparer(Of Book) = New BookComparer_TitleAscending
@@ -70,24 +83,33 @@ Namespace Global.MyBooks.App.ViewModels
             all.AddRange(library.AudioItems)
             all.Sort(_comparer)
 
-            AllItems.Clear()
-            BookItems.Clear()
-            AudioItems.Clear()
+            Await DispatcherHelper.ExecuteOnUIThreadAsync(Sub()
+                                                              AllItems.Clear()
+                                                              BookItems.Clear()
+                                                              AudioItems.Clear()
+                                                          End Sub)
 
-            For Each i In library.BookItems
-                BookItems.Add(New BookBrowserViewModel(Me.Library, i))
-            Next
-
-            For Each i In library.AudioItems
-                AudioItems.Add(New BookBrowserViewModel(Me.Library, i))
-            Next
+            If progress IsNot Nothing Then
+                Await progress.SetDeterministicAsync(all.Count)
+            End If
 
             For Each i In all
-                AllItems.Add(New BookBrowserViewModel(Me.Library, i))
+                Dim browserModel = New BookBrowserViewModel(Me.Library, i)
+                Await DispatcherHelper.ExecuteOnUIThreadAsync(Sub()
+                                                                  AllItems.Add(browserModel)
+                                                                  If i.Medium = Book.MediaType.AudioBook Then
+                                                                      AudioItems.Add(browserModel)
+                                                                  Else
+                                                                      BookItems.Add(browserModel)
+                                                                  End If
+                                                              End Sub)
+                If progress IsNot Nothing Then
+                    Await progress.IncrementAsync(1)
+                End If
             Next
-        End Sub
+        End Function
 
-        Private _currentItem As BookBrowserViewModel = New BookBrowserViewModel()
+        Private _currentItem As BookBrowserViewModel
         Public Property CurrentItem As BookBrowserViewModel
             Get
                 Return _currentItem
@@ -109,6 +131,42 @@ Namespace Global.MyBooks.App.ViewModels
                 AppShell.Current.ViewModel.BrowserPaneOpen = True
             End If
         End Sub
+
+#Region "ItemSelection"
+        Private _selectionMode As DataGridSelectionMode = DataGridSelectionMode.Single
+        Public Property SelectionMode As DataGridSelectionMode
+            Get
+                Return _selectionMode
+            End Get
+            Set(value As DataGridSelectionMode)
+                If value <> _selectionMode Then
+                    SetProperty(Of DataGridSelectionMode)(_selectionMode, value)
+                End If
+            End Set
+        End Property
+
+        Public Property SelectAllCommand As RelayCommand
+        Public Property DeselectAllCommand As RelayCommand
+
+        Private Sub InitalizeSelectionCommands()
+            SelectAllCommand = New RelayCommand(AddressOf OnSelectAll)
+            DeselectAllCommand = New RelayCommand(AddressOf OnDeselectAll)
+        End Sub
+
+        Public Property SelectedItems As ObservableCollection(Of Object)
+
+        Public Event SelectAll()
+        Public Event DeselectAll()
+
+        Private Sub OnSelectAll()
+            RaiseEvent SelectAll()
+        End Sub
+
+        Private Sub OnDeselectAll()
+            RaiseEvent DeselectAll()
+        End Sub
+
+#End Region
 
     End Class
 

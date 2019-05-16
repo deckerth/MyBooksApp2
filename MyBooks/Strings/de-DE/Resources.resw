@@ -427,7 +427,7 @@
     <value>Gescannte Barcodes</value>
   </data>
   <data name="ImportButton.Label" xml:space="preserve">
-    <value>Buchliste öffnen</value>
+    <value>Datei öffnen</value>
   </data>
   <data name="ImportFile.Header" xml:space="preserve">
     <value>Buchliste</value>
@@ -476,5 +476,125 @@
   </data>
   <data name="NameSeperator.Header" xml:space="preserve">
     <value>Namen sind getrennt durch..</value>
+  </data>
+  <data name="ASIN.Text" xml:space="preserve">
+    <value>Amazon-Standard-Identifikationsnummer</value>
+  </data>
+  <data name="DataImport" xml:space="preserve">
+    <value>Datenimport</value>
+  </data>
+  <data name="ImportBarcodes.Text" xml:space="preserve">
+    <value>Buchliste importieren</value>
+  </data>
+  <data name="ImportKindle.Text" xml:space="preserve">
+    <value>Kindle Bibliothek importieren</value>
+  </data>
+  <data name="ImportInfoDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="ImportInfoDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="ImportInfoDialog.Title" xml:space="preserve">
+    <value>Datenimport</value>
+  </data>
+  <data name="KindleImportInfo" xml:space="preserve">
+    <value>&lt;!DOCTYPE html&gt;
+&lt;html lang="en" xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+    &lt;meta charset="utf-8" /&gt;
+    &lt;title&gt;&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div style="font-family:'Segoe UI'; font-size:medium;" &gt;
+&lt;p&gt;Um Ihre Kindle-B&amp;uuml;cher zu importieren gehen Sie wie folgt vor:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Installieren Sie die &lt;a href="https://www.amazon.de/kindle-dbs/fd/kcp" target="_blank"&gt;Kindle Desktop App&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Starten Sie die App und melden Sie sich mit Ihrem Kindle Konto an.&lt;/li&gt;
+&lt;li&gt;Beenden Sie die App.&lt;/li&gt;
+&lt;li&gt;Dr&amp;uuml;cken Sie die Schaltfl&amp;auml;che "B&amp;uuml;cher importieren".&lt;/li&gt;
+&lt;li&gt;W&amp;auml;hlen Sie den Anwendungsordner der Kindle-App aus:&lt;br /&gt;&lt;strong&gt;C:\Benutzer\&amp;lt;Ihr Benutzername&amp;gt;\AppData\Local\Amazon\Kindle\Cache&lt;/strong&gt;. &lt;br /&gt;Das Programm hat den richtigen Pfad bereits in die Zwischenablage kopiert. F&amp;uuml;gen Sie also einfach den kopierten Pfad in das Eingabefeld f&amp;uuml;r die Ordnerauswahl ein, und w&amp;auml;hlen Sie den Ordner aus.&amp;nbsp;&lt;/li&gt;
+&lt;/ol&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</value>
+  </data>
+  <data name="KindleName.Header" xml:space="preserve">
+    <value>Name des Kindle Geräts</value>
+  </data>
+  <data name="KindleOf" xml:space="preserve">
+    <value>Kindle von</value>
+  </data>
+  <data name="BookDoesAlreadyExist" xml:space="preserve">
+    <value>Der Titel befindet sich bereits in der Sammlung.</value>
+  </data>
+  <data name="DeselectAllButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Nichts auswählen</value>
+  </data>
+  <data name="ImportResultAdded.Text" xml:space="preserve">
+    <value>Hinzugefügte Titel:</value>
+  </data>
+  <data name="ImportResultDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Schließen</value>
+  </data>
+  <data name="ImportResultDialog.Title" xml:space="preserve">
+    <value>Datenübernahme abgeschlossen</value>
+  </data>
+  <data name="ImportResultSkipped.Text" xml:space="preserve">
+    <value>Bereits existierende Titel:</value>
+  </data>
+  <data name="ImportResultSummary" xml:space="preserve">
+    <value>Es wurden &amp; Titel prozessiert.</value>
+  </data>
+  <data name="ImportResultSummarySingular" xml:space="preserve">
+    <value>Es wurde ein Titel prozessiert.</value>
+  </data>
+  <data name="ImportResultUpdated.Text" xml:space="preserve">
+    <value>Aktualisierte Titel:</value>
+  </data>
+  <data name="SelectAllButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Alles auswählen</value>
+  </data>
+  <data name="TextPatternBox.PlaceholderText" xml:space="preserve">
+    <value>Suchmuster</value>
+  </data>
+  <data name="AppearanceTitle.Text" xml:space="preserve">
+    <value>Aussehen</value>
+  </data>
+  <data name="ComputeIndex.Content" xml:space="preserve">
+    <value>Neu indizieren</value>
+  </data>
+  <data name="ComputingIndex" xml:space="preserve">
+    <value>Die Datenbank wird indiziert...</value>
+  </data>
+  <data name="DatabaseOps.Text" xml:space="preserve">
+    <value>Datenbank</value>
+  </data>
+  <data name="DisplayBorrowedTitles.Text" xml:space="preserve">
+    <value>Ausgeliehene Titel anzeigen</value>
+  </data>
+  <data name="ExportDbButton.Content" xml:space="preserve">
+    <value>Exportieren</value>
+  </data>
+  <data name="FirstNameLastName.Content" xml:space="preserve">
+    <value>Vorname Nachname</value>
+  </data>
+  <data name="FormatTitle.Text" xml:space="preserve">
+    <value>Formatierung</value>
+  </data>
+  <data name="ImportDbButton.Content" xml:space="preserve">
+    <value>Importieren</value>
+  </data>
+  <data name="LastNameFirstName.Content" xml:space="preserve">
+    <value>Nachname, Vorname</value>
+  </data>
+  <data name="NameFormatComboBox.Header" xml:space="preserve">
+    <value>Namensformat</value>
+  </data>
+  <data name="Titles" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="DataImportPageTitle.Text" xml:space="preserve">
+    <value>Datenimport</value>
   </data>
 </root>

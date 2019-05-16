@@ -44,30 +44,25 @@ Namespace Global.MyBooks.Repository.Sql
         End Function
 
         Public Async Function SetStorages(storages As List(Of Storage)) As Task
-            For Each b In _db.Storages
-                _db.Entry(b).State = EntityState.Deleted
-            Next
-            Await _db.SaveChangesAsync()
+            Await ClearAsync()
             _db.Storages.AddRange(storages)
             Await _db.SaveChangesAsync()
         End Function
 
         Public Async Function AddStorages(items As List(Of Storage)) As Task
-            Dim saveRequired As Boolean
-
+            _db.StartMassUpdate()
             For Each i In items
-                If Await GetAsync(i.Id) IsNot Nothing Then
-                    _db.Entry(i).State = EntityState.Deleted
-                    saveRequired = True
-                End If
+                Await Insert(i)
             Next
-            If saveRequired Then
-                Await _db.SaveChangesAsync()
-            End If
-            _db.Storages.AddRange(items)
-            Await _db.SaveChangesAsync()
+            Await _db.EndMassUpdateModeAsync()
         End Function
 
+        Public Async Function ClearAsync() As Task Implements IStorageRepository.ClearAsync
+            For Each b In _db.Storages
+                _db.Entry(b).State = EntityState.Deleted
+            Next
+            Await _db.SaveChangesAsync()
+        End Function
     End Class
 
 End Namespace

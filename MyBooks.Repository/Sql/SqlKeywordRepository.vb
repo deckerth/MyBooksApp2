@@ -44,30 +44,25 @@ Namespace Global.MyBooks.Repository.Sql
         End Function
 
         Public Async Function SetKeywords(keywords As List(Of Keyword)) As Task
-            For Each b In _db.Keywords
-                _db.Entry(b).State = EntityState.Deleted
-            Next
-            Await _db.SaveChangesAsync()
+            Await ClearAsync()
             _db.Keywords.AddRange(keywords)
             Await _db.SaveChangesAsync()
         End Function
 
         Public Async Function AddKeywords(items As List(Of Keyword)) As Task
-            Dim saveRequired As Boolean
-
+            _db.StartMassUpdate()
             For Each i In items
-                If Await GetAsync(i.Id) IsNot Nothing Then
-                    _db.Entry(i).State = EntityState.Deleted
-                    saveRequired = True
-                End If
+                Await Insert(i)
             Next
-            If saveRequired Then
-                Await _db.SaveChangesAsync()
-            End If
-            _db.Keywords.AddRange(items)
-            Await _db.SaveChangesAsync()
+            Await _db.EndMassUpdateModeAsync()
         End Function
 
+        Public Async Function ClearAsync() As Task Implements IKeywordRepository.ClearAsync
+            For Each b In _db.Keywords
+                _db.Entry(b).State = EntityState.Deleted
+            Next
+            Await _db.SaveChangesAsync()
+        End Function
     End Class
 
 End Namespace

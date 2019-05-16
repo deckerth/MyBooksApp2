@@ -63,13 +63,10 @@
 
         <telerikGrid:RadDataGrid
                 x:Name="DataGrid"
-                Visibility="{x:Bind ViewModel.DisplayModeHub,Converter={StaticResource booleanVisConverter},ConverterParameter=True,Mode=OneWay}"
-                
+                Visibility="{x:Bind ViewModel.DisplayModeHub,Converter={StaticResource booleanVisConverter},ConverterParameter=True,Mode=OneWay}"                
                 BorderThickness="0"
                 ColumnDataOperationsMode="Flyout"
                 GridLinesVisibility="Horizontal"
-                GridLinesBrush="DarkGray"
-                GridLinesThickness="1"
                 GroupPanelPosition="Left"
                 Margin="0,20,0,0"
                 ItemsSource="{x:Bind ViewModel.AllItems,Mode=OneWay}"
@@ -77,6 +74,7 @@
                 CurrentItemChanged="OnCurrentItemOfGridChanged"
                 UserEditMode="None"
                 AutoGenerateColumns="False"
+                SelectionMode="{x:Bind ViewModel.SelectionMode,Mode=OneWay}"
                 >
 
             <telerikGrid:RadDataGrid.Columns>
@@ -86,6 +84,7 @@
                             <Setter Property="FontWeight" Value="Bold"/>
                             <Setter Property="TextWrapping" Value="WrapWholeWords"/>
                             <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="Padding" Value="10,5"/>
                         </Style>
                     </telerikGrid:DataGridTextColumn.CellContentStyle>
                 </telerikGrid:DataGridTextColumn>
@@ -95,6 +94,7 @@
                             <Setter Property="FontStyle" Value="Italic"/>
                             <Setter Property="TextWrapping" Value="WrapWholeWords"/>
                             <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="Padding" Value="0,5"/>
                         </Style>
                     </telerikGrid:DataGridTextColumn.CellContentStyle>
                 </telerikGrid:DataGridTextColumn>
@@ -103,11 +103,26 @@
                         <Style TargetType="TextBlock">
                             <Setter Property="TextWrapping" Value="WrapWholeWords"/>
                             <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="Padding" Value="0,5"/>
                         </Style>
                     </telerikGrid:DataGridTextColumn.CellContentStyle>
                 </telerikGrid:DataGridTextColumn>
-                <telerikGrid:DataGridTextColumn x:Uid="MediumType" PropertyName="MediumText" />
-                <telerikGrid:DataGridTextColumn x:Uid="Published" PropertyName="Published" />
+                <telerikGrid:DataGridTextColumn x:Uid="MediumType" PropertyName="MediumText">
+                    <telerikGrid:DataGridTextColumn.CellContentStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="Padding" Value="0,5"/>
+                        </Style>
+                    </telerikGrid:DataGridTextColumn.CellContentStyle>
+                </telerikGrid:DataGridTextColumn>
+                <telerikGrid:DataGridTextColumn x:Uid="Published" PropertyName="Published">
+                    <telerikGrid:DataGridTextColumn.CellContentStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="Padding" Value="0,5"/>
+                        </Style>
+                    </telerikGrid:DataGridTextColumn.CellContentStyle>
+                </telerikGrid:DataGridTextColumn>
             </telerikGrid:RadDataGrid.Columns>
         </telerikGrid:RadDataGrid>
 

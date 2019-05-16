@@ -5,6 +5,7 @@ Imports MyBooks.App.Views
 Imports MyBooks.ContextProvider
 Imports MyBooks.Repository
 Imports MyBooks.Repository.Sql
+Imports Telerik.UI.Xaml.Controls
 Imports Telerik.UI.Xaml.Controls.Grid
 Imports Telerik.UI.Xaml.Controls.Input
 Imports Windows.ApplicationModel.Resources
@@ -21,6 +22,9 @@ Namespace Global.MyBooks.App
         Public Const ApplicationThemeLight As Integer = 0
         Public Const ApplicationThemeDark As Integer = 1
         Public Shared SelectedApplicationTheme As Integer = 0
+        Public Const FirstNameLastNameFormat As Integer = 0
+        Public Const LastNameFirstNameFormat As Integer = 1
+        Public Shared SelectedNameFormat As Integer = 0
 
         ' <summary>
         ' Pipeline for interacting with backend service Or database.
@@ -32,12 +36,17 @@ Namespace Global.MyBooks.App
             Dim settings = Windows.Storage.ApplicationData.Current.LocalSettings
 
             SelectedApplicationTheme = settings.Values("ApplicationTheme")
+            SelectedNameFormat = settings.Values("NameFormat")
 
             If SelectedApplicationTheme = ApplicationThemeDark Then
                 RequestedTheme = ApplicationTheme.Dark
             Else
                 RequestedTheme = ApplicationTheme.Light
             End If
+
+            'Dim telerikTheming = DirectCast(App.Current.Resources("themeResourceInitializer"), UserThemeResources)
+            'telerikTheming.DarkResourcesPath = "GridDarkTheme.xaml"
+            'telerikTheming.LightResourcesPath = "GridLightTheme.xaml"
 
             InitializeComponent()
 
@@ -73,6 +82,14 @@ Namespace Global.MyBooks.App
             InputLocalizationManager.Instance.StringLoader = New TelerikStringLoader()
 
             Window.Current.Activate()
+
+            Dim titleBar = ApplicationView.GetForCurrentView().TitleBar
+
+            titleBar.ForegroundColor = DirectCast(App.Current.Resources("MenuBarForegroundBrush"), SolidColorBrush).Color
+            titleBar.BackgroundColor = DirectCast(App.Current.Resources("MenuBarBackgroundBrush"), SolidColorBrush).Color
+            titleBar.ButtonForegroundColor = DirectCast(App.Current.Resources("MenuBarForegroundBrush"), SolidColorBrush).Color
+            titleBar.ButtonBackgroundColor = DirectCast(App.Current.Resources("MenuBarBackgroundBrush"), SolidColorBrush).Color
+
         End Sub
 
         ' <summary>

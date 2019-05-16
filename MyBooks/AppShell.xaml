@@ -30,7 +30,7 @@
                     Margin="-2,0,0,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
-                    Fill="{ThemeResource AccentBackgroundColor}"
+                    Fill="{ThemeResource NavMenuAccentForegroundColor}"
                     Visibility="{x:Bind SelectedVis, Mode=TwoWay}" />
                 <!--
                     Showing a ToolTip and the Label is redundant.  We put the ToolTip on the icon.
@@ -150,7 +150,7 @@
                         x:Name="NavMenuList"
                         Margin="0,52,0,0"
                         ContainerContentChanging="NavMenuItemContainerContentChanging"
-                        IsEnabled="True"
+                        IsEnabled="{x:Bind AppViewModel.NavigationAllowed,Mode=OneWay}"
                         ItemContainerStyle="{StaticResource NavMenuItemContainerStyle}"
                         ItemInvoked="NavMenuList_ItemInvoked"
                         ItemTemplate="{StaticResource NavMenuItemTemplate}"
@@ -167,6 +167,7 @@
                     <nav:NavMenuSecondaryButton
                         x:Name="SettingsButton"
                         x:Uid="Settings"
+                        IsEnabled="{x:Bind AppViewModel.NavigationAllowed,Mode=OneWay}"
                         Click="SettingsButton_Click"
                         Grid.Row="2"
                         Icon="&#xE713;" />

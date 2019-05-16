@@ -32,12 +32,11 @@ Namespace Global.MyBooks.App.Views
         End Function
 
         Private Sub OnNavigatingToPage(sender As Object, e As NavigatingCancelEventArgs)
-
         End Sub
 
         Private Sub CurrentStateChanged(sender As Object, e As VisualStateChangedEventArgs)
-            Dim x = 0
         End Sub
+
     End Class
 
 End Namespace

@@ -15,8 +15,9 @@ Namespace Global.MyBooks.App.Views
 
             InitializeComponent()
 
-            ViewModel = New BookDetailPageViewModel() With {.IsNewBook = True, .Book = New BookViewModel(newBook)}
+            ViewModel = New BookDetailPageViewModel() With {.IsNewBook = True, .Book = New BookViewModel(newBook.Clone())}
             DataContext = ViewModel
+            ViewModel.CheckExistence()
         End Sub
 
         Private Sub AddBookButton_Click(sender As ContentDialog, args As ContentDialogButtonClickEventArgs)
@@ -39,6 +40,7 @@ Namespace Global.MyBooks.App.Views
             ' Set the ItemsSource to be your filtered dataset
             sender.ItemsSource = dataset
 
+            ViewModel.CheckExistence()
         End Sub
 
         Private Async Sub OnStorage_TextChanged(sender As RadAutoCompleteBox, args As TextChangedEventArgs)
@@ -54,6 +56,7 @@ Namespace Global.MyBooks.App.Views
             ' Set the ItemsSource to be your filtered dataset
             sender.ItemsSource = dataset
 
+            ViewModel.CheckExistence()
         End Sub
 
         Private Async Sub OnKeywords_TextChanged(sender As RadAutoCompleteBox, args As TextChangedEventArgs)
@@ -73,6 +76,10 @@ Namespace Global.MyBooks.App.Views
 
         Private Sub Published_TextChanged(sender As Object, e As TextChangedEventArgs)
             IsPrimaryButtonEnabled = String.IsNullOrWhiteSpace(ViewModel.ErrorText)
+        End Sub
+
+        Private Sub MediumType_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles MediumType.SelectionChanged
+            ViewModel.CheckExistence()
         End Sub
 
 #Region "FormatAuthors"

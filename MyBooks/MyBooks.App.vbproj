@@ -123,11 +123,35 @@
       <DependentUpon>NavMenuSecondaryButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="TelerikStrings\TelerikStringLoader.vb" />
+    <Compile Include="UserControls\AuthorChoiceFilter.vb" />
+    <Compile Include="UserControls\AuthorFilter.vb" />
+    <Compile Include="UserControls\BorrowedFilter.vb" />
+    <Compile Include="UserControls\BorrowedFilterControl.xaml.vb">
+      <DependentUpon>BorrowedFilterControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ChoiceCheckBox.vb" />
+    <Compile Include="UserControls\CustomFilterButtonTapCommand.vb" />
+    <Compile Include="UserControls\BaseFilterControl.vb" />
+    <Compile Include="UserControls\ColumnMarker.vb" />
     <Compile Include="UserControls\DetailExpander.xaml.vb">
       <DependentUpon>DetailExpander.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\KeywordChoiceFilter.vb" />
+    <Compile Include="UserControls\KeywordsFilter.vb" />
+    <Compile Include="UserControls\MediumChoiceFilter.vb" />
+    <Compile Include="UserControls\StorageChoiceFilter.vb" />
+    <Compile Include="UserControls\StorageFilter.vb" />
+    <Compile Include="UserControls\TextChoiceFilter.vb" />
+    <Compile Include="UserControls\TextChoiceFilterControl.xaml.vb">
+      <DependentUpon>TextChoiceFilterControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\TextFilter.vb" />
+    <Compile Include="UserControls\TextFilterControl.xaml.vb">
+      <DependentUpon>TextFilterControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ValueComparers\BookComparer_TitleAscending.vb" />
     <Compile Include="ValueConverters\BooleanInverterConverter.vb" />
+    <Compile Include="ValueConverters\BooleanOperator.vb" />
     <Compile Include="ValueConverters\BooleanToVisibilityConverter.vb" />
     <Compile Include="ValueConverters\DateToDateTimeOffsetConverter.vb" />
     <Compile Include="ValueConverters\IntegerToStringConverter.vb" />
@@ -138,6 +162,7 @@
     <Compile Include="ValueConverters\StringToGeometryConverter.vb" />
     <Compile Include="ValueConverters\StringVisibilityConverter.vb" />
     <Compile Include="ValueConverters\TextToDoubleConverter.vb" />
+    <Compile Include="ViewModels\AppShellViewModel.vb" />
     <Compile Include="ViewModels\AuthorSuggestionsViewModel.vb" />
     <Compile Include="ViewModels\BindableBase.vb" />
     <Compile Include="ViewModels\BookBrowserViewModel.vb" />
@@ -148,6 +173,7 @@
     <Compile Include="ViewModels\LibraryBooksViewModel.vb" />
     <Compile Include="ViewModels\LibrarySearchResultViewModel.vb" />
     <Compile Include="ViewModels\MediumTypeDescriptor.vb" />
+    <Compile Include="ViewModels\ProgressRingViewModel.vb" />
     <Compile Include="ViewModels\ScannedBooksImportViewModel.vb" />
     <Compile Include="Views\AddBookFromLibraryDialog.xaml.vb">
       <DependentUpon>AddBookFromLibraryDialog.xaml</DependentUpon>
@@ -161,6 +187,12 @@
     <Compile Include="Views\BookListPage.xaml.vb">
       <DependentUpon>BookListPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ImportInfoDialog.xaml.vb">
+      <DependentUpon>ImportInfoDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ImportResultDialog.xaml.vb">
+      <DependentUpon>ImportResultDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\LibrarySearchPage.xaml.vb">
       <DependentUpon>LibrarySearchPage.xaml</DependentUpon>
     </Compile>
@@ -169,6 +201,9 @@
     </Compile>
     <Compile Include="Views\SettingsDialog.xaml.vb">
       <DependentUpon>SettingsDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ShowProgress.xaml.vb">
+      <DependentUpon>ShowProgress.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -256,7 +291,27 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Themes\GridDarkTheme.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\GridLightTheme.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\BorrowedFilterControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\DetailExpander.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\TextChoiceFilterControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\TextFilterControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -276,6 +331,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ImportInfoDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ImportResultDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\LibrarySearchPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -285,6 +348,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SettingsDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ShowProgress.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

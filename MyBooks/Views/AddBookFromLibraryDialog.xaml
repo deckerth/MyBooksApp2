@@ -122,22 +122,22 @@
                             x:Name="ReformatAuthorsLastNameFirstName"
                             Click="ReformatAuthorsLastNameFirstName_Click"
                             RelativePanel.RightOf="Authors"
-                            RelativePanel.AlignBottomWith="Authors"
+                            RelativePanel.AlignVerticalCenterWith="Authors"
                             Margin="0,0,0,8"
                             FlyoutBase.AttachedFlyout="{StaticResource NameConversionSuggestionFlyout}">
                             <Button.Content>
-                                <TextBlock Text="A B → B, A"/>
+                                <TextBlock Text="A B → B, A" FontSize="9"/>
                             </Button.Content>
                         </Button>
                         <Button
                             x:Name="ReformatAuthorsFirstNameLastName"
                             Click="ReformatAuthorsFirstNameLastName_Click"
                             RelativePanel.RightOf="ReformatAuthorsLastNameFirstName"
-                            RelativePanel.AlignBottomWith="Authors"
+                            RelativePanel.AlignVerticalCenterWith="Authors"
                             Margin="10,0,0,8"
                             FlyoutBase.AttachedFlyout="{StaticResource NameConversionSuggestionFlyout}">
                             <Button.Content>
-                                <TextBlock Text="B, A → A B"/>
+                                <TextBlock Text="B, A → A B" FontSize="9"/>
                             </Button.Content>
                         </Button>
                         <telerik:RadAutoCompleteBox
@@ -177,20 +177,6 @@
                            RelativePanel.Below="Storage"
                            Text="{x:Bind ViewModel.Book.Published, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                            TextChanged="Published_TextChanged"/>
-                        <!--<telerik:RadNumericBox
-                           x:Name="Published"
-                           x:Uid="Published"
-                           Width="200"
-                           Margin="0,8,16,8"
-                           RelativePanel.AlignLeftWithPanel="True"
-                           RelativePanel.Below="Storage"
-                           AcceptsDecimalSeparator="False"
-                           ButtonsVisibility="Collapsed"
-                           AllowNullValue="True"
-                           Maximum="9999"
-                           ValueFormat="G"
-                           Value="{x:Bind ViewModel.Book.Published, Converter={StaticResource stringToDoubleConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                           />-->
                     </RelativePanel>
                 </StackPanel>
             </ScrollViewer>

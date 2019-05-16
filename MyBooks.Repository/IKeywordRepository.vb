@@ -18,6 +18,10 @@ Namespace Global.MyBooks.Repository
 
         ' Adds a new keyword if it does not exist
         Function Insert(word As Keyword) As Task
+
+        ' Clears the database
+        Function ClearAsync() As Task
+
     End Interface
 
 End Namespace

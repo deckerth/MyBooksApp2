@@ -107,9 +107,9 @@
                           />
                         <telerikPrimitives:RadBusyIndicator x:Name="SearchProgressRing" x:Uid="SearchProgressRing" 
                               Margin="20,0,0,0"
-                              IsActive="{x:Bind ViewModel.SearchIsInProgress,Mode=OneWay}"  
+                              IsActive="{x:Bind ViewModel.Progress.Active,Mode=OneWay}"  
                               AnimationStyle="AnimationStyle5"
-                              Content="              "                      />
+                              Content="{x:Bind ViewModel.Progress.ProgressString,Mode=OneWay}"                      />
                     </StackPanel>
                 </CommandBar.Content>
 

@@ -1,5 +1,6 @@
 ﻿Imports Microsoft.Toolkit.Uwp.Helpers
 Imports MyBooks.App.Commands
+Imports MyBooks.Repository
 Imports Telerik.Core
 
 Namespace Global.MyBooks.App.ViewModels
@@ -113,25 +114,58 @@ Namespace Global.MyBooks.App.ViewModels
             End Set
         End Property
 
+        Private existenceCheckTaskRunning As Boolean
+        Private existenceCheckRequired As Boolean = False
+        Private bookExistsDetected As Boolean = False
+
+        Private Async Function CheckExistenceAsync() As Task
+            existenceCheckTaskRunning = True
+            Do
+                existenceCheckRequired = False
+                Dim existingCopy = Await App.Repository.Books.GetAsync(title:=_book.Title, author:=_book.Authors, mediatype:=_book.Medium, storage:=_book.Storage)
+                If existingCopy Is Nothing Then
+                    If bookExistsDetected Then
+                        bookExistsDetected = False
+                        ErrorText = ""
+                    End If
+                Else
+                    bookExistsDetected = True
+                    ErrorText = App.Texts.GetString("BookDoesAlreadyExist")
+                End If
+            Loop While existenceCheckRequired
+            existenceCheckTaskRunning = False
+        End Function
+
+
+        Public Sub CheckExistence()
+            If existenceCheckTaskRunning Then
+                existenceCheckRequired = True
+            Else
+                Dim task = CheckExistenceAsync()
+            End If
+        End Sub
+
         Public Property SaveCommand As RelayCommand
 
         ' <summary>
         ' Saves book data that has been edited.
         ' </summary>
-        Private Async Function Save() As Task
+        Public Async Function Save() As Task(Of IBookRepository.UpsertResult)
+            Dim result As IBookRepository.UpsertResult = IBookRepository.UpsertResult.skipped
             Await _book.ValidateAsync("Published")
             If Not _book.HasErrors() Then
                 If _book.BorrowedDate Is Nothing Then
                     _book.BorrowedDate = Date.MinValue
                 End If
-                Await _book.Save()
-                If IsNewBook Then
+                result = Await _book.Save()
+                If result = Repository.IBookRepository.UpsertResult.added Then
                     RaiseEvent OnNewBookCreated(_book)
                 End If
                 If _book.BorrowedDate.Equals(Date.MinValue) Then
                     _book.BorrowedDate = Nothing
                 End If
             End If
+            Return result
         End Function
 
         Public Property CancelEditsCommand As RelayCommand

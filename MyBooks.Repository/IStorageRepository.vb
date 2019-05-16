@@ -18,6 +18,10 @@ Namespace Global.MyBooks.Repository
 
         ' Adds a new storage if it does not exist
         Function Insert(storage As Storage) As Task
+
+        ' Clears the database
+        Function ClearAsync() As Task
+
     End Interface
 
 End Namespace

@@ -427,7 +427,7 @@
     <value>Scanned barcodes</value>
   </data>
   <data name="ImportButton.Label" xml:space="preserve">
-    <value>Open book list</value>
+    <value>Open data file</value>
   </data>
   <data name="ImportFile.Header" xml:space="preserve">
     <value>Book list</value>
@@ -476,5 +476,125 @@
   </data>
   <data name="NameSeperator.Header" xml:space="preserve">
     <value>Names are separated by..</value>
+  </data>
+  <data name="ASIN.Text" xml:space="preserve">
+    <value>Amazon Standard Identification Number</value>
+  </data>
+  <data name="DataImport" xml:space="preserve">
+    <value>Import titles</value>
+  </data>
+  <data name="ImportBarcodes.Text" xml:space="preserve">
+    <value>Import book list</value>
+  </data>
+  <data name="ImportKindle.Text" xml:space="preserve">
+    <value>Import Kindle library</value>
+  </data>
+  <data name="ImportInfoDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="ImportInfoDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ImportInfoDialog.Title" xml:space="preserve">
+    <value>Data update finished</value>
+  </data>
+  <data name="KindleImportInfo" xml:space="preserve">
+    <value>&lt;!DOCTYPE html&gt;
+&lt;html lang="en" xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+    &lt;meta charset="utf-8" /&gt;
+    &lt;title&gt;&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div style="font-family:'Segoe UI'; font-size:medium;" &gt;
+&lt;p&gt;To import your Kindle book collection, proceed as follows:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Install the &lt;a href="https://www.amazon.de/kindle-dbs/fd/kcp" target="_blank"&gt;Kindle Desktop App&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Start the app and login with your Kindle account.&lt;/li&gt;
+&lt;li&gt;Leave the app.&lt;/li&gt;
+&lt;li&gt;Press the button &amp;ldquo;Import&amp;rdquo;.&lt;/li&gt;
+&lt;li&gt;Choose the application folder of the Kindle app:&lt;br /&gt;&lt;strong&gt;C:\Users\&amp;lt;Your user name&amp;gt;\AppData\Local\Amazon\Kindle\Cache&lt;/strong&gt;.&lt;br /&gt;The program has already stored the correct path in the clipboards. Just insert the path in the input field for the folder selection and confirm the dialog.&lt;/li&gt;
+&lt;/ol&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</value>
+  </data>
+  <data name="KindleName.Header" xml:space="preserve">
+    <value>Name of the Kindle device</value>
+  </data>
+  <data name="KindleOf" xml:space="preserve">
+    <value>Kindle of</value>
+  </data>
+  <data name="BookDoesAlreadyExist" xml:space="preserve">
+    <value>The title is already conained in the collection.</value>
+  </data>
+  <data name="DeselectAllButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Select nothing</value>
+  </data>
+  <data name="ImportResultAdded.Text" xml:space="preserve">
+    <value>Added titles:</value>
+  </data>
+  <data name="ImportResultDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="ImportResultDialog.Title" xml:space="preserve">
+    <value>Data import</value>
+  </data>
+  <data name="ImportResultSkipped.Text" xml:space="preserve">
+    <value>Already existing titles:</value>
+  </data>
+  <data name="ImportResultSummary" xml:space="preserve">
+    <value>&amp; titles processed.</value>
+  </data>
+  <data name="ImportResultSummarySingular" xml:space="preserve">
+    <value>One title processed.</value>
+  </data>
+  <data name="ImportResultUpdated.Text" xml:space="preserve">
+    <value>Updated titles:</value>
+  </data>
+  <data name="SelectAllButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Select all</value>
+  </data>
+  <data name="TextPatternBox.PlaceholderText" xml:space="preserve">
+    <value>Search pattern</value>
+  </data>
+  <data name="AppearanceTitle.Text" xml:space="preserve">
+    <value>Appearance</value>
+  </data>
+  <data name="ComputeIndex.Content" xml:space="preserve">
+    <value>Recompute index</value>
+  </data>
+  <data name="ComputingIndex" xml:space="preserve">
+    <value>Computing database index...</value>
+  </data>
+  <data name="DatabaseOps.Text" xml:space="preserve">
+    <value>Database</value>
+  </data>
+  <data name="DisplayBorrowedTitles.Text" xml:space="preserve">
+    <value>Display lent titles</value>
+  </data>
+  <data name="ExportDbButton.Content" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="FirstNameLastName.Content" xml:space="preserve">
+    <value>John Doe</value>
+  </data>
+  <data name="FormatTitle.Text" xml:space="preserve">
+    <value>Formatting</value>
+  </data>
+  <data name="ImportDbButton.Content" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="LastNameFirstName.Content" xml:space="preserve">
+    <value>Doe, John</value>
+  </data>
+  <data name="NameFormatComboBox.Header" xml:space="preserve">
+    <value>Name format</value>
+  </data>
+  <data name="Titles" xml:space="preserve">
+    <value>Titles</value>
+  </data>
+  <data name="DataImportPageTitle.Text" xml:space="preserve">
+    <value>Data Import</value>
   </data>
 </root>

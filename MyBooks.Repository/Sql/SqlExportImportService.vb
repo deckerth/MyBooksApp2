@@ -18,10 +18,11 @@ Namespace Global.MyBooks.Repository.Sql
             Repository = repo
         End Sub
 
-        Private Async Function ImportBooksAsync(worksheet As ExcelWorksheet, ImportOption As IImportExportService.ImportOptions) As Task
+        Private Async Function ImportBooksAsync(worksheet As ExcelWorksheet, ImportOption As IImportExportService.ImportOptions) As Task(Of UpdateCounters)
 
             Dim rows = worksheet.Dimension.Rows
             Dim books As New List(Of Book)
+            Dim counters As UpdateCounters
             For i = 2 To rows
                 Dim book As New Book With {
                     .Title = worksheet.Cells(i, 2).Value.ToString(),
@@ -51,12 +52,13 @@ Namespace Global.MyBooks.Repository.Sql
                 books.Add(book)
             Next
 
+            Dim repo As SqlBookRepository = DirectCast(Repository.Books, SqlBookRepository)
             If ImportOption = IImportExportService.ImportOptions.ReplaceBooks Then
-                Await DirectCast(Repository.Books, SqlBookRepository).SetBooks(books)
+                counters = Await repo.SetBooks(books)
             Else
-                Await DirectCast(Repository.Books, SqlBookRepository).AddBooks(books)
+                counters = Await repo.AddBooks(books)
             End If
-
+            Return counters
         End Function
 
         Private Async Function ExportBooksAsync(package As ExcelPackage) As Task
@@ -231,18 +233,19 @@ Namespace Global.MyBooks.Repository.Sql
 
         End Function
 
-        Public Async Function ImportAsync(InputStream As Stream, ImportOption As IImportExportService.ImportOptions) As Task Implements IImportExportService.ImportAsync
+        Public Async Function ImportAsync(InputStream As Stream, ImportOption As IImportExportService.ImportOptions) As Task(Of UpdateCounters) Implements IImportExportService.ImportAsync
+            Dim counters As New UpdateCounters
 
             If InputStream IsNot Nothing Then
                 Using package = New ExcelPackage(InputStream)
-                    Await ImportBooksAsync(package.Workbook.Worksheets(BooksWorkbook), ImportOption)
+                    counters = Await ImportBooksAsync(package.Workbook.Worksheets(BooksWorkbook), ImportOption)
                     Await ImportAuthorsAsync(package.Workbook.Worksheets(AuthorsWorkbook), ImportOption)
                     Await ImportKeywordsAsync(package.Workbook.Worksheets(KeywordsWorkbook), ImportOption)
                     Await ImportStoragesAsync(package.Workbook.Worksheets(StoragesWorkbook), ImportOption)
                 End Using
             End If
+            Return counters
         End Function
-
     End Class
 
 End Namespace

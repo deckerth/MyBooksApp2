@@ -310,7 +310,7 @@
               PointerOverForeground="{ThemeResource ListViewItemForegroundPointerOver}"
               PressedBackground="{ThemeResource SystemControlHighlightListMediumBrush}"
               SelectedBackground="Transparent"
-              SelectedForeground="{ThemeResource SystemControlForegroundAccentBrush}"
+              SelectedForeground="{StaticResource NavMenuAccentForegroundColor}"
               SelectedPointerOverBackground="{ThemeResource SystemControlHighlightListLowBrush}"
               SelectedPressedBackground="{ThemeResource SystemControlHighlightListMediumBrush}"
               SelectionCheckMarkVisualEnabled="False" />

@@ -2,6 +2,7 @@
 Imports MyBooks.Models
 Imports Telerik.Core
 Imports MyBooks.App.ValueConverters
+Imports MyBooks.Repository
 
 Namespace Global.MyBooks.App.ViewModels
 
@@ -59,11 +60,9 @@ Namespace Global.MyBooks.App.ViewModels
             IsModified = False
         End Function
 
-        Public Async Function Save() As Task
-            Await App.Repository.Books.Upsert(Model)
-            IsModified = False
+        Public Async Function UpdateIndex() As Task
             If Not String.IsNullOrWhiteSpace(Model.Keywords) Then
-                Dim keywords As String() = Model.Keywords.Split(New [Char]() {"/"c, ";"c, ","c, CChar(vbTab)})
+                Dim keywords = Model.GetKeywordList()
                 For Each k In keywords
                     Await App.Repository.Keywords.Insert(New Models.Keyword(k))
                 Next
@@ -75,7 +74,23 @@ Namespace Global.MyBooks.App.ViewModels
 
             If Not String.IsNullOrWhiteSpace(Model.Authors) Then
                 Await App.Repository.Authors.Insert(New Models.Author(Model.Authors))
+                Dim list = Model.GetAuthorList(App.SelectedNameFormat = App.FirstNameLastNameFormat)
+                If list.Count > 1 Then
+                    For Each a In list
+                        Await App.Repository.Authors.Insert(New Models.Author(a))
+                    Next
+                End If
             End If
+
+        End Function
+
+        Public Async Function Save() As Task(Of IBookRepository.UpsertResult)
+            Dim result = Await App.Repository.Books.Upsert(Model)
+            IsModified = False
+            If result <> IBookRepository.UpsertResult.skipped Then
+                Await UpdateIndex()
+            End If
+            Return result
         End Function
 
         Public Shared Event Modified()
