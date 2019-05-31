@@ -9,6 +9,15 @@ Namespace Global.MyBooks.App.ViewModels
         Inherits BindableBase
 
         Public Sub New()
+            InitializeCommands()
+        End Sub
+
+        Public Sub New(bookSet As MultipleBooksViewModel)
+            InitializeCommands()
+            Books = bookSet
+        End Sub
+
+        Private Sub InitializeCommands()
             SaveCommand = New RelayCommand(Async Sub()
                                                Await Save()
                                            End Sub)
@@ -44,6 +53,16 @@ Namespace Global.MyBooks.App.ViewModels
             End Set
         End Property
 
+        Private _multipleBooks As Boolean = False
+        Public Property MultipleBooks As Boolean
+            Get
+                Return _multipleBooks
+            End Get
+            Set(value As Boolean)
+                SetProperty(Of Boolean)(_multipleBooks, value)
+            End Set
+        End Property
+
         Private _isInEdit As Boolean = False
         ' <summary>
         ' Gets or sets the current edit mode 
@@ -68,7 +87,29 @@ Namespace Global.MyBooks.App.ViewModels
                         IsInEdit = True
                     End If
                 End If
+                MultipleBooks = False
                 AddHandler _book.ErrorsChanged, AddressOf OnErrorsChanged
+            End Set
+        End Property
+
+        Private _books As MultipleBooksViewModel
+        Public Property Books As MultipleBooksViewModel
+            Get
+                Return _books
+            End Get
+            Set(value As MultipleBooksViewModel)
+                SetProperty(Of MultipleBooksViewModel)(_books, value)
+                If value Is Nothing Then
+                    MultipleBooks = False
+                Else
+                    Book = value
+                    MultipleBooks = True
+                    IsInEdit = True
+                    IsNewBook = False
+                    For Each b In Books.Models
+                        AddHandler b.ErrorsChanged, AddressOf OnErrorsChanged
+                    Next
+                End If
             End Set
         End Property
 

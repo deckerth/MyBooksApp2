@@ -477,7 +477,7 @@
   <data name="NameSeperator.Header" xml:space="preserve">
     <value>Names are separated by..</value>
   </data>
-  <data name="ASIN.Text" xml:space="preserve">
+  <data name="ASIN.Header" xml:space="preserve">
     <value>Amazon Standard Identification Number</value>
   </data>
   <data name="DataImport" xml:space="preserve">
@@ -596,5 +596,14 @@
   </data>
   <data name="DataImportPageTitle.Text" xml:space="preserve">
     <value>Data Import</value>
+  </data>
+  <data name="DeleteEntry" xml:space="preserve">
+    <value>&lt;delete&gt;</value>
+  </data>
+  <data name="KeepValue" xml:space="preserve">
+    <value>&lt;keep value&gt;</value>
+  </data>
+  <data name="DeleteBooksQuestion" xml:space="preserve">
+    <value>Do you want to delete the selected titles?</value>
   </data>
 </root>

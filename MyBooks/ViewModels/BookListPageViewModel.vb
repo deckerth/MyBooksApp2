@@ -32,6 +32,7 @@ Namespace Global.MyBooks.App.ViewModels
             ExportDbCommand = New RelayCommand(AddressOf OnExportDB)
             DeleteBookCommand = New RelayCommand(AddressOf OnDeleteBook)
             InitializePaneCommands()
+            InitalizeSelectionCommands()
             AddHandler BookViewModel.Modified, AddressOf OnBookModified
             AddHandler BookDetailPageViewModel.OnNewBookCreated, AddressOf OnBookCreated
         End Sub
@@ -54,6 +55,9 @@ Namespace Global.MyBooks.App.ViewModels
 
         Private Async Sub OnBookCreated(newBook As BookViewModel)
             Await DispatcherHelper.ExecuteOnUIThreadAsync(Sub() _books.Add(newBook))
+            If ListBackup IsNot Nothing Then
+                ListBackup.Add(newBook)
+            End If
         End Sub
 
         Private _books As ObservableCollection(Of BookViewModel) = New ObservableCollection(Of BookViewModel)
@@ -76,6 +80,16 @@ Namespace Global.MyBooks.App.ViewModels
             End Set
         End Property
 
+        Private _multipleSelectionMode As Boolean = False
+        Public Property MultipleSelectionMode As Boolean
+            Get
+                Return _multipleSelectionMode
+            End Get
+            Set(value As Boolean)
+                SetProperty(Of Boolean)(_multipleSelectionMode, value)
+            End Set
+        End Property
+
         Private _errorText As String = Nothing
         ' <summary>
         ' Gets Or sets the error text.
@@ -91,6 +105,65 @@ Namespace Global.MyBooks.App.ViewModels
 
         Public Property Progress As New ProgressRingViewModel
 
+        Public Property FilterIsSet As Boolean = False
+#End Region
+
+#Region "FullListBackup"
+        Private ListBackup As List(Of BookViewModel) = Nothing
+
+        Public Sub CreateBackup()
+            ListBackup = Books.ToList()
+        End Sub
+
+        Public Function IsBackupValid() As Boolean
+            Return ListBackup IsNot Nothing
+        End Function
+
+        Public Sub RestoreBackup()
+            If ListBackup IsNot Nothing Then
+                Books.Clear()
+                For Each b In ListBackup
+                    Books.Add(b)
+                Next
+                ListBackup = Nothing
+            End If
+        End Sub
+#End Region
+
+#Region "Selection"
+
+        Public EnableSingleSelectionModeCommand As RelayCommand
+        Public EnableMultipleSelectionModeCommand As RelayCommand
+        Public SelectAllCommand As RelayCommand
+        Public DeselectAllCommand As RelayCommand
+
+        Private Sub InitalizeSelectionCommands()
+            SelectAllCommand = New RelayCommand(AddressOf OnSelectAll)
+            DeselectAllCommand = New RelayCommand(AddressOf OnDeselectAll)
+            EnableMultipleSelectionModeCommand = New RelayCommand(AddressOf OnEnableMultipleSelectionMode)
+            EnableSingleSelectionModeCommand = New RelayCommand(AddressOf OnEnableSingleSelectionMode)
+        End Sub
+
+        Public Property SelectedItems As ObservableCollection(Of Object)
+
+        Public Event SelectAll()
+        Public Event DeselectAll()
+
+        Private Sub OnSelectAll()
+            RaiseEvent SelectAll()
+        End Sub
+
+        Private Sub OnDeselectAll()
+            RaiseEvent DeselectAll()
+        End Sub
+
+        Private Sub OnEnableSingleSelectionMode()
+            MultipleSelectionMode = False
+        End Sub
+
+        Private Sub OnEnableMultipleSelectionMode()
+            MultipleSelectionMode = True
+        End Sub
 #End Region
 
 #Region "DataAccess"
@@ -130,8 +203,8 @@ Namespace Global.MyBooks.App.ViewModels
 
         Public DeleteBookCommand As RelayCommand
 
-        Public Async Sub OnDeleteBook()
-            If SelectedBook IsNot Nothing AndAlso SelectedBook.Title.Length > 0 Then
+        Private Async Function DeleteBookAsync(toDelete As BookViewModel) As Task
+            If toDelete IsNot Nothing Then
                 Dim dialog = New MessageDialog(App.Texts.GetString("DeleteBookQuestion"))
 
                 ' Add commands and set their callbacks 
@@ -142,11 +215,64 @@ Namespace Global.MyBooks.App.ViewModels
                 Await dialog.ShowAsync()
 
                 If Cancelled = False Then
-                    Await App.Repository.Books.DeleteAsync(SelectedBook.Id)
-                    Books.Remove(SelectedBook)
-                    SelectedBook = Nothing
+                    Try
+                        Await App.Repository.Books.DeleteAsync(toDelete.Id)
+                        Books.Remove(toDelete)
+                        If ListBackup IsNot Nothing Then
+                            ListBackup.Remove(toDelete)
+                        End If
+                    Catch ex As Exception
+                    End Try
                 End If
             End If
+        End Function
+
+        Private Async Function DeleteBooksAsync(toDelete As List(Of BookViewModel)) As Task
+            If toDelete IsNot Nothing Then
+                Dim dialog = New MessageDialog(App.Texts.GetString("DeleteBooksQuestion"))
+
+                ' Add commands and set their callbacks 
+                dialog.Commands.Add(New UICommand(App.Texts.GetString("Yes")))
+                dialog.Commands.Add(New UICommand(App.Texts.GetString("Cancel"), Sub(command) Cancelled = True))
+
+                Cancelled = False
+                Await dialog.ShowAsync()
+
+                If Cancelled = False Then
+                    For Each b In toDelete
+                        Try
+                            Await App.Repository.Books.DeleteAsync(b.Id)
+                            Books.Remove(b)
+                            If ListBackup IsNot Nothing Then
+                                ListBackup.Remove(b)
+                            End If
+                        Catch ex As Exception
+                        End Try
+                    Next
+                End If
+            End If
+        End Function
+
+        Public Async Sub OnDeleteBook()
+            Await Synchronize() ' New books may not yet have been saved. Unsaved books cannot be deleted.
+            If MultipleSelectionMode Then
+                If SelectedItems.Count > 0 Then
+                    If SelectedItems.Count = 1 Then
+                        Await DeleteBookAsync(SelectedItems.ElementAt(0))
+                    Else
+                        Dim bookSet As New List(Of BookViewModel)
+                        For Each b In SelectedItems
+                            bookSet.Add(b)
+                        Next
+                        Await DeleteBooksAsync(bookSet)
+                    End If
+                End If
+            Else
+                If SelectedBook IsNot Nothing Then
+                    Await DeleteBookAsync(SelectedBook)
+                End If
+            End If
+
         End Sub
 
 #End Region
@@ -219,6 +345,7 @@ Namespace Global.MyBooks.App.ViewModels
                     Await Progress.HideAsync()
                     Dim dialog = New ImportResultDialog(Counters)
                     Await dialog.ShowAsync()
+                    ListBackup = Nothing
                 End If
             End If
 
@@ -230,7 +357,7 @@ Namespace Global.MyBooks.App.ViewModels
 
         Public Async Function UpdateIndexAsync() As Task
             Await Progress.SetDeterministicAsync(Books.Count)
-            App.Repository.StartMassUpdate()
+            'App.Repository.StartMassUpdate()
             Await App.Repository.Authors.ClearAsync()
             Await App.Repository.Keywords.ClearAsync()
             Await App.Repository.Storages.ClearAsync()
@@ -238,7 +365,7 @@ Namespace Global.MyBooks.App.ViewModels
                 Await b.UpdateIndex()
                 Await Progress.IncrementAsync(1)
             Next
-            Await App.Repository.EndMassUpdateAsync()
+            'Await App.Repository.EndMassUpdateAsync()
 
             Await Progress.HideAsync()
         End Function
@@ -270,6 +397,8 @@ Namespace Global.MyBooks.App.ViewModels
         End Sub
 
 #End Region
+
+
 
     End Class
 

@@ -129,6 +129,9 @@ Namespace Global.MyBooks.App.Views
             NavigationCacheMode = NavigationCacheMode.Enabled
             ViewModel = New BookListPageViewModel()
             DataContext = ViewModel
+            ViewModel.SelectedItems = DataGrid.SelectedItems
+            AddHandler ViewModel.SelectAll, AddressOf OnSelectAll
+            AddHandler ViewModel.DeselectAll, AddressOf OnDeselectAll
         End Sub
 
         Protected Overrides Sub OnNavigatedTo(e As NavigationEventArgs)
@@ -144,9 +147,23 @@ Namespace Global.MyBooks.App.Views
         End Sub
 
         Private Sub EditBook_Click(sender As Object, e As RoutedEventArgs)
-
-            If ViewModel.SelectedBook IsNot Nothing AndAlso ViewModel.SelectedBook.Title.Length > 0 Then
-                Frame.Navigate(GetType(BookDetailPage), ViewModel.SelectedBook)
+            If ViewModel.MultipleSelectionMode Then
+                If DataGrid.SelectedItems.Count > 0 Then
+                    If DataGrid.SelectedItems.Count = 1 Then
+                        Frame.Navigate(GetType(BookDetailPage), DataGrid.SelectedItems.ElementAt(0))
+                    Else
+                        Dim bookSet As New List(Of BookViewModel)
+                        For Each b In ViewModel.SelectedItems
+                            bookSet.Add(b)
+                        Next
+                        Dim bookSetViewModel As New MultipleBooksViewModel(bookSet)
+                        Frame.Navigate(GetType(BookDetailPage), bookSetViewModel)
+                    End If
+                End If
+            Else
+                If ViewModel.SelectedBook IsNot Nothing AndAlso ViewModel.SelectedBook.Title.Length > 0 Then
+                    Frame.Navigate(GetType(BookDetailPage), ViewModel.SelectedBook)
+                End If
             End If
         End Sub
 
@@ -215,9 +232,9 @@ Namespace Global.MyBooks.App.Views
             ' Or the handler for SuggestionChosen.
             If args.Reason = AutoSuggestionBoxTextChangeReason.UserInput Then
                 If String.IsNullOrEmpty(sender.Text) Then
-                    Await DispatcherHelper.ExecuteOnUIThreadAsync(Async Function()
-                                                                      Await ViewModel.GetBooksListAsync()
-                                                                  End Function)
+                    'Await DispatcherHelper.ExecuteOnUIThreadAsync(Async Function()
+                    '                                                  Await ViewModel.GetBooksListAsync()
+                    '                                              End Function)
                     sender.ItemsSource = Nothing
                 Else
                     Dim parameters As String() = sender.Text.Split({" ", ",", ":", ";"}, StringSplitOptions.RemoveEmptyEntries)
@@ -245,9 +262,18 @@ Namespace Global.MyBooks.App.Views
         Private Async Sub BookSearchBox_QuerySubmitted(sender As AutoSuggestBox, args As AutoSuggestBoxQuerySubmittedEventArgs)
 
             If String.IsNullOrEmpty(args.QueryText) Then
-                Await DispatcherHelper.ExecuteOnUIThreadAsync(Async Function()
-                                                                  Await ViewModel.GetBooksListAsync()
-                                                              End Function)
+                If ViewModel.FilterIsSet Then
+                    ViewModel.FilterIsSet = False
+                    If ViewModel.IsBackupValid() Then
+                        Await DispatcherHelper.ExecuteOnUIThreadAsync(Sub() ViewModel.RestoreBackup())
+                    Else
+                        Await ViewModel.Progress.SetIndeterministicAsync()
+                        Await DispatcherHelper.ExecuteOnUIThreadAsync(Async Function()
+                                                                          Await ViewModel.GetBooksListAsync()
+                                                                      End Function)
+                        Await ViewModel.Progress.HideAsync()
+                    End If
+                End If
             Else
                 Dim parameters As String() = args.QueryText.Split({" ", ",", ":", ";"}, StringSplitOptions.RemoveEmptyEntries)
                 Dim matches = ViewModel.Books.Where(
@@ -265,10 +291,12 @@ Namespace Global.MyBooks.App.Views
                         ).ToList()
 
                 Await DispatcherHelper.ExecuteOnUIThreadAsync(Sub()
+                                                                  ViewModel.CreateBackup()
                                                                   ViewModel.Books.Clear()
                                                                   For Each match In matches
                                                                       ViewModel.Books.Add(match)
                                                                   Next
+                                                                  ViewModel.FilterIsSet = True
                                                               End Sub)
 
             End If
@@ -342,14 +370,14 @@ Namespace Global.MyBooks.App.Views
             ViewModel.SelectedBook.AuthorNameConversion.ComputeSuggestion()
         End Sub
 
-        'Private Sub CopyToClipboard_Click(sender As Object, e As RoutedEventArgs)
-        '    If _internalTextBox IsNot Nothing Then
-        '        Dim descendants = _internalTextBox.FindDescendants(Of TextBox)
-        '        Dim box As TextBox = descendants.FirstOrDefault()
-        '        box.copytoclipboard..Only available As Of 1809!
+        Private Sub OnSelectAll()
+            DataGrid.SelectAll()
+        End Sub
 
-        '    End If
-        'End Sub
+        Private Sub OnDeselectAll()
+            DataGrid.DeselectAll()
+        End Sub
+
     End Class
 
 End Namespace

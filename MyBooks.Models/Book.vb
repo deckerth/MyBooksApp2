@@ -10,6 +10,8 @@ Namespace Global.MyBooks.Models
             Book
             EBook
             AudioBook
+            KeepValue
+            DeleteValue
             Undefined
         End Enum
 

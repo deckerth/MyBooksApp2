@@ -360,13 +360,13 @@ Namespace Global.MyBooks.App.ViewModels
                     Else
                         Await Progress.SetDeterministicAsync(QueryResult.SelectedItems.Count)
 
-                        App.Repository.StartMassUpdate()
+                        'App.Repository.StartMassUpdate()
                         For Each b In QueryResult.SelectedItems
                             Dim importedBook As BookBrowserViewModel = DirectCast(b, BookBrowserViewModel)
                             counters.Increment(Await importedBook.AddBookAsync())
                             Await Progress.IncrementAsync(1)
                         Next
-                        Await App.Repository.EndMassUpdateAsync()
+                        'Await App.Repository.EndMassUpdateAsync()
                         Await Progress.HideAsync()
                         Await DispatcherHelper.ExecuteOnUIThreadAsync(Async Function() As Task
                                                                           Dim dialog = New ImportResultDialog(counters)

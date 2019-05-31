@@ -63,19 +63,12 @@
                     RelativePanel.AlignLeftWithPanel="True">
 
                 <CommandBar.Content>
-                    <StackPanel Orientation="Horizontal">
                         <TextBlock
                           x:Name="PageTitle"
                           x:Uid="DataImportPageTitle"
                           Margin="0,0,0,2"
                           Style="{StaticResource PageTitleTextBlockStyle}"
                           />
-                        <telerikPrimitives:RadBusyIndicator x:Name="SearchProgressRing" x:Uid="SearchProgressRing" 
-                              Margin="20,0,0,0"
-                              IsActive="{x:Bind ViewModel.Progress.Active,Mode=OneWay}"  
-                              AnimationStyle="AnimationStyle5"
-                              Content="{x:Bind ViewModel.Progress.ProgressString,Mode=OneWay}"                      />
-                    </StackPanel>
                 </CommandBar.Content>
 
                 <AppBarButton x:Name="ImportButton" x:Uid="ImportButton"
@@ -199,5 +192,19 @@
                 </TransitionCollection>
             </Frame.ContentTransitions>
         </Frame>
+
+        <Border x:Name="ProgressIndicatorArea" Height="150" Width="150" 
+                Grid.Row="1" 
+                BorderThickness="2" 
+                BorderBrush="{StaticResource MenuBarForegroundBrush}" 
+                Background="{StaticResource MenuBarBackgroundBrush}" 
+                CornerRadius="2,2,2,2"
+                Visibility="{x:Bind ViewModel.Progress.Active,Mode=OneWay,Converter={StaticResource booleanVisConverter}}" >
+            <telerikPrimitives:RadBusyIndicator x:Name="SearchProgressRing" x:Uid="SearchProgressRing" 
+                            IsActive="True"
+                            AnimationStyle="AnimationStyle5"
+                            Content="{x:Bind ViewModel.Progress.ProgressString,Mode=OneWay}"/>
+        </Border>
+
     </Grid>
 </Page>

@@ -38,6 +38,9 @@ Namespace Global.MyBooks.Repository.Sql
 
         Public Async Function Insert(author As Author) As Task Implements IAuthorRepository.Insert
             If Await GetAsyncExact(author.Name) Is Nothing Then
+                If author.Name.Contains("Carriger, Gail") Then
+                    Dim x = 0
+                End If
                 Await _db.Authors.AddAsync(author)
                 Await _db.SaveChangesAsync()
             End If

@@ -24,6 +24,10 @@ Namespace Global.MyBooks.App.ValueConverters
                         result = App.Texts.GetString("EBook")
                     Case Book.MediaType.AudioBook
                         result = App.Texts.GetString("AudioBook")
+                    Case Book.MediaType.KeepValue
+                        result = App.Texts.GetString("KeepValue")
+                    Case Book.MediaType.DeleteValue
+                        result = App.Texts.GetString("DeleteEntry")
                 End Select
             End If
 
@@ -43,6 +47,10 @@ Namespace Global.MyBooks.App.ValueConverters
                         result = Book.MediaType.EBook
                     ElseIf type.Equals(App.Texts.GetString("AudioBook")) Then
                         result = Book.MediaType.AudioBook
+                    ElseIf type.Equals(App.Texts.GetString("KeepValue")) Then
+                        result = Book.MediaType.KeepValue
+                    ElseIf type.Equals(App.Texts.GetString("DeleteEntry")) Then
+                        result = Book.MediaType.DeleteValue
                     End If
                 End If
             End If

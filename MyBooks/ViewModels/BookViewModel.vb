@@ -42,7 +42,7 @@ Namespace Global.MyBooks.App.ViewModels
             BrowserAdapter.OnDisplayStandardLibCommand()
         End Sub
 
-        Private _allMediaTypes As List(Of MediumTypeDescriptor)
+        Protected _allMediaTypes As List(Of MediumTypeDescriptor)
         Public ReadOnly Property AllMediaTypes As List(Of MediumTypeDescriptor)
             Get
                 If _allMediaTypes Is Nothing Then
@@ -136,7 +136,7 @@ Namespace Global.MyBooks.App.ViewModels
                 Return Model.Title
             End Get
             Set(value As String)
-                If Not value.Equals(Model.Title) Then
+                If value IsNot Nothing AndAlso Not value.Equals(Model.Title) Then
                     Model.Title = value
                     IsModified = True
                     OnPropertyChanged("Title")
@@ -149,7 +149,7 @@ Namespace Global.MyBooks.App.ViewModels
                 Return Model.OriginalTitle
             End Get
             Set(value As String)
-                If Not value.Equals(Model.OriginalTitle) Then
+                If value IsNot Nothing AndAlso Not value.Equals(Model.OriginalTitle) Then
                     Model.OriginalTitle = value
                     IsModified = True
                     OnPropertyChanged("OriginalTitle")
@@ -162,7 +162,7 @@ Namespace Global.MyBooks.App.ViewModels
                 Return Model.Authors
             End Get
             Set(value As String)
-                If Not value.Equals(Model.Authors) Then
+                If value IsNot Nothing AndAlso Not value.Equals(Model.Authors) Then
                     Model.Authors = value
                     IsModified = True
                     OnPropertyChanged("Authors")
@@ -175,7 +175,7 @@ Namespace Global.MyBooks.App.ViewModels
                 Return Model.Keywords
             End Get
             Set(value As String)
-                If Not value.Equals(Model.Keywords) Then
+                If value IsNot Nothing AndAlso Not value.Equals(Model.Keywords) Then
                     Model.Keywords = value
                     IsModified = True
                     OnPropertyChanged("Keywords")
@@ -215,7 +215,7 @@ Namespace Global.MyBooks.App.ViewModels
                 Return Model.Storage
             End Get
             Set(value As String)
-                If Not value.Equals(Model.Storage) Then
+                If value IsNot Nothing AndAlso Not value.Equals(Model.Storage) Then
                     Model.Storage = value
                     IsModified = True
                     OnPropertyChanged("Storage")
@@ -228,7 +228,7 @@ Namespace Global.MyBooks.App.ViewModels
                 Return Model.BorrowedDate
             End Get
             Set(value As String)
-                If Not value.Equals(Model.BorrowedDate) Then
+                If value IsNot Nothing AndAlso Not value.Equals(Model.BorrowedDate) Then
                     Model.BorrowedDate = value
                     IsModified = True
                     OnPropertyChanged("BorrowedDate")
@@ -251,7 +251,7 @@ Namespace Global.MyBooks.App.ViewModels
                 Return Model.BorrowedTo
             End Get
             Set(value As String)
-                If Not value.Equals(Model.BorrowedTo) Then
+                If value IsNot Nothing AndAlso Not value.Equals(Model.BorrowedTo) Then
                     Model.BorrowedTo = value
                     IsModified = True
                     OnPropertyChanged("BorrowedTo")
@@ -264,7 +264,7 @@ Namespace Global.MyBooks.App.ViewModels
                 Return Model.Published
             End Get
             Set(value As String)
-                If Not value.Equals(Model.Published) Then
+                If value IsNot Nothing AndAlso Not value.Equals(Model.Published) Then
                     Model.Published = value
                     IsModified = True
                     OnPropertyChanged("Published")
@@ -288,7 +288,7 @@ Namespace Global.MyBooks.App.ViewModels
                 Return Model.OCLCNo
             End Get
             Set(value As String)
-                If Not value.Equals(Model.OCLCNo) Then
+                If value IsNot Nothing AndAlso Not value.Equals(Model.OCLCNo) Then
                     Model.OCLCNo = value
                     IsModified = True
                     OnPropertyChanged("OCLCNo")
@@ -301,7 +301,7 @@ Namespace Global.MyBooks.App.ViewModels
                 Return Model.DLCNo
             End Get
             Set(value As String)
-                If Not value.Equals(Model.DLCNo) Then
+                If value IsNot Nothing AndAlso Not value.Equals(Model.DLCNo) Then
                     Model.DLCNo = value
                     IsModified = True
                     OnPropertyChanged("DCLCNo")
@@ -314,7 +314,7 @@ Namespace Global.MyBooks.App.ViewModels
                 Return Model.ISBN
             End Get
             Set(value As String)
-                If Not value.Equals(Model.ISBN) Then
+                If value IsNot Nothing AndAlso Not value.Equals(Model.ISBN) Then
                     Model.ISBN = value
                     IsModified = True
                     OnPropertyChanged("ISBN")
@@ -327,7 +327,7 @@ Namespace Global.MyBooks.App.ViewModels
                 Return Model.NBACN
             End Get
             Set(value As String)
-                If Not value.Equals(Model.NBACN) Then
+                If value IsNot Nothing AndAlso Not value.Equals(Model.NBACN) Then
                     Model.NBACN = value
                     IsModified = True
                     OnPropertyChanged("NBACN")
@@ -340,7 +340,7 @@ Namespace Global.MyBooks.App.ViewModels
                 Return Model.ASIN
             End Get
             Set(value As String)
-                If Not value.Equals(Model.ASIN) Then
+                If value IsNot Nothing AndAlso Not value.Equals(Model.ASIN) Then
                     Model.ASIN = value
                     IsModified = True
                     OnPropertyChanged("ASIN")
@@ -353,7 +353,7 @@ Namespace Global.MyBooks.App.ViewModels
                 Return Model.Url
             End Get
             Set(value As String)
-                If Not value.Equals(Model.Url) Then
+                If value IsNot Nothing AndAlso Not value.Equals(Model.Url) Then
                     Model.Url = value
                     IsModified = True
                     OnPropertyChanged("Url")
@@ -366,7 +366,7 @@ Namespace Global.MyBooks.App.ViewModels
                 Return Model.GoogleBooksUrl
             End Get
             Set(value As String)
-                If Not value.Equals(Model.GoogleBooksUrl) Then
+                If value IsNot Nothing AndAlso Not value.Equals(Model.GoogleBooksUrl) Then
                     Model.GoogleBooksUrl = value
                     IsModified = True
                     OnPropertyChanged("GoogleBooksUrl")

@@ -19,25 +19,31 @@ Namespace Global.MyBooks.App.Views
         ' Displays the selected book data.
         ' </summary>
         Protected Overrides Sub OnNavigatedTo(e As NavigationEventArgs)
-            Dim book As BookViewModel = DirectCast(e.Parameter, BookViewModel)
-            If book Is Nothing Then
+            If e.Parameter IsNot Nothing Then
+                If TypeOf e.Parameter Is MultipleBooksViewModel Then
+                    ViewModel = New BookDetailPageViewModel(e.Parameter)
+                Else
+                    Dim book As BookViewModel = DirectCast(e.Parameter, BookViewModel)
+                    If ViewModel Is Nothing OrElse Not ViewModel.Book.Equals(book) Then
+                        ViewModel = New BookDetailPageViewModel With {
+                    .Book = book
+                }
+                        If book.Id.Equals(Models.Book.NewBookId) Then
+                            ViewModel.IsNewBook = True
+                            ViewModel.Book.Model.Id = Guid.NewGuid()
+                            PageHeaderText.Text = App.Texts.GetString("NewBook")
+                        End If
+                        ViewModel.Book.Validate = False
+                        Bindings.Update()
+                    End If
+                End If
+            Else
                 ViewModel = New BookDetailPageViewModel With {
                     .IsNewBook = True,
                     .Book = New BookViewModel(New Models.Book()) With {.Validate = True}
                 }
                 Bindings.Update()
                 PageHeaderText.Text = App.Texts.GetString("NewBook")
-            ElseIf ViewModel Is Nothing OrElse Not ViewModel.Book.Equals(book) Then
-                ViewModel = New BookDetailPageViewModel With {
-                    .Book = book
-                }
-                If book.Id.Equals(Models.Book.NewBookId) Then
-                    ViewModel.IsNewBook = True
-                    ViewModel.Book.Model.Id = Guid.NewGuid()
-                    PageHeaderText.Text = App.Texts.GetString("NewBook")
-                End If
-                ViewModel.Book.Validate = False
-                Bindings.Update()
             End If
 
             ViewModel.IsInEdit = True

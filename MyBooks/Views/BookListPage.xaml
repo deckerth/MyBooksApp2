@@ -18,6 +18,7 @@
     <Page.Resources>
         <converter:StringVisibilityConverter x:Key="stringVisConverter" />
         <converter:BooleanToVisibilityConverter x:Key="booleanVisConverter" />
+        <converter:BooleanToSelectionModeConverter x:Key="booleanSelModeConverter" />
 
         <!--  This style is applied implicitly to all data grid headers.  -->
         <Style TargetType="gridPrimitives:DataGridColumnHeader">
@@ -74,9 +75,10 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        
+
         <CommandBar
                 Grid.Row="0"
                 Grid.Column="0"
@@ -86,20 +88,12 @@
                 IsDynamicOverflowEnabled="True"
                 >
             <CommandBar.Content>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock
+                <TextBlock
                   x:Name="PageTitle"
                   x:Uid="BookListPageTitle"
                   Margin="10,0,0,0"
                   Style="{StaticResource PageTitleTextBlockStyle}"
                 />
-                <telerikPrimitives:RadBusyIndicator x:Name="SearchProgressRing" x:Uid="SearchProgressRing" 
-                            Margin="20,0,0,0"
-                            IsActive="{x:Bind ViewModel.Progress.Active,Mode=OneWay}" 
-                            AnimationStyle="AnimationStyle5"
-                            Content="              "                      />
-
-                </StackPanel>
             </CommandBar.Content>
 
             <AppBarButton x:Name="CreateBook"
@@ -190,19 +184,56 @@
                     TextWrapping="WrapWholeWords" />
         </Grid>
 
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="2">
+            <AppBarButton x:Name="SingleChoice"
+                       x:Uid="SingleChoiceButton"
+                       Visibility="{x:Bind ViewModel.MultipleSelectionMode,Converter={StaticResource booleanVisConverter},Mode=OneWay}"
+                       Command="{x:Bind ViewModel.EnableSingleSelectionModeCommand}"
+                      >
+                <AppBarButton.Icon>
+                    <PathIcon Data="F0 M6,1 h12 v2 h-12 v-2 M6,7 h12 v2 h-12 v-2 M6,13 h12 v2 h-12 v-2 M2,0 a2.5,2.5,0,1,1,-1,0 M2,6 a2.5,2.5,0,1,1,-1,0 M2,12 a2.5,2.5,0,1,1,-1,0 M2,7 a1.5,1.5,0,1,1,-1,0 M2,13 a1.5,1.5,0,1,1,-1,0 " />
+                </AppBarButton.Icon>
+            </AppBarButton>
+
+            <AppBarButton x:Name="MultipleChoice"
+                       x:Uid="MultipleChoiceButton"
+                       Visibility="{x:Bind ViewModel.MultipleSelectionMode,Converter={StaticResource booleanVisConverter},ConverterParameter=True,Mode=OneWay}"
+                       Command="{x:Bind ViewModel.EnableMultipleSelectionModeCommand}"
+                      >
+                <AppBarButton.Icon>
+                    <PathIcon Data="F0 M6,1 h12 v2 h-12 v-2 M6,7 h12 v2 h-12 v-2 M6,13 h12 v2 h-12 v-2 M0,0 h4 v4 h-4 v-4 M0,6 h4 v4 h-4 v-4 M0,12 h4 v4 h-4 v-4 M1,7 h2 v2 h-2 v-2" />
+                </AppBarButton.Icon>
+            </AppBarButton>
+
+            <AppBarButton x:Name="SelectAllButton" 
+                          x:Uid="SelectAllButton" 
+                          Icon="SelectAll" 
+                          Visibility="{x:Bind ViewModel.MultipleSelectionMode,Converter={StaticResource booleanVisConverter},Mode=OneWay}"
+                          Command="{x:Bind ViewModel.SelectAllCommand}"
+                          />
+
+            <AppBarButton x:Name="DeselectAllButton" 
+                          x:Uid="DeselectAllButton" 
+                          Icon="ClearSelection"
+                          Visibility="{x:Bind ViewModel.MultipleSelectionMode,Converter={StaticResource booleanVisConverter},Mode=OneWay}"
+                          Command="{x:Bind ViewModel.DeselectAllCommand}"
+                       />
+
+        </StackPanel>
+        
         <telerikGrid:RadDataGrid
-                Grid.Row="2"
+                Grid.Row="3"
                 Grid.ColumnSpan="2"
                 x:Name="DataGrid"
                 BorderThickness="0"
                 ColumnDataOperationsMode="Flyout"
                 GridLinesVisibility="Horizontal"
                 GroupPanelPosition="Left"
-                Margin="0,40,0,0"
                 ItemsSource="{x:Bind ViewModel.Books}"
                 SelectedItem="{x:Bind ViewModel.SelectedBook, Mode=TwoWay}"
                 UserEditMode="Inline"
                 AutoGenerateColumns="False"
+                SelectionMode="{x:Bind ViewModel.MultipleSelectionMode,Converter={StaticResource booleanSelModeConverter},Mode=OneWay}"
                 >
 
             <telerikGrid:RadDataGrid.Commands >
@@ -393,6 +424,19 @@
             </telerikGrid:RadDataGrid.Columns>
         </telerikGrid:RadDataGrid>
 
-        <!--</RelativePanel>-->
+        <Border x:Name="ProgressIndicatorArea" Height="150" Width="150" 
+                Grid.ColumnSpan="2"
+                Grid.Row="3" 
+                BorderThickness="2" 
+                BorderBrush="{StaticResource MenuBarForegroundBrush}" 
+                Background="{StaticResource MenuBarBackgroundBrush}" 
+                CornerRadius="2,2,2,2"
+                Visibility="{x:Bind ViewModel.Progress.Active,Mode=OneWay,Converter={StaticResource booleanVisConverter}}" >
+            <telerikPrimitives:RadBusyIndicator x:Name="SearchProgressRing" x:Uid="SearchProgressRing" 
+                            IsActive="True"
+                            AnimationStyle="AnimationStyle5"
+                            Content="              "                      />
+        </Border>
     </Grid>
+    
 </Page>

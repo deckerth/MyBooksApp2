@@ -10,8 +10,8 @@
     <AssemblyName>MyBooks</AssemblyName>
     <DefaultLanguage>de-DE</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.16299.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.17763.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</ProjectTypeGuids>
@@ -152,6 +152,7 @@
     <Compile Include="ValueComparers\BookComparer_TitleAscending.vb" />
     <Compile Include="ValueConverters\BooleanInverterConverter.vb" />
     <Compile Include="ValueConverters\BooleanOperator.vb" />
+    <Compile Include="ValueConverters\BooleanToSelectionModeConverter.vb" />
     <Compile Include="ValueConverters\BooleanToVisibilityConverter.vb" />
     <Compile Include="ValueConverters\DateToDateTimeOffsetConverter.vb" />
     <Compile Include="ValueConverters\IntegerToStringConverter.vb" />
@@ -173,6 +174,7 @@
     <Compile Include="ViewModels\LibraryBooksViewModel.vb" />
     <Compile Include="ViewModels\LibrarySearchResultViewModel.vb" />
     <Compile Include="ViewModels\MediumTypeDescriptor.vb" />
+    <Compile Include="ViewModels\MultipleBooksViewModel.vb" />
     <Compile Include="ViewModels\ProgressRingViewModel.vb" />
     <Compile Include="ViewModels\ScannedBooksImportViewModel.vb" />
     <Compile Include="Views\AddBookFromLibraryDialog.xaml.vb">
@@ -391,10 +393,10 @@
       <Version>4.5.3.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore">
-      <Version>2.2.1</Version>
+      <Version>2.2.4</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite">
-      <Version>2.2.1</Version>
+      <Version>2.2.4</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.1.9</Version>
@@ -406,7 +408,7 @@
       <Version>5.0.0</Version>
     </PackageReference>
     <PackageReference Include="Telerik.UI.for.UniversalWindowsPlatform">
-      <Version>1.0.1.3</Version>
+      <Version>1.0.1.5</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

@@ -134,7 +134,22 @@
                            Margin="0,8,16,8"
                            IsReadOnly="{x:Bind ViewModel.IsInEdit, Converter={StaticResource boolInverterConverter}, Mode=OneWay}"
                            RelativePanel.AlignLeftWithPanel="True"
-                           Text="{x:Bind ViewModel.Book.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                           Text="{x:Bind ViewModel.Book.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                           Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},ConverterParameter=true,Mode=OneWay}"
+                            />
+                        <ComboBox
+                           x:Name="Titles"
+                           x:Uid="BookTitle"
+                           MinWidth="300"
+                           Margin="0,8,16,8"
+                           IsEditable="True"
+                           RelativePanel.AlignLeftWithPanel="True"
+                           RelativePanel.AlignTopWithPanel="True"
+                           SelectedItem="{x:Bind ViewModel.Books.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                           ItemsSource="{x:Bind ViewModel.Books.Titles,Mode=OneWay}"
+                           Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},Mode=OneWay}"
+                            />
+
                         <TextBox
                            x:Name="OriginalTitle"
                            x:Uid="OriginalTitle"
@@ -143,7 +158,22 @@
                            IsReadOnly="{x:Bind ViewModel.IsInEdit, Converter={StaticResource boolInverterConverter}, Mode=OneWay}"
                            RelativePanel.AlignLeftWithPanel="True"
                            RelativePanel.Below="Title"
-                           Text="{x:Bind ViewModel.Book.OriginalTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                           Text="{x:Bind ViewModel.Book.OriginalTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                           Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},ConverterParameter=true,Mode=OneWay}"
+                            />
+                        <ComboBox
+                           x:Name="OriginalTitles"
+                           x:Uid="OriginalTitle"
+                           MinWidth="300"
+                           Margin="0,8,16,8"
+                           IsEditable="True"
+                           RelativePanel.AlignLeftWithPanel="True"
+                           RelativePanel.Below="Titles"
+                           SelectedItem="{x:Bind ViewModel.Books.OriginalTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                           ItemsSource="{x:Bind ViewModel.Books.OriginalTitles,Mode=OneWay}"
+                           Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},Mode=OneWay}"
+                           />
+
                         <telerik:RadAutoCompleteBox
                            x:Name="Authors"
                            x:Uid="Authors"
@@ -153,14 +183,16 @@
                            RelativePanel.Below="OriginalTitle"
                            IsEnabled="{x:Bind ViewModel.IsInEdit, Mode=OneWay}"                           
                            Text="{x:Bind ViewModel.Book.Authors, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},ConverterParameter=true,Mode=OneWay}"
                            TextChanged="OnAuthors_TextChanged"/>
                         <Button
                             x:Name="ReformatAuthorsLastNameFirstName"
                             Click="ReformatAuthorsLastNameFirstName_Click"
                             RelativePanel.RightOf="Authors"
                             RelativePanel.AlignBottomWith="Authors"
-                            Margin="0,0,0,8"
-                            FlyoutBase.AttachedFlyout="{StaticResource NameConversionSuggestionFlyout}">
+                            Margin="0,10,0,0"
+                            FlyoutBase.AttachedFlyout="{StaticResource NameConversionSuggestionFlyout}"
+                            Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},ConverterParameter=true,Mode=OneWay}">
                             <Button.Content>
                                 <TextBlock Text="A B → B, A"/>
                             </Button.Content>
@@ -171,11 +203,27 @@
                             RelativePanel.RightOf="ReformatAuthorsLastNameFirstName"
                             RelativePanel.AlignBottomWith="Authors"
                             Margin="10,0,0,8"
+                            Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},ConverterParameter=true,Mode=OneWay}"
                             FlyoutBase.AttachedFlyout="{StaticResource NameConversionSuggestionFlyout}">
                             <Button.Content>
                                 <TextBlock Text="B, A → A B"/>
                             </Button.Content>
                         </Button>
+
+                        <ComboBox
+                           x:Name="AuthorsList"
+                           x:Uid="Authors"
+                           Width="300"
+                           Margin="0,8,16,8"
+                           IsEditable="True"
+                           RelativePanel.AlignLeftWithPanel="True"
+                           RelativePanel.Below="OriginalTitles"
+                           IsEnabled="{x:Bind ViewModel.IsInEdit, Mode=OneWay}"                           
+                           SelectedItem="{x:Bind ViewModel.Books.Authors, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           ItemsSource="{x:Bind ViewModel.Books.AuthorsList,Mode=OneWay}"
+                           Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},Mode=OneWay}"
+                            />
+
                         <telerik:RadAutoCompleteBox
                            x:Name="Keywords"
                            x:Uid="Keywords"
@@ -185,7 +233,22 @@
                            RelativePanel.AlignLeftWithPanel="True"
                            RelativePanel.Below="Authors"
                            Text="{x:Bind ViewModel.Book.Keywords, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},ConverterParameter=true,Mode=OneWay}"
                            TextChanged="OnKeywords_TextChanged"/>
+
+                        <ComboBox
+                           x:Name="KeywordsList"
+                           x:Uid="Keywords"
+                           Width="300"
+                           Margin="0,8,16,8"
+                           IsEditable="True"
+                           RelativePanel.AlignLeftWithPanel="True"
+                           RelativePanel.Below="AuthorsList"
+                           SelectedItem="{x:Bind ViewModel.Book.Keywords, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           ItemsSource="{x:Bind ViewModel.Books.KeywordsList,Mode=OneWay}"
+                           Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},Mode=OneWay}"
+                           />
+
                         <ComboBox
                            x:Name="MediumType"
                            x:Uid="MediumType"
@@ -195,8 +258,24 @@
                            ItemTemplate="{StaticResource BookTypeTemplate}"
                            SelectedItem="{x:Bind ViewModel.Book.MediumDescriptor,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                            IsEnabled="{x:Bind ViewModel.IsInEdit, Mode=OneWay}"
+                           Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},ConverterParameter=true,Mode=OneWay}"
                            RelativePanel.AlignLeftWithPanel="True"
                            RelativePanel.Below="Keywords"/>
+
+                        <ComboBox
+                           x:Name="MediumTypeList"
+                           x:Uid="MediumType"
+                           MinWidth="100"
+                           Margin="0,8,16,8"
+                           ItemsSource="{x:Bind ViewModel.Book.AllMediaTypes,Mode=OneWay}"
+                           ItemTemplate="{StaticResource BookTypeTemplate}"
+                           SelectedItem="{x:Bind ViewModel.Book.MediumDescriptor,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                           IsEnabled="{x:Bind ViewModel.IsInEdit, Mode=OneWay}"
+                           RelativePanel.AlignLeftWithPanel="True"
+                           RelativePanel.Below="KeywordsList"
+                           Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},Mode=OneWay}"
+                            />
+
                         <telerik:RadAutoCompleteBox
                            x:Name="Storage"
                            x:Uid="Storage"
@@ -206,7 +285,22 @@
                            RelativePanel.AlignBottomWith="MediumType"
                            RelativePanel.RightOf="MediumType"
                            Text="{x:Bind ViewModel.Book.Storage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},ConverterParameter=true,Mode=OneWay}"
                            TextChanged="OnStorage_TextChanged"/>
+
+                        <ComboBox
+                           x:Name="Storages"
+                           x:Uid="Storage"
+                           Width="200"
+                           Margin="0,8,16,8"
+                           IsEditable="True"
+                           RelativePanel.AlignBottomWith="MediumTypeList"
+                           RelativePanel.RightOf="MediumTypeList"
+                           SelectedItem="{x:Bind ViewModel.Books.Storage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           ItemsSource="{x:Bind ViewModel.Books.Storages,Mode=OneWay}"
+                           Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},Mode=OneWay}"                           
+                            />
+
                         <TextBox
                            x:Name="Published"
                            x:Uid="Published"
@@ -215,7 +309,22 @@
                            IsEnabled="{x:Bind ViewModel.IsInEdit, Mode=OneWay}"
                            RelativePanel.AlignLeftWithPanel="True"
                            RelativePanel.Below="Storage"
+                           Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},ConverterParameter=true,Mode=OneWay}"
                            Text="{x:Bind ViewModel.Book.Published, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <ComboBox
+                           x:Name="PublishedList"
+                           x:Uid="Published"
+                           Width="200"
+                           Margin="0,8,16,8"
+                           IsEditable="True"
+                           RelativePanel.AlignLeftWithPanel="True"
+                           RelativePanel.Below="Storages"
+                           SelectedItem="{x:Bind ViewModel.Books.Published, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           ItemsSource="{x:Bind ViewModel.Books.PublishedList,Mode=OneWay}"
+                           Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},Mode=OneWay}"                           
+                            />
+
                         <TextBox
                            x:Name="BorrowedTo"
                            x:Uid="BorrowedTo"
@@ -224,7 +333,22 @@
                            IsReadOnly="{x:Bind ViewModel.IsInEdit, Converter={StaticResource boolInverterConverter}, Mode=OneWay}"
                            RelativePanel.AlignLeftWithPanel="True"
                            RelativePanel.Below="Published"
+                           Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},ConverterParameter=true,Mode=OneWay}"
                            Text="{x:Bind ViewModel.Book.BorrowedTo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <ComboBox
+                           x:Name="BorrowedToList"
+                           x:Uid="BorrowedTo"
+                           MinWidth="200"
+                           Margin="0,8,16,8"
+                           IsEditable="True"
+                           RelativePanel.AlignLeftWithPanel="True"
+                           RelativePanel.Below="PublishedList"
+                           SelectedItem="{x:Bind ViewModel.Books.BorrowedTo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           ItemsSource="{x:Bind ViewModel.Books.BorrowedToList,Mode=OneWay}"
+                           Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},Mode=OneWay}"                           
+                            />
+
                         <telerik:RadDatePicker
                            x:Name="BorrowedAt"
                            x:Uid="BorrowedAt"
@@ -234,17 +358,30 @@
                            IsEnabled="{x:Bind ViewModel.IsInEdit, Mode=OneWay}"
                            RelativePanel.AlignTopWith="BorrowedTo"
                            RelativePanel.RightOf="BorrowedTo"
+                           Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},ConverterParameter=true,Mode=OneWay}"
                            Value="{x:Bind ViewModel.Book.BorrowedDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource stringToDateTimeConverter}}"/>
 
-                        <uc:DetailExpander
+                        <ComboBox
+                           x:Name="BorrowedAtList"
+                           x:Uid="BorrowedAt"
+                           Width="200"
+                           Margin="0,8,16,8"
+                           IsEditable="True"
+                           RelativePanel.AlignTopWith="BorrowedToList"
+                           RelativePanel.RightOf="BorrowedToList"
+                           SelectedItem="{x:Bind ViewModel.Books.BorrowedDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource stringToDateTimeConverter}}"
+                           ItemsSource="{x:Bind ViewModel.Books.BorrowedDates,Mode=OneWay}"
+                           Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},Mode=OneWay}"                           
+                            />
+                    </RelativePanel>
+
+                    <uc:DetailExpander
                             x:Uid="DetailExpander"
-                            RelativePanel.AlignLeftWithPanel="True"
-                            RelativePanel.Below="BorrowedAt"  
                             Margin="0,8,16,8"
                             >
-                            <uc:DetailExpander.Pane>
-                                <RelativePanel>
-                                    <TextBox
+                        <uc:DetailExpander.Pane>
+                            <RelativePanel>
+                                <TextBox
                                         x:Uid="OCLCNo"
                                         x:Name="OCLCNo"
                                         RelativePanel.AlignLeftWithPanel="True"
@@ -252,10 +389,24 @@
                                         IsReadOnly="{x:Bind ViewModel.IsInEdit, Converter={StaticResource boolInverterConverter}, Mode=OneWay}"
                                         MinWidth="500"
                                         Margin="0,8,16,8"
+                                        Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},ConverterParameter=true,Mode=OneWay}"
                                         Text="{x:Bind ViewModel.Book.OCLCNo,Mode=TwoWay}"
                                         />
 
-                                    <TextBox
+                                <ComboBox
+                                        x:Name="OCLCNoList"
+                                        x:Uid="OCLCNo"
+                                        Width="200"
+                                        Margin="0,8,16,8"
+                                        IsEditable="True"
+                                        RelativePanel.AlignLeftWithPanel="True"
+                                        RelativePanel.AlignTopWithPanel="True"
+                                        SelectedItem="{x:Bind ViewModel.Books.OCLCNo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        ItemsSource="{x:Bind ViewModel.Books.OCLCNoList,Mode=OneWay}"
+                                        Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},Mode=OneWay}"                           
+                                        />
+
+                                <TextBox
                                         x:Uid="DLCNo"
                                         x:Name="DLCNo"
                                         RelativePanel.AlignLeftWithPanel="True"
@@ -263,10 +414,24 @@
                                         IsReadOnly="{x:Bind ViewModel.IsInEdit, Converter={StaticResource boolInverterConverter}, Mode=OneWay}"
                                         MinWidth="500"
                                         Margin="0,8,16,8"
+                                        Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},ConverterParameter=true,Mode=OneWay}"
                                         Text="{x:Bind ViewModel.Book.DLCNo,Mode=TwoWay}"
                                         />
 
-                                    <TextBox
+                                <ComboBox
+                                        x:Name="DLCNoList"
+                                        x:Uid="DCLCNo"
+                                        Width="200"
+                                        Margin="0,8,16,8"
+                                        IsEditable="True"
+                                        RelativePanel.AlignLeftWithPanel="True"
+                                        RelativePanel.Below="OCLCNoList"
+                                        SelectedItem="{x:Bind ViewModel.Books.DLCNo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        ItemsSource="{x:Bind ViewModel.Books.DLCNoList,Mode=OneWay}"
+                                        Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},Mode=OneWay}"                           
+                                        />
+
+                                <TextBox
                                         x:Uid="ISBN"
                                         x:Name="ISBN"
                                         RelativePanel.AlignLeftWithPanel="True"
@@ -274,10 +439,24 @@
                                         IsReadOnly="{x:Bind ViewModel.IsInEdit, Converter={StaticResource boolInverterConverter}, Mode=OneWay}"
                                         MinWidth="500"
                                         Margin="0,8,16,8"
+                                        Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},ConverterParameter=true,Mode=OneWay}"
                                         Text="{x:Bind ViewModel.Book.ISBN,Mode=TwoWay}"
                                         />
 
-                                    <TextBox
+                                <ComboBox
+                                        x:Name="ISBNList"
+                                        x:Uid="ISBN"
+                                        Width="200"
+                                        Margin="0,8,16,8"
+                                        IsEditable="True"
+                                        RelativePanel.AlignLeftWithPanel="True"
+                                        RelativePanel.Below="DLCNoList"
+                                        SelectedItem="{x:Bind ViewModel.Books.ISBN, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        ItemsSource="{x:Bind ViewModel.Books.ISBNList,Mode=OneWay}"
+                                        Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},Mode=OneWay}"                           
+                                        />
+
+                                <TextBox
                                         x:Uid="NBACN"
                                         x:Name="NBACN"
                                         RelativePanel.AlignLeftWithPanel="True"
@@ -285,10 +464,24 @@
                                         IsReadOnly="{x:Bind ViewModel.IsInEdit, Converter={StaticResource boolInverterConverter}, Mode=OneWay}"
                                         MinWidth="500"
                                         Margin="0,8,16,8"
+                                        Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},ConverterParameter=true,Mode=OneWay}"
                                         Text="{x:Bind ViewModel.Book.ISBN,Mode=TwoWay}"
                                         />
 
-                                    <TextBox
+                                <ComboBox
+                                        x:Name="NBACNList"
+                                        x:Uid="NBACN"
+                                        Width="200"
+                                        Margin="0,8,16,8"
+                                        IsEditable="True"
+                                        RelativePanel.AlignLeftWithPanel="True"
+                                        RelativePanel.Below="ISBNList"
+                                        SelectedItem="{x:Bind ViewModel.Books.NBACN, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        ItemsSource="{x:Bind ViewModel.Books.NBACNList,Mode=OneWay}"
+                                        Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},Mode=OneWay}"                           
+                                        />
+                                
+                                <TextBox
                                         x:Uid="ASIN"
                                         x:Name="ASIN"
                                         RelativePanel.AlignLeftWithPanel="True"
@@ -296,10 +489,24 @@
                                         IsReadOnly="{x:Bind ViewModel.IsInEdit, Converter={StaticResource boolInverterConverter}, Mode=OneWay}"
                                         MinWidth="500"
                                         Margin="0,8,16,8"
+                                        Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},ConverterParameter=true,Mode=OneWay}"
                                         Text="{x:Bind ViewModel.Book.ASIN,Mode=TwoWay}"
                                         />
 
-                                    <TextBox
+                                <ComboBox
+                                        x:Name="ASINList"
+                                        x:Uid="ASIN"
+                                        Width="200"
+                                        Margin="0,8,16,8"
+                                        IsEditable="True"
+                                        RelativePanel.AlignLeftWithPanel="True"
+                                        RelativePanel.Below="NBACNList"
+                                        SelectedItem="{x:Bind ViewModel.Books.ASIN, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        ItemsSource="{x:Bind ViewModel.Books.ASINList,Mode=OneWay}"
+                                        Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},Mode=OneWay}"                           
+                                        />
+
+                                <TextBox
                                         x:Uid="StandardUrl"
                                         x:Name="StandardUrl"
                                         RelativePanel.AlignLeftWithPanel="True"
@@ -307,10 +514,24 @@
                                         IsReadOnly="{x:Bind ViewModel.IsInEdit, Converter={StaticResource boolInverterConverter}, Mode=OneWay}"
                                         MinWidth="500"
                                         Margin="0,8,16,8"
+                                        Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},ConverterParameter=true,Mode=OneWay}"
                                         Text="{x:Bind ViewModel.Book.Url,Mode=TwoWay}"
                                         />
 
-                                    <TextBox
+                                <ComboBox
+                                        x:Name="StandardUrls"
+                                        x:Uid="StandardUrl"
+                                        Width="200"
+                                        Margin="0,8,16,8"
+                                        IsEditable="True"
+                                        RelativePanel.AlignLeftWithPanel="True"
+                                        RelativePanel.Below="ASINList"
+                                        SelectedItem="{x:Bind ViewModel.Books.Url, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        ItemsSource="{x:Bind ViewModel.Books.Urls,Mode=OneWay}"
+                                        Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},Mode=OneWay}"                           
+                                        />
+
+                                <TextBox
                                         x:Uid="GoogleUrl"
                                         x:Name="GoogleUrl"
                                         RelativePanel.AlignLeftWithPanel="True"
@@ -318,13 +539,26 @@
                                         IsReadOnly="{x:Bind ViewModel.IsInEdit, Converter={StaticResource boolInverterConverter}, Mode=OneWay}"
                                         Margin="0,8,16,8"
                                         MinWidth="500"
+                                        Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},ConverterParameter=true,Mode=OneWay}"
                                         Text="{x:Bind ViewModel.Book.GoogleBooksUrl,Mode=TwoWay}"
                                         />
 
-                                </RelativePanel>
-                            </uc:DetailExpander.Pane>
-                        </uc:DetailExpander>
-                    </RelativePanel>
+                                <ComboBox
+                                        x:Name="GoogleUrls"
+                                        x:Uid="GoogleUrl"
+                                        Width="200"
+                                        Margin="0,8,16,8"
+                                        IsEditable="True"
+                                        RelativePanel.AlignLeftWithPanel="True"
+                                        RelativePanel.Below="StandardUrls"
+                                        SelectedItem="{x:Bind ViewModel.Books.GoogleBooksUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        ItemsSource="{x:Bind ViewModel.Books.GoogleBooksUrls,Mode=OneWay}"
+                                        Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},Mode=OneWay}"                           
+                                        />
+
+                            </RelativePanel>
+                        </uc:DetailExpander.Pane>
+                    </uc:DetailExpander>
                 </StackPanel>
             </ScrollViewer>
         </RelativePanel>

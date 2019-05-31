@@ -58,7 +58,7 @@ Namespace Global.MyBooks.App.ViewModels
             Await DispatcherHelper.ExecuteOnUIThreadAsync(Sub() Increment(delta))
         End Function
 
-        Private Sub SetDeterministic(total As Integer)
+        Public Sub SetDeterministic(total As Integer)
             BooksProcessed = 0
             TotalNumberOfBooks = total
             Active = True
@@ -66,17 +66,21 @@ Namespace Global.MyBooks.App.ViewModels
 
         Public Async Function SetDeterministicAsync(total As Integer) As Task
             Await DispatcherHelper.ExecuteOnUIThreadAsync(Sub() SetDeterministic(total))
-            Await AppShell.Current.AppViewModel.SetNavigationAllowedAsync(False)
+            If AppShell.Current IsNot Nothing AndAlso AppShell.Current.AppViewModel IsNot Nothing Then
+                Await AppShell.Current.AppViewModel.SetNavigationAllowedAsync(False)
+            End If
         End Function
 
-        Private Sub SetIndeterministic()
+        Public Sub SetIndeterministic()
             BooksProcessed = indeterministic
             Active = True
         End Sub
 
         Public Async Function SetIndeterministicAsync() As Task
             Await DispatcherHelper.ExecuteOnUIThreadAsync(Sub() SetIndeterministic())
-            Await AppShell.Current.AppViewModel.SetNavigationAllowedAsync(False)
+            If AppShell.Current IsNot Nothing AndAlso AppShell.Current.AppViewModel IsNot Nothing Then
+                Await AppShell.Current.AppViewModel.SetNavigationAllowedAsync(False)
+            End If
         End Function
 
         Private Sub Hide()
