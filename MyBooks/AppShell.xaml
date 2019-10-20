@@ -210,7 +210,7 @@
 
                                 <telerikPrimitives:RadBusyIndicator x:Name="WebPageLoadingProgressRing" 
                                                         AnimationStyle="AnimationStyle4" 
-                                                        Margin="10,0,10,0" Content="" />
+                                                        Margin="10,10,10,0" Content="" />
                             </StackPanel>
                             <Grid Grid.Column="1">
                                 <Grid.RowDefinitions>
@@ -220,7 +220,12 @@
                                 <StackPanel Orientation="Horizontal" Grid.Row="0">
                                     <AppBarButton Icon="Back" Click="WebPageGoBack_Click" IsEnabled="{x:Bind ViewModel.CanGoBack,Mode=OneWay}"/>
                                     <AppBarButton Icon="Forward" Click="WebPageGoForward_Click" IsEnabled="{x:Bind ViewModel.CanGoForward,Mode=OneWay}"/>
-                                    <AppBarButton Icon="Copy" Click="CopyLinkToClipboard" />
+                                    <AppBarButton Icon="Copy" Click="CopyLinkToClipboard" x:Uid="CopyLinkToClipboard"/>
+                                    <AppBarButton x:Uid="OpenInBrowser" Click="OpenInBrowser">
+                                        <AppBarButton.Icon>
+                                            <BitmapIcon UriSource="/Assets/icons8-open-in-browser-32.png" />
+                                        </AppBarButton.Icon>
+                                    </AppBarButton>
                                 </StackPanel>
                                 <ScrollContentPresenter Grid.Row="1">
                                     <WebView x:Name="WebViewer" Source="{x:Bind ViewModel.BibItemUri,Mode=OneWay}" NavigationStarting="WebView_NavigationStarting" NavigationCompleted="WebView_NavigationCompleted"/>

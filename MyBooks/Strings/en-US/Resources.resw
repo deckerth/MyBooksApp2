@@ -606,4 +606,16 @@
   <data name="DeleteBooksQuestion" xml:space="preserve">
     <value>Do you want to delete the selected titles?</value>
   </data>
+  <data name="CopyLinkToClipboard.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Copy address to clipboard</value>
+  </data>
+  <data name="MultipleChoiceButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Multiple selection mode</value>
+  </data>
+  <data name="OpenInBrowser.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Open in browser</value>
+  </data>
+  <data name="SingleChoiceButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Single selection mode</value>
+  </data>
 </root>

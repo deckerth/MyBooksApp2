@@ -306,6 +306,9 @@ Namespace Global.MyBooks.App
             Await settings.ShowAsync()
         End Sub
 
+        Private Async Sub OpenInBrowser(sender As Object, e As RoutedEventArgs)
+            Await Windows.System.Launcher.LaunchUriAsync(New Uri(WebViewer.Source.OriginalString))
+        End Sub
     End Class
 
 End Namespace

@@ -50,7 +50,7 @@
                          RelativePanel.Below="RecomputeButton">
                     <TextBox x:Name="SuggestedText"
                          Text="{x:Bind ViewModel.Book.AuthorNameConversion.Suggestion,Mode=TwoWay}"
-                         Width="280" Height="25"/>
+                         Width="280" Height="30"/>
                     <AppBarButton  x:Name="AcceptSuggestion"
                                Icon="Accept"
                                Command="{x:Bind ViewModel.Book.AuthorNameConversion.AcceptConvertedNameCommand}" 
@@ -122,7 +122,7 @@
                             x:Name="ReformatAuthorsLastNameFirstName"
                             Click="ReformatAuthorsLastNameFirstName_Click"
                             RelativePanel.RightOf="Authors"
-                            RelativePanel.AlignVerticalCenterWith="Authors"
+                            RelativePanel.AlignBottomWith="Authors"
                             Margin="0,0,0,8"
                             FlyoutBase.AttachedFlyout="{StaticResource NameConversionSuggestionFlyout}">
                             <Button.Content>
@@ -133,7 +133,7 @@
                             x:Name="ReformatAuthorsFirstNameLastName"
                             Click="ReformatAuthorsFirstNameLastName_Click"
                             RelativePanel.RightOf="ReformatAuthorsLastNameFirstName"
-                            RelativePanel.AlignVerticalCenterWith="Authors"
+                            RelativePanel.AlignBottomWith="Authors"
                             Margin="10,0,0,8"
                             FlyoutBase.AttachedFlyout="{StaticResource NameConversionSuggestionFlyout}">
                             <Button.Content>

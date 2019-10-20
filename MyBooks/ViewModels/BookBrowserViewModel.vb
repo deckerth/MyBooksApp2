@@ -4,6 +4,7 @@ Imports MyBooks.Repository.Libraries
 Imports MyBooks.App.Views
 Imports MyBooks.App.ValueConverters
 Imports MyBooks.Repository
+Imports Microsoft.Toolkit.Uwp.Helpers
 
 Namespace Global.MyBooks.App.ViewModels
 
@@ -102,8 +103,11 @@ Namespace Global.MyBooks.App.ViewModels
 
         Public Async Sub OnAddBookCommand()
             InitializeModelLinks()
-            Dim AddBookDialog As New AddBookFromLibraryDialog(Model)
-            Await AddBookDialog.ShowAsync()
+            Await DispatcherHelper.ExecuteOnUIThreadAsync(Async Function()
+                                                              Dim AddBookDialog As AddBookFromLibraryDialog
+                                                              AddBookDialog = New AddBookFromLibraryDialog(Model)
+                                                              Await AddBookDialog.ShowAsync()
+                                                          End Function)
         End Sub
 
         Public Async Function AddBookAsync() As Task(Of IBookRepository.UpsertResult)
