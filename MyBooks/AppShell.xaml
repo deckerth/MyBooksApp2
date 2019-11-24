@@ -80,7 +80,7 @@
                         <Setter Target="RootSplitView.DisplayMode" Value="CompactInline" />
                         <Setter Target="RootSplitView.IsPaneOpen" Value="False" />
                         <Setter Target="NavPaneDivider.Visibility" Value="Collapsed" />
-                        <Setter Target="SettingsButton.IsTabStop" Value="True" />
+                        <Setter Target="HelpButton.IsTabStop" Value="True" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="MediumSize">
@@ -92,7 +92,7 @@
                         <Setter Target="RootSplitView.DisplayMode" Value="CompactOverlay" />
                         <Setter Target="RootSplitView.IsPaneOpen" Value="False" />
                         <Setter Target="NavPaneDivider.Visibility" Value="Collapsed" />
-                        <Setter Target="SettingsButton.IsTabStop" Value="False" />
+                        <Setter Target="HelpButton.IsTabStop" Value="False" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="MinimumSize">
@@ -103,7 +103,7 @@
                         <Setter Target="BrowserSplitView.OpenPaneLength" Value="200" />
                         <Setter Target="RootSplitView.DisplayMode" Value="CompactOverlay" />
                         <Setter Target="RootSplitView.IsPaneOpen" Value="False" />
-                        <Setter Target="SettingsButton.IsTabStop" Value="True" />
+                        <Setter Target="HelpButton.IsTabStop" Value="True" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
@@ -165,11 +165,19 @@
                         Visibility="Collapsed" />
 
                     <nav:NavMenuSecondaryButton
+                        x:Name="HelpButton"
+                        x:Uid="Help"
+                        IsEnabled="{x:Bind AppViewModel.NavigationAllowed,Mode=OneWay}"
+                        Click="HelpButton_Click"
+                        Grid.Row="2"
+                        Icon="&#xE897;" />
+
+                    <nav:NavMenuSecondaryButton
                         x:Name="SettingsButton"
                         x:Uid="Settings"
                         IsEnabled="{x:Bind AppViewModel.NavigationAllowed,Mode=OneWay}"
                         Click="SettingsButton_Click"
-                        Grid.Row="2"
+                        Grid.Row="3"
                         Icon="&#xE713;" />
 
                 </Grid>

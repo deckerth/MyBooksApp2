@@ -24,32 +24,75 @@ Namespace Global.MyBooks.Repository.Sql
             Dim books As New List(Of Book)
             Dim counters As UpdateCounters
             For i = 2 To rows
-                Dim book As New Book With {
-                    .Title = worksheet.Cells(i, 2).Value.ToString(),
-                    .Authors = worksheet.Cells(i, 3).Value.ToString(),
-                    .Keywords = worksheet.Cells(i, 4).Value.ToString(),
-                    .Storage = worksheet.Cells(i, 6).Value.ToString(),
-                    .BorrowedDate = worksheet.Cells(i, 7).Value.ToString(),
-                    .BorrowedTo = worksheet.Cells(i, 8).Value.ToString(),
-                    .Published = worksheet.Cells(i, 9).Value.ToString(),
-                    .OCLCNo = worksheet.Cells(i, 10).Value.ToString(),
-                    .ISBN = worksheet.Cells(i, 11).Value.ToString(),
-                    .NBACN = worksheet.Cells(i, 12).Value.ToString(),
-                    .Url = worksheet.Cells(i, 13).Value.ToString(),
-                    .GoogleBooksUrl = worksheet.Cells(i, 14).Value.ToString()
-                }
-                Dim medium As String = worksheet.Cells(i, 5).Value.ToString()
-                Select Case medium
-                    Case "Book"
-                        book.Medium = Book.MediaType.Book
-                    Case "AudioBook"
-                        book.Medium = Book.MediaType.AudioBook
-                    Case "EBook"
-                        book.Medium = Book.MediaType.EBook
-                    Case Else
-                        book.Medium = Book.MediaType.Undefined
-                End Select
-                books.Add(book)
+                Dim errorFlag As Boolean = False
+                Dim book As New Book
+                Dim medium As String = ""
+                Try
+                    book.Title = worksheet.Cells(i, 2).Value.ToString()
+                Catch ex As Exception
+                    errorFlag = True
+                End Try
+                If Not errorFlag Then
+                    Try
+                        book.Authors = worksheet.Cells(i, 3).Value.ToString()
+                    Catch ex As Exception
+                    End Try
+                    Try
+                        book.Keywords = worksheet.Cells(i, 4).Value.ToString()
+                    Catch ex As Exception
+                    End Try
+                    Try
+                        book.Storage = worksheet.Cells(i, 6).Value.ToString()
+                    Catch ex As Exception
+                    End Try
+                    Try
+                        book.BorrowedDate = worksheet.Cells(i, 7).Value.ToString()
+                    Catch ex As Exception
+                    End Try
+                    Try
+                        book.BorrowedTo = worksheet.Cells(i, 8).Value.ToString()
+                    Catch ex As Exception
+                    End Try
+                    Try
+                        book.Published = worksheet.Cells(i, 9).Value.ToString()
+                    Catch ex As Exception
+                    End Try
+                    Try
+                        book.OCLCNo = worksheet.Cells(i, 10).Value.ToString()
+                    Catch ex As Exception
+                    End Try
+                    Try
+                        book.ISBN = worksheet.Cells(i, 11).Value.ToString()
+                    Catch ex As Exception
+                    End Try
+                    Try
+                        book.NBACN = worksheet.Cells(i, 12).Value.ToString()
+                    Catch ex As Exception
+                    End Try
+                    Try
+                        book.Url = worksheet.Cells(i, 13).Value.ToString()
+                    Catch ex As Exception
+                    End Try
+                    Try
+                        book.GoogleBooksUrl = worksheet.Cells(i, 14).Value.ToString()
+                    Catch ex As Exception
+                    End Try
+                    Try
+                        medium = worksheet.Cells(i, 5).Value.ToString()
+                    Catch ex As Exception
+                    End Try
+                    Select Case medium
+                        Case "Book"
+                            book.Medium = Book.MediaType.Book
+                        Case "AudioBook"
+                            book.Medium = Book.MediaType.AudioBook
+                        Case "EBook"
+                            book.Medium = Book.MediaType.EBook
+                        Case Else
+                            book.Medium = Book.MediaType.Undefined
+                    End Select
+                    books.Add(book)
+                End If
             Next
 
             Dim repo As SqlBookRepository = DirectCast(Repository.Books, SqlBookRepository)

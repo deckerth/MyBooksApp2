@@ -142,13 +142,13 @@
     <value>Book</value>
   </data>
   <data name="BookDetailPageTitle.Text" xml:space="preserve">
-    <value>Title</value>
+    <value>Book</value>
   </data>
   <data name="BookListPageTitle.Text" xml:space="preserve">
     <value>My Books</value>
   </data>
   <data name="BookTitle.Header" xml:space="preserve">
-    <value>Title</value>
+    <value>Book</value>
   </data>
   <data name="BorrowedAt.Header" xml:space="preserve">
     <value>since</value>
@@ -256,13 +256,13 @@
     <value>Cancel</value>
   </data>
   <data name="DeleteBookButton.Label" xml:space="preserve">
-    <value>Delete title</value>
+    <value>Delete book</value>
   </data>
   <data name="DeleteBookQuestion" xml:space="preserve">
-    <value>Do you want to delete the selected title?</value>
+    <value>Do you want to delete the selected book?</value>
   </data>
   <data name="EditBookButton.Label" xml:space="preserve">
-    <value>Edit title</value>
+    <value>Edit book</value>
   </data>
   <data name="ImportDecision" xml:space="preserve">
     <value>Do you want to add the imported books to the collection, or do you want to replace the collection?</value>
@@ -409,7 +409,7 @@
     <value>Library of Congress Code (DLC)</value>
   </data>
   <data name="GoogleUrl.Header" xml:space="preserve">
-    <value>Title link (GoogleBooks)</value>
+    <value>Book link (GoogleBooks)</value>
   </data>
   <data name="ISBN.Header" xml:space="preserve">
     <value>International Standard Book Number (ISBN)</value>
@@ -421,7 +421,7 @@
     <value>Online Computer Library Code (OCLC)</value>
   </data>
   <data name="StandardUrl.Header" xml:space="preserve">
-    <value>Title link</value>
+    <value>Book link</value>
   </data>
   <data name="BarcodeImportPageTitle.Text" xml:space="preserve">
     <value>Scanned barcodes</value>
@@ -481,7 +481,7 @@
     <value>Amazon Standard Identification Number</value>
   </data>
   <data name="DataImport" xml:space="preserve">
-    <value>Import titles</value>
+    <value>Import books</value>
   </data>
   <data name="ImportBarcodes.Text" xml:space="preserve">
     <value>Import book list</value>
@@ -496,7 +496,7 @@
     <value>Cancel</value>
   </data>
   <data name="ImportInfoDialog.Title" xml:space="preserve">
-    <value>Data update finished</value>
+    <value>Data import</value>
   </data>
   <data name="KindleImportInfo" xml:space="preserve">
     <value>&lt;!DOCTYPE html&gt;
@@ -526,7 +526,7 @@
     <value>Kindle of</value>
   </data>
   <data name="BookDoesAlreadyExist" xml:space="preserve">
-    <value>The title is already conained in the collection.</value>
+    <value>The book is already conained in the collection.</value>
   </data>
   <data name="DeselectAllButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Select nothing</value>
@@ -541,16 +541,16 @@
     <value>Data import</value>
   </data>
   <data name="ImportResultSkipped.Text" xml:space="preserve">
-    <value>Already existing titles:</value>
+    <value>Already existing books:</value>
   </data>
   <data name="ImportResultSummary" xml:space="preserve">
-    <value>&amp; titles processed.</value>
+    <value>&amp; books processed.</value>
   </data>
   <data name="ImportResultSummarySingular" xml:space="preserve">
-    <value>One title processed.</value>
+    <value>One book processed.</value>
   </data>
   <data name="ImportResultUpdated.Text" xml:space="preserve">
-    <value>Updated titles:</value>
+    <value>Updated books:</value>
   </data>
   <data name="SelectAllButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Select all</value>
@@ -571,7 +571,7 @@
     <value>Database</value>
   </data>
   <data name="DisplayBorrowedTitles.Text" xml:space="preserve">
-    <value>Display lent titles</value>
+    <value>Display lent books</value>
   </data>
   <data name="ExportDbButton.Content" xml:space="preserve">
     <value>Export</value>
@@ -604,7 +604,7 @@
     <value>&lt;keep value&gt;</value>
   </data>
   <data name="DeleteBooksQuestion" xml:space="preserve">
-    <value>Do you want to delete the selected titles?</value>
+    <value>Do you want to delete the selected &amp; books?</value>
   </data>
   <data name="CopyLinkToClipboard.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Copy address to clipboard</value>
@@ -617,5 +617,20 @@
   </data>
   <data name="SingleChoiceButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Single selection mode</value>
+  </data>
+  <data name="Help.Label" xml:space="preserve">
+    <value>Help</value>
+  </data>
+  <data name="HelpPageDataImport" xml:space="preserve">
+    <value>https://deckerth.wixsite.com/mybooks/data-import</value>
+  </data>
+  <data name="HelpPageExternalLibs" xml:space="preserve">
+    <value>https://deckerth.wixsite.com/mybooks/external-libraries</value>
+  </data>
+  <data name="HelpPageOverview" xml:space="preserve">
+    <value>https://deckerth.wixsite.com/mybooks/overview</value>
+  </data>
+  <data name="EmptyEntry" xml:space="preserve">
+    <value>(Empty)</value>
   </data>
 </root>

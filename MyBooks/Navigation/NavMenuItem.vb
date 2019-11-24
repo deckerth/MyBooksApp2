@@ -16,6 +16,7 @@
         Public Property Label As String
         Public Property Symbol As Symbol
         Public Property PathIconMarkup As String
+        Public Property HelpUri As Uri
 
 
         Public ReadOnly Property SymbolAsChar As Char

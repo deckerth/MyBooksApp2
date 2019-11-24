@@ -214,8 +214,18 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <None Include="Design\128002.diagram" />
+    <None Include="Design\2.session" />
+    <None Include="Design\cpp_includes" />
+    <None Include="Design\generation_settings" />
+    <None Include="Design\idl_includes" />
+    <None Include="Design\java_imports" />
+    <None Include="Design\python_imports" />
+    <None Include="Design\stereotypes" />
+    <None Include="Design\tools" />
     <None Include="MyBooks.App_StoreKey.pfx" />
     <None Include="MyBooks_TemporaryKey.pfx" />
+    <None Include="Design\Design.prj" />
     <PRIResource Include="Strings\en-US\Resources.resw" />
     <PRIResource Include="Strings\de-DE\Resources.resw" />
   </ItemGroup>

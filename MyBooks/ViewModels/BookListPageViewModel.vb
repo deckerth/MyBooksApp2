@@ -229,7 +229,7 @@ Namespace Global.MyBooks.App.ViewModels
 
         Private Async Function DeleteBooksAsync(toDelete As List(Of BookViewModel)) As Task
             If toDelete IsNot Nothing Then
-                Dim dialog = New MessageDialog(App.Texts.GetString("DeleteBooksQuestion"))
+                Dim dialog = New MessageDialog(App.Texts.GetString("DeleteBooksQuestion").Replace("&", toDelete.Count.ToString))
 
                 ' Add commands and set their callbacks 
                 dialog.Commands.Add(New UICommand(App.Texts.GetString("Yes")))

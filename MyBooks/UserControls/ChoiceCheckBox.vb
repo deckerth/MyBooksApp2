@@ -25,6 +25,23 @@ Namespace Global.MyBooks.App.UserControls
             Set(val As String)
                 If Not val.Equals(_value) Then
                     SetProperty(Of String)(_value, val)
+                    If String.IsNullOrEmpty(_value) Then
+                        DisplayValue = App.Texts.GetString("EmptyEntry")
+                    Else
+                        DisplayValue = _value
+                    End If
+                End If
+            End Set
+        End Property
+
+        Private _displayValue As String
+        Public Property DisplayValue As String
+            Get
+                Return _displayValue
+            End Get
+            Set(val As String)
+                If Not val.Equals(_displayValue) Then
+                    SetProperty(Of String)(_displayValue, val)
                 End If
             End Set
         End Property

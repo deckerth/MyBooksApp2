@@ -604,7 +604,7 @@
     <value>&lt;beibehalten&gt;</value>
   </data>
   <data name="DeleteBooksQuestion" xml:space="preserve">
-    <value>Möchten Sie die ausgewählten Titel löschen?</value>
+    <value>Möchten Sie die ausgewählten &amp; Titel löschen?</value>
   </data>
   <data name="CopyLinkToClipboard.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Adresse in Zwischenablage kopieren</value>
@@ -618,5 +618,20 @@
   </data>
   <data name="SingleChoiceButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Einfachauswahl</value>
+  </data>
+  <data name="Help.Label" xml:space="preserve">
+    <value>Hilfe</value>
+  </data>
+  <data name="HelpPageDataImport" xml:space="preserve">
+    <value>https://deckerth.wixsite.com/meinebuecher/datenimport</value>
+  </data>
+  <data name="HelpPageExternalLibs" xml:space="preserve">
+    <value>https://deckerth.wixsite.com/meinebuecher/externe-bibliotheken</value>
+  </data>
+  <data name="HelpPageOverview" xml:space="preserve">
+    <value>https://deckerth.wixsite.com/meinebuecher/uebersicht</value>
+  </data>
+  <data name="EmptyEntry" xml:space="preserve">
+    <value>(Leer)</value>
   </data>
 </root>

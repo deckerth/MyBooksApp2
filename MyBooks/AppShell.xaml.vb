@@ -69,7 +69,16 @@ Namespace Global.MyBooks.App
             If container IsNot Nothing Then
                 NavMenuList.SetSelectedItem(DirectCast(container, ListViewItem))
             End If
+            SetUpHelpPage()
         End Sub
+
+        Private HelpPage As New BrowserSupportViewModel
+        Private Sub SetUpHelpPage()
+            HelpPage.BibItemLibraryUri = New Uri(App.Texts.GetString("HelpPageOverview"))
+            HelpPage.BibItemUri = HelpPage.BibItemLibraryUri
+            HelpPage.CurrentDisplayIsStandardLib = True
+        End Sub
+
 
         Private ImportIconMarkup As String = "F0 M 1,1 h10 v4 h-1 v-3 h-8 v13 h8 v-3 h1 v4 h-10 v-15 M 14,7 h-8 v2 h8 v-2 M 6,7 l2,-2 l-1,-1 l-4,4 l4,4 l1,-1 l-2,-2"
         Private BarcodeMarkup As String = "F0 " &
@@ -85,9 +94,9 @@ Namespace Global.MyBooks.App
 
         Public PrimaryMenuItems As IReadOnlyCollection(Of NavMenuItem) = New ReadOnlyCollection(Of NavMenuItem)(
     {
-      New NavMenuItem With {.Symbol = Symbol.Library, .Label = App.Texts.GetString("Shelf"), .DestPage = GetType(BookListPage), .IsSelected = True},
-      New NavMenuItem With {.Symbol = Symbol.World, .Label = App.Texts.GetString("LibrarySearch"), .DestPage = GetType(LibrarySearchPage), .IsSelected = False},
-      New NavMenuItem With {.Symbol = Symbol.Import, .Label = App.Texts.GetString("DataImport"), .DestPage = GetType(BarcodeImportPage), .IsSelected = False}
+      New NavMenuItem With {.Symbol = Symbol.Library, .Label = App.Texts.GetString("Shelf"), .DestPage = GetType(BookListPage), .IsSelected = True, .HelpUri = New Uri(App.Texts.GetString("HelpPageOverview"))},
+      New NavMenuItem With {.Symbol = Symbol.World, .Label = App.Texts.GetString("LibrarySearch"), .DestPage = GetType(LibrarySearchPage), .IsSelected = False, .HelpUri = New Uri(App.Texts.GetString("HelpPageExternalLibs"))},
+      New NavMenuItem With {.Symbol = Symbol.Import, .Label = App.Texts.GetString("DataImport"), .DestPage = GetType(BarcodeImportPage), .IsSelected = False, .HelpUri = New Uri(App.Texts.GetString("HelpPageDataImport"))}
     })
 
         Public Sub AppShell_KeyDown(sender As Object, e As KeyRoutedEventArgs)
@@ -155,6 +164,7 @@ Namespace Global.MyBooks.App
 
             If item IsNot Nothing Then
                 item.IsSelected = True
+                HelpPage.BibItemUri = item.HelpUri
                 If item.DestPage IsNot Nothing AndAlso item.DestPage IsNot AppFrame.CurrentSourcePageType Then
                     AppFrame.Navigate(item.DestPage, item.Arguments)
                 End If
@@ -205,10 +215,12 @@ Namespace Global.MyBooks.App
                     i.IsSelected = False
                 Next
 
-                If item IsNot Nothing Then
-                    item.IsSelected = True
+                If item Is Nothing Then
+                    Return
                 End If
 
+                item.IsSelected = True
+                HelpPage.BibItemUri = item.HelpUri
                 Dim container = DirectCast(NavMenuList.ContainerFromItem(item), ListViewItem)
 
                 ' While updating the selection state of the item prevent it from taking keyboard focus.  If a
@@ -285,6 +297,7 @@ Namespace Global.MyBooks.App
             WebPageLoadingProgressRing.IsActive = False
             ViewModel.CanGoBack = WebViewer.CanGoBack
             ViewModel.CanGoForward = WebViewer.CanGoForward
+            ViewModel.BibItemUri = New Uri(WebViewer.Source.OriginalString)
         End Sub
 
         Private Sub WebPageGoBack_Click(sender As Object, e As RoutedEventArgs)
@@ -308,6 +321,11 @@ Namespace Global.MyBooks.App
 
         Private Async Sub OpenInBrowser(sender As Object, e As RoutedEventArgs)
             Await Windows.System.Launcher.LaunchUriAsync(New Uri(WebViewer.Source.OriginalString))
+        End Sub
+
+        Private Sub HelpButton_Click(sender As Object, e As RoutedEventArgs)
+            HelpPage.CloneTo(ViewModel)
+            ViewModel.BrowserPaneOpen = True
         End Sub
     End Class
 

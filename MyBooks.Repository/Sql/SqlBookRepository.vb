@@ -1,4 +1,5 @@
 ﻿Imports Microsoft.EntityFrameworkCore
+Imports Microsoft.EntityFrameworkCore.ChangeTracking
 Imports MyBooks.ContextProvider
 Imports MyBooks.Models
 
@@ -44,14 +45,31 @@ Namespace Global.MyBooks.Repository.Sql
             Return Await _db.Books.AsNoTracking().FirstOrDefaultAsync(Function(x As Book) x.Title = title And x.Authors = author And x.Storage = storage And x.Medium = mediatype)
         End Function
 
+        Private Async Function GetAsyncWithTracking(id As Guid) As Task(Of Book)
+            Return Await _db.Books.FirstOrDefaultAsync(Function(x As Book) x.Id = id)
+        End Function
+
+        Private Async Function GetAsyncWithTracking(title As String, author As String, mediatype As Book.MediaType, storage As String) As Task(Of Book)
+            Return Await _db.Books.FirstOrDefaultAsync(Function(x As Book) x.Title = title And x.Authors = author And x.Storage = storage And x.Medium = mediatype)
+        End Function
+
         Public Async Function Upsert(book As Book) As Task(Of IBookRepository.UpsertResult) Implements IBookRepository.Upsert
             Dim result As IBookRepository.UpsertResult = IBookRepository.UpsertResult.skipped
 
-            If Await GetAsync(book.Id) IsNot Nothing Then
-                _db.Books.Update(book)
-                result = IBookRepository.UpsertResult.updated
+            DisplayTrackedEntities(_db.ChangeTracker)
+
+            Dim existing = Await GetAsyncWithTracking(book.Id)
+            If existing IsNot Nothing Then
+                Try
+                    If existing.UpdateFrom(book) Then
+                        _db.Books.Update(existing)
+                        result = IBookRepository.UpsertResult.updated
+                    End If
+                Catch ex As Exception
+
+                End Try
             Else
-                Dim existing = Await GetAsync(book.Title, book.Authors, book.Medium, book.Storage)
+                existing = Await GetAsyncWithTracking(book.Title, book.Authors, book.Medium, book.Storage)
                 If existing Is Nothing Then
                     Await _db.Books.AddAsync(book)
                     result = IBookRepository.UpsertResult.added
@@ -63,11 +81,12 @@ Namespace Global.MyBooks.Repository.Sql
                 End If
             End If
             Await _db.SaveChangesAsync()
+            DisplayTrackedEntities(_db.ChangeTracker)
             Return result
         End Function
 
         Public Async Function DeleteAsync(id As Guid) As Task Implements IBookRepository.DeleteAsync
-            Dim toDelete As Book = Await GetAsync(id)
+            Dim toDelete As Book = Await GetAsyncWithTracking(id)
             If toDelete IsNot Nothing Then
                 _db.Books.Remove(toDelete)
                 Await _db.SaveChangesAsync()
@@ -98,6 +117,22 @@ Namespace Global.MyBooks.Repository.Sql
             Return counters
         End Function
 
+        Private Shared LoggingActive As Boolean = False
+
+        Private Sub DisplayTrackedEntities(changeTracker As ChangeTracker)
+            If Not LoggingActive Then
+                Return
+            End If
+
+            Debug.WriteLine("")
+            Dim entries = changeTracker.Entries()
+            For Each entry In entries
+                Debug.WriteLine("Entity Name: {0}", entry.Entity.GetType().FullName)
+                Debug.WriteLine("Status: {0}", entry.State)
+            Next
+            Debug.WriteLine("")
+            Debug.WriteLine("---------------------------------------")
+        End Sub
     End Class
 
 End Namespace

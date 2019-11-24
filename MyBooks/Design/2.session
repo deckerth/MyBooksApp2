@@ -1,0 +1,20 @@
+window_sizes 2160 1346 506 1647 1284 0
+
+diagrams
+  active  classdiagram_ref 128002 // ClassDiagram
+    1647 1284 101 A4 0 0
+end
+show_stereotypes
+selected class_ref 148354 // AppShell
+open
+  class_ref 128386 // Book
+  class_ref 128258 // BookBrowserViewModel
+  class_ref 128130 // LibraryBooksViewModel
+  attribute_ref 128642 // MaxHits
+  classdiagram_ref 128002 // ClassDiagram
+  class_ref 135042 // BookListPageViewModel
+  class_ref 135170 // BookViewModel
+  class_ref 135298 // BookDetailPageViewModel
+  class_ref 141826 // BrowserSupportViewModel
+end
+end

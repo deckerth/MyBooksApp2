@@ -74,7 +74,7 @@ Namespace Global.MyBooks.App.UserControls
                 Dim add As Boolean
                 If String.IsNullOrEmpty(pattern) Then
                     add = True
-                ElseIf t.Value.ToUpperInvariant.Contains(pattern, StringComparison.InvariantCultureIgnoreCase) Then
+                ElseIf String.IsNullOrEmpty(t.Value) OrElse t.Value.ToUpperInvariant.Contains(pattern, StringComparison.InvariantCultureIgnoreCase) Then
                     add = True
                 Else
                     add = False
@@ -115,8 +115,28 @@ Namespace Global.MyBooks.App.UserControls
                         ' ...and y is Nothing, x is greater.
                         Return 1
                     Else
-                        ' ...and y is not Nothing, compare the string
-                        Return x.Value.CompareTo(y.Value)
+                        ' ...and y is not Nothing, compare the string, but the empty string is larger than everything else
+                        If String.IsNullOrEmpty(x.Value) Then
+                            If String.IsNullOrEmpty(y.Value) Then
+                                ' If x.Value is initial and y.Value is initial, they're
+                                ' equal. 
+                                Return 0
+                            Else
+                                ' If x.Value is initial and y.Value is not initial, x
+                                ' is greater. 
+                                Return 1
+                            End If
+                        Else
+                            ' If x.Value is not initial...
+                            '
+                            If String.IsNullOrEmpty(y.Value) Then
+                                ' ...and y.Value is initial, y is greater.
+                                Return -1
+                            Else
+                                ' ...and y.Value is not initial, compare the string
+                                Return x.Value.CompareTo(y.Value)
+                            End If
+                        End If
                     End If
                 End If
             End Function

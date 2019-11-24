@@ -38,7 +38,7 @@
                   ItemsSource="{x:Bind ViewModel.VisibleChoices,Mode=OneWay}">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="local:ChoiceCheckBox">
-                        <CheckBox Content="{x:Bind Value,Mode=OneWay}" IsChecked="{x:Bind IsChecked, Mode=TwoWay}"
+                        <CheckBox Content="{x:Bind DisplayValue,Mode=OneWay}" IsChecked="{x:Bind IsChecked, Mode=TwoWay}"
                           HorizontalAlignment="Left" Margin="10,5,10,5"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>

@@ -68,6 +68,7 @@ namespace MyBooks.ContextProvider
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured) optionsBuilder.UseSqlite("Data Source=MyBooks.db");
+            optionsBuilder.EnableSensitiveDataLogging();
         }
 
     }

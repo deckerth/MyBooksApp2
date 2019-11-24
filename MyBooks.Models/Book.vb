@@ -140,6 +140,14 @@ Namespace Global.MyBooks.Models
 
         End Function
 
+        'Public Property Title As String = ""
+        'Public Property OriginalTitle As String = ""
+        'Public Property Authors As String = ""
+        'Public Property Keywords As String = ""
+        'Public Property Medium As MediaType
+        'Public Property Storage As String = ""
+        'Public Property BorrowedDate As String = ""
+        'Public Property BorrowedTo As String = ""
         'Public Property Published As String = ""
         'Public Property OCLCNo As String = ""
         'Public Property DLCNo As String = ""
@@ -149,64 +157,43 @@ Namespace Global.MyBooks.Models
         'Public Property Url As String = ""
         'Public Property GoogleBooksUrl As String = ""
 
+        Private Function UpdateString(ByRef source As String, value As String) As Boolean
+            Dim changed As Boolean = False
+
+            If (String.IsNullOrEmpty(source) And Not String.IsNullOrEmpty(value)) OrElse
+               (Not String.IsNullOrEmpty(source) And String.IsNullOrEmpty(value)) OrElse
+               (Not source.Equals(value)) Then
+                source = value
+                changed = True
+            End If
+
+            Return changed
+        End Function
+
         Public Function UpdateFrom(anotherBook As Book) As Boolean
             Dim changed As Boolean = False
-            If String.IsNullOrEmpty(OriginalTitle) And Not String.IsNullOrEmpty(anotherBook.OriginalTitle) Then
-                OriginalTitle = anotherBook.OriginalTitle
-                changed = True
-            End If
 
+            changed = UpdateString(Title, anotherBook.Title)
+            changed = changed Or UpdateString(OriginalTitle, anotherBook.OriginalTitle)
+            changed = changed Or UpdateString(Authors, anotherBook.Authors)
             changed = changed Or MergeKeywords(anotherBook)
 
-            If String.IsNullOrEmpty(BorrowedDate) And Not String.IsNullOrEmpty(anotherBook.BorrowedDate) Then
-                BorrowedDate = anotherBook.BorrowedDate
+            If Medium <> anotherBook.Medium Then
+                Medium = anotherBook.Medium
                 changed = True
             End If
 
-            If String.IsNullOrEmpty(BorrowedTo) And Not String.IsNullOrEmpty(anotherBook.BorrowedTo) Then
-                BorrowedTo = anotherBook.BorrowedTo
-                changed = True
-            End If
-
-            If String.IsNullOrEmpty(Published) And Not String.IsNullOrEmpty(anotherBook.Published) Then
-                Published = anotherBook.Published
-                changed = True
-            End If
-
-            If String.IsNullOrEmpty(OCLCNo) And Not String.IsNullOrEmpty(anotherBook.OCLCNo) Then
-                OCLCNo = anotherBook.OCLCNo
-                changed = True
-            End If
-
-            If String.IsNullOrEmpty(DLCNo) And Not String.IsNullOrEmpty(anotherBook.DLCNo) Then
-                DLCNo = anotherBook.DLCNo
-                changed = True
-            End If
-
-            If String.IsNullOrEmpty(ISBN) And Not String.IsNullOrEmpty(anotherBook.ISBN) Then
-                ISBN = anotherBook.ISBN
-                changed = True
-            End If
-
-            If String.IsNullOrEmpty(NBACN) And Not String.IsNullOrEmpty(anotherBook.NBACN) Then
-                NBACN = anotherBook.NBACN
-                changed = True
-            End If
-
-            If String.IsNullOrEmpty(ASIN) And Not String.IsNullOrEmpty(anotherBook.ASIN) Then
-                ASIN = anotherBook.ASIN
-                changed = True
-            End If
-
-            If String.IsNullOrEmpty(Url) And Not String.IsNullOrEmpty(anotherBook.Url) Then
-                Url = anotherBook.Url
-                changed = True
-            End If
-
-            If String.IsNullOrEmpty(GoogleBooksUrl) And Not String.IsNullOrEmpty(anotherBook.GoogleBooksUrl) Then
-                GoogleBooksUrl = anotherBook.GoogleBooksUrl
-                changed = True
-            End If
+            changed = changed Or UpdateString(Storage, anotherBook.Storage)
+            changed = changed Or UpdateString(BorrowedDate, anotherBook.BorrowedDate)
+            changed = changed Or UpdateString(BorrowedTo, anotherBook.BorrowedTo)
+            changed = changed Or UpdateString(Published, anotherBook.Published)
+            changed = changed Or UpdateString(OCLCNo, anotherBook.OCLCNo)
+            changed = changed Or UpdateString(DLCNo, anotherBook.DLCNo)
+            changed = changed Or UpdateString(ISBN, anotherBook.ISBN)
+            changed = changed Or UpdateString(NBACN, anotherBook.NBACN)
+            changed = changed Or UpdateString(ASIN, anotherBook.ASIN)
+            changed = changed Or UpdateString(Url, anotherBook.Url)
+            changed = changed Or UpdateString(GoogleBooksUrl, anotherBook.GoogleBooksUrl)
 
             Return changed
         End Function
