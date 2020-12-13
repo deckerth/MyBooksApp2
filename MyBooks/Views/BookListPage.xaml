@@ -413,6 +413,7 @@
                 </telerikGrid:DataGridTextColumn>
                 
                 <telerikGrid:DataGridTextColumn x:Uid="BorrowedAt" PropertyName="BorrowedDate" SizeMode="Fixed" Width="100"
+                                                CanUserGroup="False"
                                                 uc:ColumnMarker.RequiresCustomFiltering="True"
                                                 uc:ColumnMarker.ColumnName="BorrowedDate">
                     <telerikGrid:DataGridTextColumn.CellContentStyle>

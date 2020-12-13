@@ -192,6 +192,23 @@ Namespace Global.MyBooks.App.ViewModels
             Return counters
         End Function
 
+        Public Overrides Async Function Save() As Task(Of IBookRepository.UpsertResult)
+            Await SaveAll()
+            Return IBookRepository.UpsertResult.updated
+        End Function
+
+        Protected Overrides Function ValidateAsyncOverride(propertyName As String) As Task
+            For Each m In Models
+                m.ValidateAsync(propertyName)
+            Next
+
+            Return MyBase.ValidateAsyncOverride(propertyName)
+        End Function
+
+        Protected Overrides Sub AddError(propertyName As String, errorMessage As Object)
+            ' Skip errors
+        End Sub
+
         Private _titles As New List(Of String)
         Public ReadOnly Property Titles As List(Of String)
             Get

@@ -1,4 +1,5 @@
-﻿Imports System.Globalization
+﻿Imports System.Collections.Specialized
+Imports System.Globalization
 Imports Microsoft.Toolkit.Uwp.Helpers
 Imports Microsoft.Toolkit.Uwp.UI.Extensions
 Imports MyBooks.App.TelerikStrings
@@ -132,6 +133,17 @@ Namespace Global.MyBooks.App.Views
             ViewModel.SelectedItems = DataGrid.SelectedItems
             AddHandler ViewModel.SelectAll, AddressOf OnSelectAll
             AddHandler ViewModel.DeselectAll, AddressOf OnDeselectAll
+            AddHandler DataGrid.GroupDescriptors.CollectionChanged, AddressOf OnGroupCollectionChanged
+        End Sub
+
+        Private Sub OnGroupCollectionChanged(sender As Object, e As NotifyCollectionChangedEventArgs)
+            Dim grouping As GroupDescriptorCollection = DirectCast(sender, GroupDescriptorCollection)
+            For Each column In DataGrid.Columns
+                Dim templateColumn As DataGridTemplateColumn = TryCast(column, DataGridTemplateColumn)
+                If templateColumn IsNot Nothing Then
+                    column.CanUserGroup = Not grouping.Contains(templateColumn.GroupDescriptor)
+                End If
+            Next
         End Sub
 
         Protected Overrides Sub OnNavigatedTo(e As NavigationEventArgs)

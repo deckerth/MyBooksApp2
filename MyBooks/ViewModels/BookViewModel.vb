@@ -38,7 +38,7 @@ Namespace Global.MyBooks.App.ViewModels
                 Me.Model = model
             End If
             MediumDescriptor = AllMediaTypes.Where(Function(x) x.Type = Me.Model.Medium).FirstOrDefault()
-            BrowserAdapter = New BrowserSupportViewModel(model)
+            BrowserAdapter = New BrowserSupportViewModel(Me.Model)
             BrowserAdapter.OnDisplayStandardLibCommand()
         End Sub
 
@@ -84,7 +84,7 @@ Namespace Global.MyBooks.App.ViewModels
 
         End Function
 
-        Public Async Function Save() As Task(Of IBookRepository.UpsertResult)
+        Public Overridable Async Function Save() As Task(Of IBookRepository.UpsertResult)
             Dim result = Await App.Repository.Books.Upsert(Model)
             IsModified = False
             If result <> IBookRepository.UpsertResult.skipped Then
