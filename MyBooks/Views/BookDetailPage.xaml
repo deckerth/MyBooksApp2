@@ -18,6 +18,7 @@
         <converters:StringVisibilityConverter x:Key="stringToVisibilityConverter"/>
         <converters:NullToVisibilityConverter x:Key="nullToVisibilityConverter"/>
         <converters:StringToDateTimeConverter x:Key="stringToDateTimeConverter"/>
+        <converters:StringToDateTimeOffsetConverter x:Key="stringToDateTimeOffsetConverter"/>
 
         <DataTemplate x:Key="BookTypeTemplate" x:DataType="viewModels:MediumTypeDescriptor">
             <TextBlock Text="{x:Bind Name}"/>
@@ -174,7 +175,7 @@
                            Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},Mode=OneWay}"
                            />
 
-                        <telerik:RadAutoCompleteBox
+                        <uc:AdvancedAutoSuggestBox
                            x:Name="Authors"
                            x:Uid="Authors"
                            Width="300"
@@ -184,7 +185,10 @@
                            IsEnabled="{x:Bind ViewModel.IsInEdit, Mode=OneWay}"                           
                            Text="{x:Bind ViewModel.Book.Authors, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                            Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},ConverterParameter=true,Mode=OneWay}"
-                           TextChanged="OnAuthors_TextChanged"/>
+                           TextChanged="OnAuthors_TextChanged"
+                           SuggestionChosen="OnAuthors_SuggestionChosen"
+                           DeleteSuggestion="OnAuthors_DeleteSuggestion"/>
+                        
                         <Button
                             x:Name="ReformatAuthorsLastNameFirstName"
                             Click="ReformatAuthorsLastNameFirstName_Click"
@@ -224,7 +228,7 @@
                            Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},Mode=OneWay}"
                             />
 
-                        <telerik:RadAutoCompleteBox
+                        <uc:AdvancedAutoSuggestBox
                            x:Name="Keywords"
                            x:Uid="Keywords"
                            Width="300"
@@ -234,7 +238,9 @@
                            RelativePanel.Below="Authors"
                            Text="{x:Bind ViewModel.Book.Keywords, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                            Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},ConverterParameter=true,Mode=OneWay}"
-                           TextChanged="OnKeywords_TextChanged"/>
+                           TextChanged="OnKeywords_TextChanged"
+                           SuggestionChosen="OnKeywords_SuggestionChosen"
+                           DeleteSuggestion="OnKeywords_DeleteSuggestion"/>
 
                         <ComboBox
                            x:Name="KeywordsList"
@@ -276,7 +282,7 @@
                            Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},Mode=OneWay}"
                             />
 
-                        <telerik:RadAutoCompleteBox
+                        <uc:AdvancedAutoSuggestBox
                            x:Name="Storage"
                            x:Uid="Storage"
                            Width="200"
@@ -286,7 +292,9 @@
                            RelativePanel.RightOf="MediumType"
                            Text="{x:Bind ViewModel.Book.Storage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                            Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},ConverterParameter=true,Mode=OneWay}"
-                           TextChanged="OnStorage_TextChanged"/>
+                           TextChanged="OnStorage_TextChanged"
+                           SuggestionChosen="OnStorage_SuggestionChosen"
+                           DeleteSuggestion="OnStorage_DeleteSuggestion"/>
 
                         <ComboBox
                            x:Name="Storages"
@@ -349,17 +357,16 @@
                            Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},Mode=OneWay}"                           
                             />
 
-                        <telerik:RadDatePicker
+                        <CalendarDatePicker
                            x:Name="BorrowedAt"
                            x:Uid="BorrowedAt"
                            Width="200"
                            Margin="0,8,16,8"
-                           EmptyContent=""
                            IsEnabled="{x:Bind ViewModel.IsInEdit, Mode=OneWay}"
                            RelativePanel.AlignTopWith="BorrowedTo"
                            RelativePanel.RightOf="BorrowedTo"
                            Visibility="{x:Bind ViewModel.MultipleBooks,Converter={StaticResource boolToVisConverter},ConverterParameter=true,Mode=OneWay}"
-                           Value="{x:Bind ViewModel.Book.BorrowedDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource stringToDateTimeConverter}}"/>
+                           Date="{x:Bind ViewModel.Book.BorrowedDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource stringToDateTimeOffsetConverter}}"/>
 
                         <ComboBox
                            x:Name="BorrowedAtList"

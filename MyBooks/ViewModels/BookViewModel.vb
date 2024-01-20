@@ -229,7 +229,7 @@ Namespace Global.MyBooks.App.ViewModels
             End Get
             Set(value As String)
                 If value IsNot Nothing AndAlso Not value.Equals(Model.BorrowedDate) Then
-                    Model.BorrowedDate = value
+                    Model.BorrowedDate = StringToDateTimeOffsetConverter.ToPlainText(value)
                     IsModified = True
                     OnPropertyChanged("BorrowedDate")
                     If Not String.IsNullOrWhiteSpace(Model.BorrowedDate) Then

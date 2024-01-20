@@ -19,6 +19,9 @@ Namespace Global.MyBooks.Repository
         ' Adds a new keyword if it does not exist
         Function Insert(word As Keyword) As Task
 
+        ' Deletes the entry the given name. 
+        Function DeleteAsyncExact(search As String) As Task
+
         ' Clears the database
         Function ClearAsync() As Task
 

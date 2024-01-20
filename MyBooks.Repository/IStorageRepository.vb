@@ -19,6 +19,9 @@ Namespace Global.MyBooks.Repository
         ' Adds a new storage if it does not exist
         Function Insert(storage As Storage) As Task
 
+        ' Deletes the entry the given name. 
+        Function DeleteAsyncExact(search As String) As Task
+
         ' Clears the database
         Function ClearAsync() As Task
 

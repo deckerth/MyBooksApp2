@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\MARCTest\MARCLib\MyBooks.MARC.csproj" />
+    <ProjectReference Include="..\..\MARCLib\MyBooks.MARC.csproj" />
     <ProjectReference Include="..\MyBooks.ContextProvider\MyBooks.ContextProvider.csproj" />
     <ProjectReference Include="..\MyBooks.Models\MyBooks.Models.vbproj" />
     <ProjectReference Include="..\MyBooks.OCLCClassify\MyBooks.OCLCClassify.vbproj" />

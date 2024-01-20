@@ -19,6 +19,9 @@ Namespace Global.MyBooks.Repository
         ' Adds a new author if it does not exist
         Function Insert(author As Author) As Task
 
+        ' Deletes the entry the given name. 
+        Function DeleteAsyncExact(search As String) As Task
+
         ' Clears the database
         Function ClearAsync() As Task
 

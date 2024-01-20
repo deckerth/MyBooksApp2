@@ -159,6 +159,8 @@ Namespace Global.MyBooks.App.Views
         End Sub
 
         Private Sub EditBook_Click(sender As Object, e As RoutedEventArgs)
+            'Frame.Navigate(GetType(BlankPage1), ViewModel.SelectedBook)
+            'Return
             If ViewModel.MultipleSelectionMode Then
                 If DataGrid.SelectedItems.Count > 0 Then
                     If DataGrid.SelectedItems.Count = 1 Then

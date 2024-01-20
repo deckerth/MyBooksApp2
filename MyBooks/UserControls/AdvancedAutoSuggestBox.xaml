@@ -1,0 +1,72 @@
+﻿<UserControl
+    x:Class="MyBooks.App.UserControls.AdvancedAutoSuggestBox"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MyBooks.App.UserControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:converters="using:MyBooks.App.ValueConverters"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+    <UserControl.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="boolToVisConverter"/>
+
+        <DataTemplate x:Key="AutoSuggestBoxItemTemplate" x:DataType="local:AdvancedAutoSuggestBoxEntryViewModel">
+            <Grid x:Name="AutoSuggestBoxItem" Height="40" Padding="0" Width="{x:Bind Width}"
+                  PointerEntered="AutoSuggestBoxItem_PointerEntered"
+                  PointerExited="AutoSuggestBoxItem_PointerExited"
+                  DataContext="{Binding}" Background="Transparent">
+                <Grid.Resources>
+                    <Style TargetType="Button">
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Margin" Value="0,0,8,0" />
+                    </Style>
+                </Grid.Resources>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="30"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{x:Bind Text}" Height="40" Padding="0,10,0,0" />
+                <Button Grid.Column ="1" x:Name="DeleteItem" Command="{x:Bind RemoveCommand}" Padding="5,0,0,0"
+                        Visibility="{x:Bind PointerEntered, Converter={StaticResource boolToVisConverter}, Mode=OneWay}">
+                    <Button.Content>
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE711;" FontSize="10"/>
+                    </Button.Content>
+                </Button>
+            </Grid>
+        </DataTemplate>
+
+        <Flyout x:Key="AutoSuggestBoxFlyout" x:Name="AutoSuggestBoxFlyout" AllowFocusOnInteraction="False">
+            <Flyout.FlyoutPresenterStyle>
+                <Style TargetType="FlyoutPresenter">
+                    <Setter Property="Padding" Value="0"/>
+                </Style>
+            </Flyout.FlyoutPresenterStyle>
+            <Grid x:Name="AutoSuggestBoxFlyoutGrid" Height="300" Padding="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <ListView x:Name="SuggestionListView" Grid.Row="1" 
+                          SelectionMode="Single" SelectionChanged="SuggestionList_SelectionChanged" GotFocus="SuggestionListView_GotFocus"
+                          ItemTemplate="{StaticResource AutoSuggestBoxItemTemplate}"
+                          >
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="MinHeight" Value="0"/>
+                            <Setter Property="MinWidth" Value="0"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
+            </Grid>
+        </Flyout>
+    </UserControl.Resources>
+
+    <Grid>
+        <AutoSuggestBox x:Name="InputBox" Text="{x:Bind Text, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                Header="{x:Bind Header}" TextChanged="InputBox_TextChanged"/>
+    </Grid>
+</UserControl>

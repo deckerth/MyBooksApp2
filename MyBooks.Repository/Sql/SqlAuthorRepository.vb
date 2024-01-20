@@ -66,6 +66,14 @@ Namespace Global.MyBooks.Repository.Sql
             Next
             Await _db.SaveChangesAsync()
         End Function
+
+        Public Async Function DeleteAsyncExact(search As String) As Task Implements IAuthorRepository.DeleteAsyncExact
+            Dim toDelete = Await _db.Authors.AsNoTracking().FirstOrDefaultAsync(Function(x As Author) x.Name = search)
+            If toDelete IsNot Nothing Then
+                _db.Entry(toDelete).State = EntityState.Deleted
+            End If
+            Await _db.SaveChangesAsync()
+        End Function
     End Class
 
 End Namespace
