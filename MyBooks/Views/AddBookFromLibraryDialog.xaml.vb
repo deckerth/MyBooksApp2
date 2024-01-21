@@ -27,13 +27,9 @@ Namespace Global.MyBooks.App.Views
         Private Sub CancelButton_Click(sender As ContentDialog, args As ContentDialogButtonClickEventArgs)
         End Sub
 
-        Private Async Sub OnAuthors_TextChanged(sender As RadAutoCompleteBox, args As TextChangedEventArgs)
-
-            ' Only get results when it was a user typing,
-            ' otherwise assume the value got filled in by TextMemberPath
-            ' Or the handler for SuggestionChosen.
+        Private Async Sub OnAuthors_TextChanged(sender As UserControls.AdvancedAutoSuggestBox, e As AutoSuggestBoxTextChangedEventArgs)
             Dim hits = Await App.Repository.Authors.GetAsync(sender.Text)
-            Dim dataset As New List(Of String)
+            Dim dataset As New Collection(Of String)
             For Each a In hits
                 dataset.Add(a.Name)
             Next
@@ -41,6 +37,10 @@ Namespace Global.MyBooks.App.Views
             sender.ItemsSource = dataset
 
             ViewModel.CheckExistence()
+        End Sub
+
+        Private Async Sub OnAuthors_DeleteSuggestion(sender As UserControls.AdvancedAutoSuggestBox, e As UserControls.AdvancedAutoSuggestBoxDeleteSuggestionArgs)
+            Await App.Repository.Authors.DeleteAsyncExact(e.SuggestionToDelete)
         End Sub
 
         Private Async Sub OnStorage_TextChanged(sender As RadAutoCompleteBox, args As TextChangedEventArgs)
@@ -86,17 +86,7 @@ Namespace Global.MyBooks.App.Views
         Private ReformatAuthorsFlyoutBase As FlyoutBase
 
         Private Sub ReformatAuthorsLastNameFirstName_Click(sender As Object, e As RoutedEventArgs)
-            Dim descendants = Authors.FindDescendants(Of AutoCompleteTextBox)
-            Dim internalTextBox = descendants.FirstOrDefault()
-            Dim start = 0
-            Dim length = ViewModel.Book.Authors
-
-            If internalTextBox IsNot Nothing Then
-                start = internalTextBox.SelectionStart
-                length = internalTextBox.SelectionLength
-            End If
-
-            ViewModel.Book.AuthorNameConversion.SetAuthors(ViewModel.Book.Authors, start, length)
+            ViewModel.Book.AuthorNameConversion.SetAuthors(ViewModel.Book.Authors, 0, 0)
             ViewModel.Book.AuthorNameConversion.SetConversionMode(AuthorSuggestionsViewModel.ConversionMode.LastNameFirstName)
             ViewModel.Book.AuthorNameConversion.ComputeSuggestion()
             ReformatAuthorsFlyoutBase = FlyoutBase.GetAttachedFlyout(ReformatAuthorsLastNameFirstName)
@@ -104,17 +94,7 @@ Namespace Global.MyBooks.App.Views
         End Sub
 
         Private Sub ReformatAuthorsFirstNameLastName_Click(sender As Object, e As RoutedEventArgs)
-            Dim descendants = Authors.FindDescendants(Of AutoCompleteTextBox)
-            Dim internalTextBox = descendants.FirstOrDefault()
-            Dim start = 0
-            Dim length = ViewModel.Book.Authors
-
-            If internalTextBox IsNot Nothing Then
-                start = internalTextBox.SelectionStart
-                length = internalTextBox.SelectionLength
-            End If
-
-            ViewModel.Book.AuthorNameConversion.SetAuthors(ViewModel.Book.Authors, start, length)
+            ViewModel.Book.AuthorNameConversion.SetAuthors(ViewModel.Book.Authors, 0, 0)
             ViewModel.Book.AuthorNameConversion.SetConversionMode(AuthorSuggestionsViewModel.ConversionMode.FirstNameLastName)
             ViewModel.Book.AuthorNameConversion.ComputeSuggestion()
             ReformatAuthorsFlyoutBase = FlyoutBase.GetAttachedFlyout(ReformatAuthorsFirstNameLastName)

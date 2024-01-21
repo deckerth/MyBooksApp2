@@ -74,6 +74,10 @@ Namespace Global.MyBooks.Repository.Sql
             End If
             Await _db.SaveChangesAsync()
         End Function
+
+        Public Function GetCount() As Integer Implements IAuthorRepository.GetCount
+            Return _db.Authors.Count
+        End Function
     End Class
 
 End Namespace

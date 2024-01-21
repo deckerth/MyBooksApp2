@@ -25,6 +25,9 @@ Namespace Global.MyBooks.Repository
         ' Clears the database
         Function ClearAsync() As Task
 
+        'Returns the number of entries
+        Function GetCount() As Integer
+
     End Interface
 
 End Namespace

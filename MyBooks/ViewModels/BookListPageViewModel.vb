@@ -39,6 +39,8 @@ Namespace Global.MyBooks.App.ViewModels
 
 #Region "Properties"
 
+        Public ReadOnly Property Statistics As StatisticsViewModel = StatisticsViewModel.Current
+
         Private _isModified As Boolean
         Public Property IsModified As Boolean
             Get
@@ -55,6 +57,7 @@ Namespace Global.MyBooks.App.ViewModels
 
         Private Async Sub OnBookCreated(newBook As BookViewModel)
             Await DispatcherHelper.ExecuteOnUIThreadAsync(Sub() _books.Add(newBook))
+            Statistics.AddBook(newBook.Model)
             If ListBackup IsNot Nothing Then
                 ListBackup.Add(newBook)
             End If
@@ -176,9 +179,12 @@ Namespace Global.MyBooks.App.ViewModels
             Await DispatcherHelper.ExecuteOnUIThreadAsync(
                 Sub()
                     Books.Clear()
+                    Statistics.Reset()
                     For Each b In repo
                         Books.Add(New BookViewModel(b) With {.Validate = True})
+                        Statistics.AddBook(b, automaticRendering:=False)
                     Next
+                    Statistics.RenderState()
                 End Sub)
             Await Progress.HideAsync()
         End Function
@@ -218,6 +224,7 @@ Namespace Global.MyBooks.App.ViewModels
                     Try
                         Await App.Repository.Books.DeleteAsync(toDelete.Id)
                         Books.Remove(toDelete)
+                        Statistics.DeleteBook(toDelete.Model)
                         If ListBackup IsNot Nothing Then
                             ListBackup.Remove(toDelete)
                         End If
@@ -243,12 +250,14 @@ Namespace Global.MyBooks.App.ViewModels
                         Try
                             Await App.Repository.Books.DeleteAsync(b.Id)
                             Books.Remove(b)
+                            Statistics.DeleteBook(b.Model, automaticRendering:=False)
                             If ListBackup IsNot Nothing Then
                                 ListBackup.Remove(b)
                             End If
                         Catch ex As Exception
                         End Try
                     Next
+                    Statistics.RenderState()
                 End If
             End If
         End Function

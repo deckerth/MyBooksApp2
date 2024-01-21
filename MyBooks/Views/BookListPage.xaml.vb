@@ -392,6 +392,16 @@ Namespace Global.MyBooks.App.Views
             DataGrid.DeselectAll()
         End Sub
 
+        Private Sub DataGrid_KeyDown(sender As Object, e As KeyRoutedEventArgs)
+            Select Case e.Key
+                Case Windows.System.VirtualKey.Home
+                    DataGrid.ScrollIndexIntoView(0)
+                    e.Handled = True
+                Case Windows.System.VirtualKey.End
+                    DataGrid.ScrollIndexIntoView(ViewModel.Books.Count - 1)
+                    e.Handled = True
+            End Select
+        End Sub
     End Class
 
 End Namespace

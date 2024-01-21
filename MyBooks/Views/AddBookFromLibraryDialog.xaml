@@ -6,6 +6,7 @@
     xmlns:local="using:MyBooks.App.Views"
     xmlns:viewModels="using:MyBooks.App.ViewModels"
     xmlns:converters="using:MyBooks.App.ValueConverters"
+    xmlns:controls="using:MyBooks.App.UserControls"
     xmlns:telerik="using:Telerik.UI.Xaml.Controls.Input"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -109,7 +110,7 @@
                            RelativePanel.AlignLeftWithPanel="True"
                            RelativePanel.Below="Title"
                            Text="{x:Bind ViewModel.Book.OriginalTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                        <telerik:RadAutoCompleteBox
+                        <controls:AdvancedAutoSuggestBox
                            x:Name="Authors"
                            x:Uid="Authors"
                            Width="300"

@@ -36,6 +36,8 @@
                                     <SolidColorBrush x:Key="NavMenuAccentForegroundColor" Color="SteelBlue" />
                                     <SolidColorBrush x:Key="MenuBarForegroundBrush" Color="Black"/>
                                     <SolidColorBrush x:Key="MenuBarBackgroundBrush" Color="White"/>
+                                    <SolidColorBrush x:Key="StatusBarBackgroundBrush" Color="#FFB0C4DE"/>
+                                    <SolidColorBrush x:Key="StatusBarForegroundBrush" Color="#FF292929"/>
                                     <ResourceDictionary.MergedDictionaries>
                                         <ResourceDictionary Source="ms-appx:///Telerik.UI.Xaml.Grid.UWP/Themes/ThemeResourcesLight.xaml"/>
                                         <ResourceDictionary Source="{CustomResource LightResourcesPath}"/>
@@ -46,6 +48,8 @@
                                     <SolidColorBrush x:Key="NavMenuAccentForegroundColor" Color="SteelBlue" />
                                     <SolidColorBrush x:Key="MenuBarForegroundBrush" Color="White"/>
                                     <SolidColorBrush x:Key="MenuBarBackgroundBrush" Color="Black"/>
+                                    <SolidColorBrush x:Key="StatusBarBackgroundBrush" Color="#FF4682B4"/>
+                                    <SolidColorBrush x:Key="StatusBarForegroundBrush" Color="LightGray"/>
                                 </ResourceDictionary>
                             </ResourceDictionary.ThemeDictionaries>
                         </ResourceDictionary>

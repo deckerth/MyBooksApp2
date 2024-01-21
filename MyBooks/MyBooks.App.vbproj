@@ -188,6 +188,7 @@
     <Compile Include="ViewModels\MultipleBooksViewModel.vb" />
     <Compile Include="ViewModels\ProgressRingViewModel.vb" />
     <Compile Include="ViewModels\ScannedBooksImportViewModel.vb" />
+    <Compile Include="ViewModels\StatisticsViewModel.vb" />
     <Compile Include="Views\AddBookFromLibraryDialog.xaml.vb">
       <DependentUpon>AddBookFromLibraryDialog.xaml</DependentUpon>
     </Compile>
