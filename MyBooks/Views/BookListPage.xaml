@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:MyBooks.App.Views"
     xmlns:converter="using:MyBooks.App.ValueConverters"
+    xmlns:controls="using:MyBooks.App.UserControls"
     xmlns:viewModels="using:MyBooks.App.ViewModels"
     xmlns:uc="using:MyBooks.App.UserControls"
     xmlns:gridPrimitives="using:Telerik.UI.Xaml.Controls.Grid.Primitives"
@@ -70,7 +71,7 @@
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="270"/>
+            <ColumnDefinition Width="290"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -85,7 +86,6 @@
                 Grid.Column="0"
                 x:Name="mainCommandBar"
                 Background="Transparent"
-                Loaded="CommandBar_Loaded"
                 IsDynamicOverflowEnabled="True"
                 >
             <CommandBar.Content>
@@ -106,7 +106,7 @@
 
             <AppBarButton x:Name="DuplicateBook"
                     Click="DuplicateBook_Click"
-                    IsEnabled="{x:Bind converter:BooleanOperator.OpNot(ViewModel.Progress.Active),Mode=OneWay}"
+                     IsEnabled="{x:Bind converter:BooleanOperator.OpNotAndEqual1(ViewModel.Progress.Active,ViewModel.SelectedItems.Count),Mode=OneWay}"
                     x:Uid="DuplicateBookButton">
                 <AppBarButton.Icon>
                     <PathIcon Data="F0 M0,5 h1 v14 h-1 v-14 h3 v1 h-3 v-1 M0,18 h13 v1 h-13 v-1 M12,16 h1 v3 h-1 v-3 M5,0 h1 v15 h-1 v-15 h13 v1 h-13 v-1 M17,0 h1 v15 h-1 v-15 M5,14 h13 v1 h-13 v-1 M8,7 h7 v1 h-7 v-1 M11,4 h1 v7 h-1 v-7" />
@@ -115,14 +115,14 @@
 
             <AppBarButton x:Name="EditBook"
                     Click="EditBook_Click"
-                    IsEnabled="{x:Bind converter:BooleanOperator.OpNot(ViewModel.Progress.Active),Mode=OneWay}"
+                    IsEnabled="{x:Bind converter:BooleanOperator.OpNotAndGreater0(ViewModel.Progress.Active,ViewModel.SelectedItems.Count),Mode=OneWay}"
                     x:Uid="EditBookButton"
                     Icon="Edit"
                     />
 
             <AppBarButton x:Name="DeleteBook"
                     Command="{x:Bind ViewModel.DeleteBookCommand,Mode=OneWay}"
-                    IsEnabled="{x:Bind converter:BooleanOperator.OpNot(ViewModel.Progress.Active),Mode=OneWay}"
+                    IsEnabled="{x:Bind converter:BooleanOperator.OpNotAndGreater0(ViewModel.Progress.Active,ViewModel.SelectedItems.Count),Mode=OneWay}"
                     x:Uid="DeleteBookButton"
                     Icon="Delete"
                     />
@@ -160,18 +160,28 @@
             </CommandBar.SecondaryCommands>
         </CommandBar>
 
-        <AutoSuggestBox
-                Grid.Row="0"
+        <Grid Grid.Row="0" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border x:Name="FilterIndicator"
+                    Visibility="{x:Bind ViewModel.FilterIsSet, Converter={StaticResource booleanVisConverter}, Mode=OneWay}"
+                    Background="{ThemeResource NavMenuAccentForegroundColor}" BorderThickness="0" 
+                    CornerRadius="3"
+                    Margin="0,6,-10,0" 
+                    Width="3" Height="18" HorizontalAlignment="Right"/>
+            <AutoSuggestBox
                 Grid.Column="1"
                 x:Name="BookSearchBox"
                 x:Uid="BookSearchBox"
                 IsEnabled="{x:Bind converter:BooleanOperator.OpNot(ViewModel.Progress.Active),Mode=OneWay}"
                 Width="240"
-                Margin="12,8,12,0"
-                Loaded="BookSearchBox_Loaded"
+                Margin="12,7,12,5"
                 QueryIcon="Filter"
                 TextChanged="BookSearchBox_TextChanged"
                 QuerySubmitted="BookSearchBox_QuerySubmitted"/>
+        </Grid>
 
         <Grid   Grid.Row="1"
                 Grid.ColumnSpan="2"
@@ -219,9 +229,21 @@
                           Visibility="{x:Bind ViewModel.MultipleSelectionMode,Converter={StaticResource booleanVisConverter},Mode=OneWay}"
                           Command="{x:Bind ViewModel.DeselectAllCommand}"
                        />
+            <AppBarButton x:Name="SortOrder"
+                          x:Uid="SortOrder"
+                          Icon="Sort">
+                <AppBarButton.Flyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem x:Name="SortOrderAuthorTitle" x:Uid="SortOrderAuthorTitle" 
+                                        Command="{x:Bind ViewModel.SortAuthorsTitlesCommand, Mode=OneWay}"/>
+                        <MenuFlyoutItem x:Name="SortOrderReset" x:Uid="SortOrderReset" 
+                                        Command="{x:Bind ViewModel.ResetSortingCommand, Mode=OneWay}"/>
+                    </MenuFlyout>
+                </AppBarButton.Flyout>
+            </AppBarButton>
 
         </StackPanel>
-        
+
         <telerikGrid:RadDataGrid
                 Grid.Row="3"
                 Grid.ColumnSpan="2"
@@ -233,10 +255,17 @@
                 ItemsSource="{x:Bind ViewModel.Books}"
                 SelectedItem="{x:Bind ViewModel.SelectedBook, Mode=TwoWay}"
                 UserEditMode="Inline"
+                UserSortMode="Auto"
                 AutoGenerateColumns="False"
                 KeyDown="DataGrid_KeyDown"
                 SelectionMode="{x:Bind ViewModel.MultipleSelectionMode,Converter={StaticResource booleanSelModeConverter},Mode=OneWay}"
+                SelectionChanged="DataGrid_SelectionChanged"
                 >
+
+            <telerikGrid:RadDataGrid.SortDescriptors>
+                <telerikCore:PropertySortDescriptor PropertyName="Authors"/>
+                <telerikCore:PropertySortDescriptor PropertyName="Title"/>
+            </telerikGrid:RadDataGrid.SortDescriptors>
 
             <telerikGrid:RadDataGrid.Commands >
                 <local:CustomCommitEditCommand />
@@ -259,15 +288,14 @@
                     </local:AuthorsDataTemplateSelector.AuthorsDisplayTemplate>
                     <local:AuthorsDataTemplateSelector.AuthorsEditTemplate>
                         <DataTemplate x:DataType="viewModels:BookViewModel">
-                            <telerikInput:RadAutoCompleteBox
+                            <controls:AdvancedAutoSuggestBox
                                     Width="300"
                                     VerticalAlignment="Center"
                                     Text="{x:Bind Authors, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     TextChanged="OnAuthors_TextChanged"
-                                    Loaded="OnAuthors_Loaded"
-                                    Unloaded="OnAuthors_Unloaded"
+                                    DeleteSuggestion="OnAuthors_DeleteSuggestion"
                                     >
-                                <telerikInput:RadAutoCompleteBox.ContextFlyout>
+                                <controls:AdvancedAutoSuggestBox.ContextFlyout>
                                     <MenuFlyout>
                                         <!--<MenuFlyoutItem x:Name="Copy"
                                                         Text="Kopieren" 
@@ -284,9 +312,9 @@
                                                         FlyoutBase.AttachedFlyout="{StaticResource NameConversionSuggestionFlyout}"
                                                         />
                                     </MenuFlyout>
-                                </telerikInput:RadAutoCompleteBox.ContextFlyout>
-                            </telerikInput:RadAutoCompleteBox>
-                                
+                                </controls:AdvancedAutoSuggestBox.ContextFlyout>
+                            </controls:AdvancedAutoSuggestBox>
+
                         </DataTemplate>
                     </local:AuthorsDataTemplateSelector.AuthorsEditTemplate>
                 </local:AuthorsDataTemplateSelector>
@@ -304,11 +332,12 @@
                     </local:StorageDataTemplateSelector.DisplayTemplate>
                     <local:StorageDataTemplateSelector.EditTemplate>
                         <DataTemplate x:DataType="viewModels:BookViewModel">
-                            <telerikInput:RadAutoCompleteBox
+                            <controls:AdvancedAutoSuggestBox
                                     Width="300"
                                     VerticalAlignment="Center"                                
                                     Text="{x:Bind Storage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                    TextChanged="OnStorage_TextChanged"/>
+                                    TextChanged="OnStorage_TextChanged"
+                                    DeleteSuggestion="OnStorage_DeleteSuggestion" />
                         </DataTemplate>
                     </local:StorageDataTemplateSelector.EditTemplate>
                 </local:StorageDataTemplateSelector>
@@ -326,11 +355,12 @@
                     </local:KeywordsDataTemplateSelector.DisplayTemplate>
                     <local:KeywordsDataTemplateSelector.EditTemplate>
                         <DataTemplate x:DataType="viewModels:BookViewModel">
-                            <telerikInput:RadAutoCompleteBox
+                            <controls:AdvancedAutoSuggestBox
                                     Width="300"
                                     VerticalAlignment="Center"
                                     Text="{x:Bind Keywords, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                    TextChanged="OnKeywords_TextChanged"/>
+                                    TextChanged="OnKeywords_TextChanged"
+                                    DeleteSuggestion="OnKeywords_DeleteSuggestion" />
                         </DataTemplate>
                     </local:KeywordsDataTemplateSelector.EditTemplate>
                 </local:KeywordsDataTemplateSelector>
@@ -413,7 +443,7 @@
                         </Style>
                     </telerikGrid:DataGridTextColumn.CellContentStyle>
                 </telerikGrid:DataGridTextColumn>
-                
+
                 <telerikGrid:DataGridTextColumn x:Uid="BorrowedAt" PropertyName="BorrowedDate" SizeMode="Fixed" Width="100"
                                                 CanUserGroup="False"
                                                 uc:ColumnMarker.RequiresCustomFiltering="True"
@@ -445,5 +475,5 @@
                        Foreground="{StaticResource StatusBarForegroundBrush}"/>
         </Grid>
     </Grid>
-    
+
 </Page>

@@ -2,7 +2,7 @@
 Imports System.Globalization
 Imports Microsoft.Toolkit.Uwp.Helpers
 Imports Microsoft.Toolkit.Uwp.UI.Extensions
-Imports MyBooks.App.TelerikStrings
+Imports MyBooks.App.UserControls
 Imports MyBooks.App.ViewModels
 Imports MyBooks.Models
 Imports Telerik.Data.Core
@@ -124,6 +124,8 @@ Namespace Global.MyBooks.App.Views
 
         Public Property ViewModel As BookListPageViewModel
 
+        Private AuthorTitleSortDescriptors As New List(Of SortDescriptorBase)
+
         Public Sub New()
             InitializeComponent()
             Current = Me
@@ -131,8 +133,12 @@ Namespace Global.MyBooks.App.Views
             ViewModel = New BookListPageViewModel()
             DataContext = ViewModel
             ViewModel.SelectedItems = DataGrid.SelectedItems
+            AuthorTitleSortDescriptors.Add(DataGrid.SortDescriptors.Item(0)) 'Authors
+            AuthorTitleSortDescriptors.Add(DataGrid.SortDescriptors.Item(1)) 'Titles
             AddHandler ViewModel.SelectAll, AddressOf OnSelectAll
             AddHandler ViewModel.DeselectAll, AddressOf OnDeselectAll
+            AddHandler ViewModel.ResetSorting, AddressOf OnResetSorting
+            AddHandler ViewModel.SortAuthorsTitles, AddressOf OnSortAuthorsTitles
             AddHandler DataGrid.GroupDescriptors.CollectionChanged, AddressOf OnGroupCollectionChanged
         End Sub
 
@@ -154,6 +160,7 @@ Namespace Global.MyBooks.App.Views
             MyBase.OnNavigatedFrom(e)
         End Sub
 
+#Region "CRUD"
         Private Sub CreateBook_Click(sender As Object, e As RoutedEventArgs)
             Frame.Navigate(GetType(BookDetailPage))
         End Sub
@@ -192,21 +199,16 @@ Namespace Global.MyBooks.App.Views
 
         End Sub
 
-        Private Sub BookSearchBox_Loaded(sender As Object, e As RoutedEventArgs)
+#End Region
 
-        End Sub
-
-        Private Sub CommandBar_Loaded(sender As Object, e As RoutedEventArgs)
-
-        End Sub
-
-        Private Async Sub OnAuthors_TextChanged(sender As RadAutoCompleteBox, args As TextChangedEventArgs)
+#Region "InPlaceEditing"
+        Private Async Sub OnAuthors_TextChanged(sender As AdvancedAutoSuggestBox, e As AutoSuggestBoxTextChangedEventArgs)
             ' Only get results when it was a user typing,
             ' otherwise assume the value got filled in by TextMemberPath
             ' Or the handler for SuggestionChosen.
 
             Dim hits = Await App.Repository.Authors.GetAsync(sender.Text)
-            Dim dataset As New List(Of String)
+            Dim dataset As New Collection(Of String)
             For Each a In hits
                 dataset.Add(a.Name)
             Next
@@ -215,10 +217,14 @@ Namespace Global.MyBooks.App.Views
 
         End Sub
 
-        Private Async Sub OnStorage_TextChanged(sender As RadAutoCompleteBox, e As TextChangedEventArgs)
+        Private Async Sub OnAuthors_DeleteSuggestion(sender As UserControls.AdvancedAutoSuggestBox, e As UserControls.AdvancedAutoSuggestBoxDeleteSuggestionArgs)
+            Await App.Repository.Authors.DeleteAsyncExact(e.SuggestionToDelete)
+        End Sub
+
+        Private Async Sub OnStorage_TextChanged(sender As AdvancedAutoSuggestBox, e As AutoSuggestBoxTextChangedEventArgs)
 
             Dim hits As IEnumerable(Of Storage) = Await App.Repository.Storages.GetAsync(sender.Text)
-            Dim dataset As New List(Of String)
+            Dim dataset As New Collection(Of String)
             For Each a In hits
                 dataset.Add(a.Name)
             Next
@@ -227,10 +233,14 @@ Namespace Global.MyBooks.App.Views
 
         End Sub
 
-        Private Async Sub OnKeywords_TextChanged(sender As RadAutoCompleteBox, e As TextChangedEventArgs)
+        Private Async Sub OnStorage_DeleteSuggestion(sender As UserControls.AdvancedAutoSuggestBox, e As UserControls.AdvancedAutoSuggestBoxDeleteSuggestionArgs)
+            Await App.Repository.Storages.DeleteAsyncExact(e.SuggestionToDelete)
+        End Sub
+
+        Private Async Sub OnKeywords_TextChanged(sender As AdvancedAutoSuggestBox, e As AutoSuggestBoxTextChangedEventArgs)
 
             Dim hits As IEnumerable(Of Keyword) = Await App.Repository.Keywords.GetAsync(sender.Text)
-            Dim dataset As New List(Of String)
+            Dim dataset As New Collection(Of String)
             For Each a In hits
                 dataset.Add(a.Name)
             Next
@@ -239,109 +249,36 @@ Namespace Global.MyBooks.App.Views
 
         End Sub
 
-        Private Async Sub BookSearchBox_TextChanged(sender As AutoSuggestBox, args As AutoSuggestBoxTextChangedEventArgs)
-
-            ' We only want to get results when it was a user typing,
-            ' otherwise we assume the value got filled in by TextMemberPath
-            ' Or the handler for SuggestionChosen.
-            If args.Reason = AutoSuggestionBoxTextChangeReason.UserInput Then
-                If String.IsNullOrEmpty(sender.Text) Then
-                    'Await DispatcherHelper.ExecuteOnUIThreadAsync(Async Function()
-                    '                                                  Await ViewModel.GetBooksListAsync()
-                    '                                              End Function)
-                    sender.ItemsSource = Nothing
-                Else
-                    Dim parameters As String() = sender.Text.Split({" ", ",", ":", ";"}, StringSplitOptions.RemoveEmptyEntries)
-                    sender.ItemsSource = ViewModel.Books.Where(
-                        Function(x As BookViewModel) parameters.Any(Function(y As String) x.Title.Contains(y, StringComparison.OrdinalIgnoreCase) Or
-                                                                         x.Authors.Contains(y, StringComparison.OrdinalIgnoreCase) Or
-                                                                         x.Keywords.Contains(y, StringComparison.OrdinalIgnoreCase) Or
-                                                                         x.OriginalTitle.Contains(y, StringComparison.OrdinalIgnoreCase) Or
-                                                                         x.Storage.StartsWith(y, StringComparison.OrdinalIgnoreCase))
-                        ).OrderByDescending(
-                        Function(x As BookViewModel) parameters.Count(Function(y As String) x.Title.Contains(y, StringComparison.OrdinalIgnoreCase) Or
-                                                                         x.Authors.Contains(y, StringComparison.OrdinalIgnoreCase) Or
-                                                                         x.Keywords.Contains(y, StringComparison.OrdinalIgnoreCase) Or
-                                                                         x.OriginalTitle.Contains(y, StringComparison.OrdinalIgnoreCase) Or
-                                                                         x.Storage.StartsWith(y, StringComparison.OrdinalIgnoreCase))
-                        ).Select(Of String)(
-                        Function(x As BookViewModel) As String
-                            Return x.Authors + ":" + x.Title
-                        End Function)
-                End If
-            End If
-
-        End Sub
-
-        Private Async Sub BookSearchBox_QuerySubmitted(sender As AutoSuggestBox, args As AutoSuggestBoxQuerySubmittedEventArgs)
-
-            If String.IsNullOrEmpty(args.QueryText) Then
-                If ViewModel.FilterIsSet Then
-                    ViewModel.FilterIsSet = False
-                    If ViewModel.IsBackupValid() Then
-                        Await DispatcherHelper.ExecuteOnUIThreadAsync(Sub() ViewModel.RestoreBackup())
-                    Else
-                        Await ViewModel.Progress.SetIndeterministicAsync()
-                        Await DispatcherHelper.ExecuteOnUIThreadAsync(Async Function()
-                                                                          Await ViewModel.GetBooksListAsync()
-                                                                      End Function)
-                        Await ViewModel.Progress.HideAsync()
-                    End If
-                End If
-            Else
-                Dim parameters As String() = args.QueryText.Split({" ", ",", ":", ";"}, StringSplitOptions.RemoveEmptyEntries)
-                Dim matches = ViewModel.Books.Where(
-                        Function(x As BookViewModel) parameters.Any(Function(y As String) x.Title.Contains(y, StringComparison.OrdinalIgnoreCase) Or
-                                                                         x.Authors.Contains(y, StringComparison.OrdinalIgnoreCase) Or
-                                                                         x.Keywords.Contains(y, StringComparison.OrdinalIgnoreCase) Or
-                                                                         x.OriginalTitle.Contains(y, StringComparison.OrdinalIgnoreCase) Or
-                                                                         x.Storage.StartsWith(y, StringComparison.OrdinalIgnoreCase))
-                        ).OrderByDescending(
-                        Function(x As BookViewModel) parameters.Count(Function(y As String) x.Title.Contains(y, StringComparison.OrdinalIgnoreCase) Or
-                                                                         x.Authors.Contains(y, StringComparison.OrdinalIgnoreCase) Or
-                                                                         x.Keywords.Contains(y, StringComparison.OrdinalIgnoreCase) Or
-                                                                         x.OriginalTitle.Contains(y, StringComparison.OrdinalIgnoreCase) Or
-                                                                         x.Storage.StartsWith(y, StringComparison.OrdinalIgnoreCase))
-                        ).ToList()
-
-                Await DispatcherHelper.ExecuteOnUIThreadAsync(Sub()
-                                                                  ViewModel.CreateBackup()
-                                                                  ViewModel.Books.Clear()
-                                                                  For Each match In matches
-                                                                      ViewModel.Books.Add(match)
-                                                                  Next
-                                                                  ViewModel.FilterIsSet = True
-                                                              End Sub)
-
-            End If
+        Private Async Sub OnKeywords_DeleteSuggestion(sender As UserControls.AdvancedAutoSuggestBox, e As UserControls.AdvancedAutoSuggestBoxDeleteSuggestionArgs)
+            Await App.Repository.Storages.DeleteAsyncExact(e.SuggestionToDelete)
         End Sub
 
         Private _currentAuthorBox As RadAutoCompleteBox
-        Private _internalTextBox As AutoCompleteTextBox
+        'Private _internalTextBox As AutoCompleteTextBox
 
         ' Traverse the child visual tree to find the AutoCompleteTextBox
         ' And SUBSCRIBE the ContextMenuOpening event handler
         Private Sub OnAuthors_Loaded(sender As Object, e As RoutedEventArgs)
             _currentAuthorBox = DirectCast(sender, RadAutoCompleteBox)
-            Dim descendants = _currentAuthorBox.FindDescendants(Of AutoCompleteTextBox)
-            _internalTextBox = descendants.FirstOrDefault()
+            'Dim descendants = _currentAuthorBox.FindDescendants(Of AutoCompleteTextBox)
+            '_internalTextBox = descendants.FirstOrDefault()
 
-            AddHandler _internalTextBox.ContextMenuOpening, AddressOf InternalTextBox_ContextMenuOpening
+            'AddHandler _internalTextBox.ContextMenuOpening, AddressOf InternalTextBox_ContextMenuOpening
         End Sub
 
-        Private Sub OnAuthors_Unloaded(sender As Object, e As RoutedEventArgs)
-            Dim box = DirectCast(sender, RadAutoCompleteBox)
-            Dim descendants = box.FindDescendants(Of AutoCompleteTextBox)
-            Dim internalTextBox As AutoCompleteTextBox = descendants.FirstOrDefault()
+        'Private Sub OnAuthors_Unloaded(sender As Object, e As RoutedEventArgs)
+        '    Dim box = DirectCast(sender, RadAutoCompleteBox)
+        '    Dim descendants = box.FindDescendants(Of AutoCompleteTextBox)
+        '    Dim internalTextBox As AutoCompleteTextBox = descendants.FirstOrDefault()
 
-            RemoveHandler internalTextBox.ContextMenuOpening, AddressOf InternalTextBox_ContextMenuOpening
-            _currentAuthorBox = Nothing
-            _internalTextBox = Nothing
-        End Sub
+        '    RemoveHandler internalTextBox.ContextMenuOpening, AddressOf InternalTextBox_ContextMenuOpening
+        '    _currentAuthorBox = Nothing
+        '    _internalTextBox = Nothing
+        'End Sub
 
-        Private Sub InternalTextBox_ContextMenuOpening(sender As Object, e As ContextMenuEventArgs)
-            e.Handled = True
-        End Sub
+        'Private Sub InternalTextBox_ContextMenuOpening(sender As Object, e As ContextMenuEventArgs)
+        '    e.Handled = True
+        'End Sub
 
         Private ReformatAuthorsFlyoutBase As FlyoutBase
 
@@ -349,10 +286,6 @@ Namespace Global.MyBooks.App.Views
             If ViewModel.SelectedBook IsNot Nothing Then
                 Dim start = 0
                 Dim length = ViewModel.SelectedBook.Authors.Length
-                If _internalTextBox IsNot Nothing Then
-                    start = _internalTextBox.SelectionStart
-                    length = _internalTextBox.SelectionLength
-                End If
                 ViewModel.SelectedBook.AuthorNameConversion.SetAuthors(ViewModel.SelectedBook.Authors, start, length)
                 ViewModel.SelectedBook.AuthorNameConversion.SetConversionMode(AuthorSuggestionsViewModel.ConversionMode.LastNameFirstName)
                 ViewModel.SelectedBook.AuthorNameConversion.ComputeSuggestion()
@@ -384,6 +317,95 @@ Namespace Global.MyBooks.App.Views
             ViewModel.SelectedBook.AuthorNameConversion.ComputeSuggestion()
         End Sub
 
+#End Region
+
+#Region "Searchbox"
+        Private Async Sub BookSearchBox_TextChanged(sender As AutoSuggestBox, args As AutoSuggestBoxTextChangedEventArgs)
+
+            ' We only want to get results when it was a user typing,
+            ' otherwise we assume the value got filled in by TextMemberPath
+            ' Or the handler for SuggestionChosen.
+            If args.Reason = AutoSuggestionBoxTextChangeReason.UserInput Then
+                If String.IsNullOrEmpty(sender.Text) Then
+                    'Await DispatcherHelper.ExecuteOnUIThreadAsync(Async Function()
+                    '                                                  Await ViewModel.GetBooksListAsync()
+                    '                                              End Function)
+                    sender.ItemsSource = Nothing
+                    Await CLearFilter()
+                Else
+                    Dim parameters As String() = sender.Text.Split({" ", ",", ":", ";"}, StringSplitOptions.RemoveEmptyEntries)
+                    sender.ItemsSource = ViewModel.Books.Where(
+                        Function(x As BookViewModel) parameters.Any(Function(y As String) x.Title.Contains(y, StringComparison.OrdinalIgnoreCase) Or
+                                                                         x.Authors.Contains(y, StringComparison.OrdinalIgnoreCase) Or
+                                                                         x.Keywords.Contains(y, StringComparison.OrdinalIgnoreCase) Or
+                                                                         x.OriginalTitle.Contains(y, StringComparison.OrdinalIgnoreCase) Or
+                                                                         x.Storage.StartsWith(y, StringComparison.OrdinalIgnoreCase))
+                        ).OrderByDescending(
+                        Function(x As BookViewModel) parameters.Count(Function(y As String) x.Title.Contains(y, StringComparison.OrdinalIgnoreCase) Or
+                                                                         x.Authors.Contains(y, StringComparison.OrdinalIgnoreCase) Or
+                                                                         x.Keywords.Contains(y, StringComparison.OrdinalIgnoreCase) Or
+                                                                         x.OriginalTitle.Contains(y, StringComparison.OrdinalIgnoreCase) Or
+                                                                         x.Storage.StartsWith(y, StringComparison.OrdinalIgnoreCase))
+                        ).Select(Of String)(
+                        Function(x As BookViewModel) As String
+                            Return x.Authors + ":" + x.Title
+                        End Function)
+                End If
+            End If
+
+        End Sub
+
+        Private Async Function CLearFilter() As Task
+            If ViewModel.FilterIsSet Then
+                ViewModel.FilterIsSet = False
+                If ViewModel.IsBackupValid() Then
+                    Await DispatcherHelper.ExecuteOnUIThreadAsync(Sub() ViewModel.RestoreBackup())
+                Else
+                    Await ViewModel.Progress.SetIndeterministicAsync()
+                    Await DispatcherHelper.ExecuteOnUIThreadAsync(Async Function()
+                                                                      Await ViewModel.GetBooksListAsync()
+                                                                  End Function)
+                    Await ViewModel.Progress.HideAsync()
+                End If
+            End If
+        End Function
+
+        Private Async Sub BookSearchBox_QuerySubmitted(sender As AutoSuggestBox, args As AutoSuggestBoxQuerySubmittedEventArgs)
+
+            If String.IsNullOrEmpty(args.QueryText) Then
+                Await CLearFilter()
+            Else
+                Dim parameters As String() = args.QueryText.Split({" ", ",", ":", ";"}, StringSplitOptions.RemoveEmptyEntries)
+                Dim matches = ViewModel.Books.Where(
+                        Function(x As BookViewModel) parameters.Any(Function(y As String) x.Title.Contains(y, StringComparison.OrdinalIgnoreCase) Or
+                                                                         x.Authors.Contains(y, StringComparison.OrdinalIgnoreCase) Or
+                                                                         x.Keywords.Contains(y, StringComparison.OrdinalIgnoreCase) Or
+                                                                         x.OriginalTitle.Contains(y, StringComparison.OrdinalIgnoreCase) Or
+                                                                         x.Storage.StartsWith(y, StringComparison.OrdinalIgnoreCase))
+                        ).OrderByDescending(
+                        Function(x As BookViewModel) parameters.Count(Function(y As String) x.Title.Contains(y, StringComparison.OrdinalIgnoreCase) Or
+                                                                         x.Authors.Contains(y, StringComparison.OrdinalIgnoreCase) Or
+                                                                         x.Keywords.Contains(y, StringComparison.OrdinalIgnoreCase) Or
+                                                                         x.OriginalTitle.Contains(y, StringComparison.OrdinalIgnoreCase) Or
+                                                                         x.Storage.StartsWith(y, StringComparison.OrdinalIgnoreCase))
+                        ).ToList()
+
+                Await DispatcherHelper.ExecuteOnUIThreadAsync(Sub()
+                                                                  ViewModel.CreateBackup()
+                                                                  ViewModel.Books.Clear()
+                                                                  For Each match In matches
+                                                                      ViewModel.Books.Add(match)
+                                                                  Next
+                                                                  ViewModel.FilterIsSet = True
+                                                                  DataGrid.SelectedItems.Clear()
+                                                              End Sub)
+
+            End If
+        End Sub
+
+#End Region
+
+#Region "Selection"
         Private Sub OnSelectAll()
             DataGrid.SelectAll()
         End Sub
@@ -392,6 +414,26 @@ Namespace Global.MyBooks.App.Views
             DataGrid.DeselectAll()
         End Sub
 
+        Private Sub DataGrid_SelectionChanged(sender As Object, e As DataGridSelectionChangedEventArgs)
+            ViewModel.DataGrid_SelectionChanged()
+            ViewModel.Statistics.SetSelectedBooks(DirectCast(sender, RadDataGrid).SelectedItems.Count)
+        End Sub
+
+#End Region
+
+#Region "Sorting"
+        Private Sub OnResetSorting()
+            DataGrid.SortDescriptors.Clear()
+        End Sub
+
+        Private Sub OnSortAuthorsTitles()
+            OnResetSorting()
+            DataGrid.SortDescriptors.Add(AuthorTitleSortDescriptors.Item(0)) 'Authors
+            DataGrid.SortDescriptors.Add(AuthorTitleSortDescriptors.Item(1)) 'Titles
+        End Sub
+#End Region
+
+#Region "GridCommands"
         Private Sub DataGrid_KeyDown(sender As Object, e As KeyRoutedEventArgs)
             Select Case e.Key
                 Case Windows.System.VirtualKey.Home
@@ -402,6 +444,9 @@ Namespace Global.MyBooks.App.Views
                     e.Handled = True
             End Select
         End Sub
+
+#End Region
+
     End Class
 
 End Namespace

@@ -13,9 +13,9 @@ Namespace Global.MyBooks.App.Views
             InfoBox.NavigateToString(App.Texts.GetString(textid))
         End Sub
 
-        Public Async Function EnableKindleNameInputBox() As Task
+        Public Async Function EnableKindleNameInputBox(settingsName As String, prefixName As String) As Task
             Dim settings = Windows.Storage.ApplicationData.Current.LocalSettings
-            Dim Name = settings.Values("KindleName")
+            Dim Name = settings.Values(settingsName)
 
             If String.IsNullOrEmpty(Name) Then
                 Name = ""
@@ -28,7 +28,7 @@ Namespace Global.MyBooks.App.Views
                             userName = Await current.GetPropertyAsync(KnownUserProperties.AccountName)
                         End If
                         If Not String.IsNullOrEmpty(userName) Then
-                            Name = App.Texts.GetString("KindleOf") + " " + userName
+                            Name = App.Texts.GetString(prefixName) + " " + userName
                         End If
                     End If
                 Catch ex As Exception
@@ -39,7 +39,7 @@ Namespace Global.MyBooks.App.Views
             KindleName.Visibility = Visibility.Visible
         End Function
 
-        Function GetKindleName() As String
+        Function GetLibraryName() As String
             Return KindleName.Text
         End Function
 

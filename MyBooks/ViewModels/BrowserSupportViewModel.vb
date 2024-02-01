@@ -39,11 +39,15 @@ Namespace Global.MyBooks.App.ViewModels
         Public Sub New(book As Book)
             Me.New()
             Try
-                BibItemLibraryUri = New Uri(book.Url)
+                If book.Url IsNot Nothing AndAlso book.Url.Length > 0 Then
+                    BibItemLibraryUri = New Uri(book.Url)
+                End If
             Catch ex As Exception
             End Try
             Try
-                BibItemGoogleBooksUri = New Uri(book.GoogleBooksUrl)
+                If book.GoogleBooksUrl IsNot Nothing AndAlso book.GoogleBooksUrl.Length > 0 Then
+                    BibItemGoogleBooksUri = New Uri(book.GoogleBooksUrl)
+                End If
             Catch ex As Exception
             End Try
         End Sub

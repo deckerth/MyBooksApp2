@@ -31,9 +31,6 @@
 
         Private isbnAccess As OCLCIsbnAccess = New OCLCIsbnAccess
 
-
-
-
         Public Function GetISBNQueryLibrary() As ILibraryAccess
             Return isbnAccess
         End Function

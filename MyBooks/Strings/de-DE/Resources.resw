@@ -288,8 +288,8 @@
   <data name="LibrarySearchPageTitle.Text" xml:space="preserve">
     <value>Bibliotheken</value>
   </data>
-  <data name="LibSearchButton.Label" xml:space="preserve">
-    <value>Suchen</value>
+  <data name="LibSearchButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Suche starten</value>
   </data>
   <data name="ListDisplayButton.Label" xml:space="preserve">
     <value>Liste</value>
@@ -520,7 +520,7 @@
 &lt;/html&gt;</value>
   </data>
   <data name="KindleName.Header" xml:space="preserve">
-    <value>Name des Kindle Geräts</value>
+    <value>Bezeichnung der Bibliothek</value>
   </data>
   <data name="KindleOf" xml:space="preserve">
     <value>Kindle von</value>
@@ -633,5 +633,63 @@
   </data>
   <data name="EmptyEntry" xml:space="preserve">
     <value>(Leer)</value>
+  </data>
+  <data name="StateBarText" xml:space="preserve">
+    <value>&amp;1 Titel: &amp;2 Bücher  |  &amp;3 E-Books  |  &amp;4 Hörbücher  |  &amp;5 Autoren</value>
+  </data>
+  <data name="ImportAudible.Text" xml:space="preserve">
+    <value>Audible Bibliothek importieren</value>
+  </data>
+  <data name="AudibleImportInfo" xml:space="preserve">
+    <value>&lt;!DOCTYPE html&gt;
+&lt;html lang="en" xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+	&lt;meta charset="utf-8" /&gt;
+	&lt;title&gt;&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div style="font-family:'Segoe UI'; font-size:medium;"&gt;
+&lt;p&gt;Um Ihre Audible-Bibliothek zu importieren, gehen Sie wie folgt vor:&lt;/p&gt;
+
+&lt;ol&gt;
+	&lt;li&gt;Installieren Sie das &lt;a href="https://joonaspaakko.gitbook.io/audible-library-extractor/installation" target="_blank"&gt;Audible Extractor Plugin&lt;/a&gt; f&amp;uuml;r Ihren Browser&amp;nbsp;(z.B.&amp;nbsp;Edge).&lt;/li&gt;
+	&lt;li&gt;Loggen Sie sich in die&amp;nbsp;&lt;a href="https://www.audible.de/library"&gt;Audible Library&lt;/a&gt;&amp;nbsp;ein.&lt;/li&gt;
+	&lt;li&gt;Dr&amp;uuml;cken Sie auf der&amp;nbsp;Seite &amp;quot;Bibliothek&amp;quot; die Schaltfl&amp;auml;che&amp;nbsp;&amp;quot;Audible Library Extractor&amp;quot; rechts.&lt;/li&gt;
+	&lt;li&gt;Unter &amp;quot;Extraction Settings&amp;quot; w&amp;auml;hlen Sie &amp;quot;Library&amp;quot; und &amp;quot;ISBN&amp;quot;.&lt;/li&gt;
+	&lt;li&gt;Dr&amp;uuml;cken Sie &amp;quot;Extract selected items&amp;quot; um zu einer Auflistung Ihrer Sammlung zu gelangen.&lt;/li&gt;
+	&lt;li&gt;Aus dem Men&amp;uuml; &amp;quot;Extraction Tools&amp;quot; w&amp;auml;hlen Sie &amp;quot;CSV export (spreadsheet)&amp;quot;.&lt;/li&gt;
+	&lt;li&gt;W&amp;auml;hlen Sie: &lt;em&gt;Data Source: Library&lt;/em&gt;&amp;nbsp;und &lt;em&gt;Format: Google Sheets&lt;/em&gt;.&lt;/li&gt;
+	&lt;li&gt;Das Dr&amp;uuml;cken von&amp;nbsp;&lt;strong&gt;ALE-spreadsheet-library.csv&lt;/strong&gt;&amp;nbsp;speichert automatisch Ihre Bibliothek im Download Ordner.&lt;/li&gt;
+	&lt;li&gt;&amp;Ouml;ffnen Sie&amp;nbsp;&lt;a href="https://docs.google.com/spreadsheets/u/0/?ec=asw-sheets-hero-goto"&gt;Google Sheets&lt;/a&gt;. Dr&amp;uuml;cken Sie der die Ordnerschaltfl&amp;auml;che auf der rechten Seite (&amp;quot;Dateiauswahl &amp;ouml;ffnen&amp;quot;).&lt;/li&gt;
+	&lt;li&gt;W&amp;auml;hlen Sie den&amp;nbsp;Tab &amp;quot;Upload&amp;quot; und dr&amp;uuml;cken Sie &amp;quot;Durchsuchen&amp;quot;.&lt;/li&gt;
+	&lt;li&gt;&amp;Ouml;ffnen Sie die Datei ALE-spreadsheet-library.csv im Download Ordner.&lt;/li&gt;
+	&lt;li&gt;Dadurch wird Ihre Sammlung in&amp;nbsp;Google-Sheets angezeigt. Nun muss sie noch nach Excel exportiert werden.&lt;/li&gt;
+	&lt;li&gt;W&amp;auml;hlen Sie: Datei-&amp;gt;Herunterladen-&amp;gt;Microsoft Excel.&lt;/li&gt;
+	&lt;li&gt;Sie haben es geschafft. Nun k&amp;ouml;nnen Sie die neu erzeugte Datei &lt;span style="font-family: &amp;quot;Segoe UI&amp;quot;;"&gt;ALE-spreadsheet-library.xslx im n&amp;auml;chsten Schritt importieren.&lt;/span&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</value>
+  </data>
+  <data name="AudibleOf" xml:space="preserve">
+    <value>Audible Bibliothek von</value>
+  </data>
+  <data name="SelectedBooksTextMultiple" xml:space="preserve">
+    <value>&amp; Titel ausgewählt</value>
+  </data>
+  <data name="SelectedBooksTextSingle" xml:space="preserve">
+    <value>1 Titel ausgewählt</value>
+  </data>
+  <data name="SortOrder.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Sortierung ändern</value>
+  </data>
+  <data name="SortOrderAuthorTitle.Text" xml:space="preserve">
+    <value>Autoren, Titel</value>
+  </data>
+  <data name="SortOrderReset.Text" xml:space="preserve">
+    <value>Sortierung aufheben</value>
+  </data>
+  <data name="StatusBarText" xml:space="preserve">
+    <value>&amp;1 Titel: &amp;2 Bücher  |  &amp;3 E-Books  |  &amp;4 Hörbücher  |  &amp;5 Autoren</value>
   </data>
 </root>

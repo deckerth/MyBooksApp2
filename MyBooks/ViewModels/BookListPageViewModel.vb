@@ -1,4 +1,5 @@
 ﻿Imports System.Threading
+Imports Microsoft.EntityFrameworkCore.Metadata.Internal
 Imports Microsoft.Toolkit.Uwp.Helpers
 Imports MyBooks.App.Commands
 Imports MyBooks.App.Views
@@ -33,6 +34,7 @@ Namespace Global.MyBooks.App.ViewModels
             DeleteBookCommand = New RelayCommand(AddressOf OnDeleteBook)
             InitializePaneCommands()
             InitalizeSelectionCommands()
+            InitalizeSortCommands()
             AddHandler BookViewModel.Modified, AddressOf OnBookModified
             AddHandler BookDetailPageViewModel.OnNewBookCreated, AddressOf OnBookCreated
         End Sub
@@ -108,7 +110,15 @@ Namespace Global.MyBooks.App.ViewModels
 
         Public Property Progress As New ProgressRingViewModel
 
-        Public Property FilterIsSet As Boolean = False
+        Private _filterIsSet As Boolean = False
+        Public Property FilterIsSet As Boolean
+            Get
+                Return _filterIsSet
+            End Get
+            Set(value As Boolean)
+                SetProperty(Of Boolean)(_filterIsSet, value)
+            End Set
+        End Property
 #End Region
 
 #Region "FullListBackup"
@@ -167,6 +177,35 @@ Namespace Global.MyBooks.App.ViewModels
         Private Sub OnEnableMultipleSelectionMode()
             MultipleSelectionMode = True
         End Sub
+
+        Friend Sub DataGrid_SelectionChanged()
+            OnPropertyChanged("SelectedItems")
+        End Sub
+
+#End Region
+
+#Region "Sorting"
+
+        Public ResetSortingCommand As RelayCommand
+        Public SortAuthorsTitlesCommand As RelayCommand
+
+        Public Event ResetSorting()
+        Public Event SortAuthorsTitles()
+
+        Private Sub InitalizeSortCommands()
+            ResetSortingCommand = New RelayCommand(AddressOf OnResetSorting)
+            SortAuthorsTitlesCommand = New RelayCommand(AddressOf OnSortAuthorsTitles)
+        End Sub
+
+        Private Sub OnResetSorting()
+            RaiseEvent ResetSorting()
+        End Sub
+
+        Private Sub OnSortAuthorsTitles()
+            RaiseEvent SortAuthorsTitles()
+
+        End Sub
+
 #End Region
 
 #Region "DataAccess"

@@ -9,6 +9,7 @@
     xmlns:lib="using:MyBooks.Repository.Libraries"
     xmlns:telerikInput="using:Telerik.UI.Xaml.Controls.Input"
     xmlns:telerikGrid="using:Telerik.UI.Xaml.Controls.Grid"        
+    xmlns:telerikCore="using:Telerik.Data.Core"
     xmlns:gridPrimitives="using:Telerik.UI.Xaml.Controls.Grid.Primitives"
     xmlns:telerikPrimitives="using:Telerik.UI.Xaml.Controls.Primitives"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -106,10 +107,6 @@
                           />
                 </CommandBar.Content>
 
-                <AppBarButton x:Name="SearchButton" x:Uid="LibSearchButton"
-                              Icon="Find" Command="{x:Bind ViewModel.SearchCommand}"
-                              />
-
                 <AppBarButton x:Name="PrevPageButton" x:Uid="PrevPageButton" 
                        Command="{x:Bind ViewModel.PrevPageCommand}"
                        IsEnabled="{x:Bind ViewModel.QueryResult.HasPreviousPage,Mode=OneWay}"
@@ -187,6 +184,13 @@
                            ItemsSource="{x:Bind ViewModel.Libraries,Mode=OneTime}" ItemTemplate="{StaticResource LibraryDataTemplate}"
                            SelectedItem="{x:Bind ViewModel.Library,Mode=TwoWay}"
                            />
+
+            <AppBarButton x:Name="SearchButton" x:Uid="LibSearchButton"
+                           RelativePanel.AlignBottomWith="AuthorSearchTextBox"
+                           RelativePanel.RightOf="LibraryPicker" Margin="0,65,0,0"
+                           Icon="Find" Command="{x:Bind ViewModel.SearchCommand}"
+                              />
+
             <TextBox x:Name="MaxHitsTextBox" x:Uid="MaxHitsTextBox" 
                      RelativePanel.Below="AuthorSearchTextBox"
                      RelativePanel.AlignLeftWithPanel="True"
@@ -243,6 +247,11 @@
                 UserEditMode="None"
                 AutoGenerateColumns="False"
                 >
+
+            <telerikGrid:RadDataGrid.SortDescriptors>
+                <telerikCore:PropertySortDescriptor PropertyName="Authors"/>
+                <telerikCore:PropertySortDescriptor PropertyName="Title"/>
+            </telerikGrid:RadDataGrid.SortDescriptors>
 
             <telerikGrid:RadDataGrid.Columns>
                 <telerikGrid:DataGridTextColumn x:Uid="BookTitle" PropertyName="Title" SizeMode="Fixed" Width="300">

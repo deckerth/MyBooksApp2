@@ -141,16 +141,31 @@ Namespace Global.MyBooks.App.ViewModels
             Set(value As DataGridSelectionMode)
                 If value <> _selectionMode Then
                     SetProperty(Of DataGridSelectionMode)(_selectionMode, value)
+                    MultipleSelectionMode = (value = DataGridSelectionMode.Multiple)
                 End If
+            End Set
+        End Property
+
+        Private _multipleSelectionMode As Boolean = False
+        Public Property MultipleSelectionMode As Boolean
+            Get
+                Return _multipleSelectionMode
+            End Get
+            Set(value As Boolean)
+                SetProperty(Of Boolean)(_multipleSelectionMode, value)
             End Set
         End Property
 
         Public Property SelectAllCommand As RelayCommand
         Public Property DeselectAllCommand As RelayCommand
+        Public EnableSingleSelectionModeCommand As RelayCommand
+        Public EnableMultipleSelectionModeCommand As RelayCommand
 
         Private Sub InitalizeSelectionCommands()
             SelectAllCommand = New RelayCommand(AddressOf OnSelectAll)
             DeselectAllCommand = New RelayCommand(AddressOf OnDeselectAll)
+            EnableMultipleSelectionModeCommand = New RelayCommand(AddressOf OnEnableMultipleSelectionMode)
+            EnableSingleSelectionModeCommand = New RelayCommand(AddressOf OnEnableSingleSelectionMode)
         End Sub
 
         Public Property SelectedItems As ObservableCollection(Of Object)
@@ -166,6 +181,13 @@ Namespace Global.MyBooks.App.ViewModels
             RaiseEvent DeselectAll()
         End Sub
 
+        Private Sub OnEnableSingleSelectionMode()
+            SelectionMode = DataGridSelectionMode.Single
+        End Sub
+
+        Private Sub OnEnableMultipleSelectionMode()
+            SelectionMode = DataGridSelectionMode.Multiple
+        End Sub
 #End Region
 
     End Class

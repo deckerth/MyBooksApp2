@@ -27,6 +27,7 @@
         Private NoOfPrintMedia As Integer = 0
         Private NoOfEbooks As Integer = 0
         Private NoOfAudioBooks As Integer = 0
+        Private NoOfSelectedBooks As Integer = 0
 
         Public Sub Reset()
             NoOfAudioBooks = 0
@@ -41,6 +42,11 @@
 
         Public Sub DeleteBook(book As Models.Book, Optional automaticRendering As Boolean = True)
             Update(book, -1, automaticRendering)
+        End Sub
+
+        Public Sub SetSelectedBooks(selected As Integer)
+            NoOfSelectedBooks = selected
+            RenderState()
         End Sub
 
         Private Sub Update(book As Models.Book, delta As Integer, automaticRendering As Boolean)
@@ -59,12 +65,22 @@
         End Sub
 
         Public Sub RenderState()
-            Dim state = "&1 Einträge: &2 Bücher  |  &3 E-Books  |  &4 Hörbücher  |  &5 Autoren"
+            Dim spaces = "                    "
+            Dim state = App.Texts.GetString("StatusBarText")
+            ' &1 Titel: &2 Bücher  |  &3 E-Books  |  &4 Hörbücher  |  &5 Autoren
             state = state.Replace("&1", NoOfBooks.ToString)
             state = state.Replace("&2", NoOfPrintMedia.ToString)
             state = state.Replace("&3", NoOfEbooks.ToString)
             state = state.Replace("&4", NoOfAudioBooks.ToString)
             state = state.Replace("&5", App.Repository.Authors.GetCount().ToString)
+            Select Case NoOfSelectedBooks
+                Case 0
+                Case 1
+                    state += spaces + App.Texts.GetString("SelectedBooksTextSingle")
+                Case Else
+                    state += spaces + App.Texts.GetString("SelectedBooksTextMultiple")
+                    state = state.Replace("&", NoOfSelectedBooks.ToString)
+            End Select
             StatusText = state
         End Sub
 

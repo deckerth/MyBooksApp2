@@ -118,7 +118,8 @@
                            RelativePanel.AlignLeftWithPanel="True"
                            RelativePanel.Below="OriginalTitle"
                            Text="{x:Bind ViewModel.Book.Authors, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                           TextChanged="OnAuthors_TextChanged"/>
+                           TextChanged="OnAuthors_TextChanged"
+                           DeleteSuggestion="OnAuthors_DeleteSuggestion"/>
                         <Button
                             x:Name="ReformatAuthorsLastNameFirstName"
                             Click="ReformatAuthorsLastNameFirstName_Click"
@@ -141,7 +142,7 @@
                                 <TextBlock Text="B, A → A B" FontSize="9"/>
                             </Button.Content>
                         </Button>
-                        <telerik:RadAutoCompleteBox
+                        <controls:AdvancedAutoSuggestBox
                            x:Name="Keywords"
                            x:Uid="Keywords"
                            Width="300"
@@ -149,7 +150,8 @@
                            RelativePanel.AlignLeftWithPanel="True"
                            RelativePanel.Below="Authors"
                            Text="{x:Bind ViewModel.Book.Keywords, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                           TextChanged="OnKeywords_TextChanged"/>
+                           TextChanged="OnKeywords_TextChanged"
+                           DeleteSuggestion="OnKeywords_DeleteSuggestion"/>
                         <ComboBox
                            x:Name="MediumType"
                            x:Uid="MediumType"
@@ -160,7 +162,7 @@
                            SelectedItem="{x:Bind ViewModel.Book.MediumDescriptor,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                            RelativePanel.AlignLeftWithPanel="True"
                            RelativePanel.Below="Keywords"/>
-                        <telerik:RadAutoCompleteBox
+                        <controls:AdvancedAutoSuggestBox
                            x:Name="Storage"
                            x:Uid="Storage"
                            Width="200"
@@ -168,7 +170,8 @@
                            RelativePanel.AlignBottomWith="MediumType"
                            RelativePanel.RightOf="MediumType"
                            Text="{x:Bind ViewModel.Book.Storage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                           TextChanged="OnStorage_TextChanged"/>
+                           TextChanged="OnStorage_TextChanged"
+                           DeleteSuggestion="OnStorage_DeleteSuggestion"/>
                         <TextBox
                            x:Name="Published"
                            x:Uid="Published"

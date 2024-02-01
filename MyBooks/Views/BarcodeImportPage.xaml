@@ -82,6 +82,7 @@
                                 </MenuFlyoutItem.Icon>
                             </MenuFlyoutItem>
                             <MenuFlyoutItem x:Uid="ImportKindle" Command="{x:Bind ViewModel.ImportKindleBooksCommand}" />
+                            <MenuFlyoutItem x:Uid="ImportAudible" Command="{x:Bind ViewModel.ImportAudibleBooksCommand}" />
                         </MenuFlyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>
@@ -140,7 +141,7 @@
                        IsEnabled="{x:Bind ViewModel.HasPrevBook,Mode=OneWay}"
                        Icon="Previous"
                        RelativePanel.AlignBottomWith="ImportFileTextBox"
-                       RelativePanel.RightOf="ImportFileTextBox" Margin="0,60,0,0"/>
+                       RelativePanel.RightOf="ImportFileTextBox" Margin="0,65,0,0"/>
 
             <StackPanel x:Name="PositionBox" Orientation="Vertical"
                       RelativePanel.AlignBottomWith="PrevBookButton"
@@ -158,24 +159,47 @@
                       IsEnabled="{x:Bind ViewModel.HasNextBook,Mode=OneWay}"
                       Icon="Next"
                       RelativePanel.AlignBottomWith="PrevBookButton"
-                      RelativePanel.RightOf="PositionBox" Margin="0,60,0,0" />
+                      RelativePanel.RightOf="PositionBox" Margin="0,65,0,0" />
+
+            <AppBarButton x:Name="SingleChoice"
+                       x:Uid="SingleChoiceButton"
+                       Visibility="{x:Bind ViewModel.QueryResult.MultipleSelectionMode,Converter={StaticResource booleanVisConverter},Mode=OneWay}"
+                       Command="{x:Bind ViewModel.QueryResult.EnableSingleSelectionModeCommand}"
+                       RelativePanel.AlignBottomWith="PrevBookButton"
+                       RelativePanel.RightOf="NextBookButton" Margin="0,65,0,0"
+            >
+                <AppBarButton.Icon>
+                    <PathIcon Data="F0 M6,1 h12 v2 h-12 v-2 M6,7 h12 v2 h-12 v-2 M6,13 h12 v2 h-12 v-2 M2,0 a2.5,2.5,0,1,1,-1,0 M2,6 a2.5,2.5,0,1,1,-1,0 M2,12 a2.5,2.5,0,1,1,-1,0 M2,7 a1.5,1.5,0,1,1,-1,0 M2,13 a1.5,1.5,0,1,1,-1,0 " />
+                </AppBarButton.Icon>
+            </AppBarButton>
+
+            <AppBarButton x:Name="MultipleChoice"
+                       x:Uid="MultipleChoiceButton"
+                       Visibility="{x:Bind ViewModel.QueryResult.MultipleSelectionMode,Converter={StaticResource booleanVisConverter},ConverterParameter=True,Mode=OneWay}"
+                       Command="{x:Bind ViewModel.QueryResult.EnableMultipleSelectionModeCommand}"
+                       RelativePanel.AlignBottomWith="PrevBookButton"
+                       RelativePanel.RightOf="SingleChoice" Margin="0,65,0,0"
+                      >
+                <AppBarButton.Icon>
+                    <PathIcon Data="F0 M6,1 h12 v2 h-12 v-2 M6,7 h12 v2 h-12 v-2 M6,13 h12 v2 h-12 v-2 M0,0 h4 v4 h-4 v-4 M0,6 h4 v4 h-4 v-4 M0,12 h4 v4 h-4 v-4 M1,7 h2 v2 h-2 v-2" />
+                </AppBarButton.Icon>
+            </AppBarButton>
 
             <AppBarButton x:Name="SelectAllButton" 
                           x:Uid="SelectAllButton" 
                       Command="{x:Bind ViewModel.QueryResult.SelectAllCommand}"
-                      Visibility="{x:Bind ViewModel.SelectAllVisibility,Mode=OneWay}"
+                      Visibility="{x:Bind ViewModel.QueryResult.MultipleSelectionMode,Converter={StaticResource booleanVisConverter},Mode=OneWay}"
                       Icon="SelectAll"
                       RelativePanel.AlignBottomWith="PrevBookButton"
-                      RelativePanel.RightOf="NextBookButton" Margin="0,60,0,0" />
+                      RelativePanel.RightOf="MultipleChoice" Margin="0,65,0,0" />
 
             <AppBarButton x:Name="DeselectAllButton" 
                           x:Uid="DeselectAllButton" 
                       Command="{x:Bind ViewModel.QueryResult.DeselectAllCommand}"
-                      Visibility="{x:Bind ViewModel.SelectAllVisibility,Mode=OneWay}"
+                      Visibility="{x:Bind ViewModel.QueryResult.MultipleSelectionMode,Converter={StaticResource booleanVisConverter},Mode=OneWay}"
                       Icon="ClearSelection"
                       RelativePanel.AlignBottomWith="PrevBookButton"
-                      RelativePanel.RightOf="SelectAllButton" Margin="0,60,0,0" />
-
+                      RelativePanel.RightOf="SelectAllButton" Margin="0,65,0,0" />
         </RelativePanel>
 
         <Frame x:Name="contentFrame"

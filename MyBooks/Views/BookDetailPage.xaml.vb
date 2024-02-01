@@ -107,10 +107,6 @@ Namespace Global.MyBooks.App.Views
 
         End Sub
 
-        Private Sub OnAuthors_SuggestionChosen(sender As UserControls.AdvancedAutoSuggestBox, args As UserControls.AdvancedAutoSuggestBoxSuggesttionChosenArgs)
-            sender.Text = args.ChosenSuggestion
-        End Sub
-
         Private Async Sub OnAuthors_DeleteSuggestion(sender As UserControls.AdvancedAutoSuggestBox, e As UserControls.AdvancedAutoSuggestBoxDeleteSuggestionArgs)
             Await App.Repository.Authors.DeleteAsyncExact(e.SuggestionToDelete)
         End Sub
@@ -129,10 +125,6 @@ Namespace Global.MyBooks.App.Views
             sender.ItemsSource = dataset
         End Sub
 
-        Private Sub OnKeywords_SuggestionChosen(sender As UserControls.AdvancedAutoSuggestBox, args As UserControls.AdvancedAutoSuggestBoxSuggesttionChosenArgs)
-            sender.Text = args.ChosenSuggestion
-        End Sub
-
         Private Async Sub OnKeywords_DeleteSuggestion(sender As UserControls.AdvancedAutoSuggestBox, e As UserControls.AdvancedAutoSuggestBoxDeleteSuggestionArgs)
             Await App.Repository.Keywords.DeleteAsyncExact(e.SuggestionToDelete)
         End Sub
@@ -149,10 +141,6 @@ Namespace Global.MyBooks.App.Views
             Next
             ' Set the ItemsSource to be your filtered dataset
             sender.ItemsSource = dataset
-        End Sub
-
-        Private Sub OnStorage_SuggestionChosen(sender As UserControls.AdvancedAutoSuggestBox, args As UserControls.AdvancedAutoSuggestBoxSuggesttionChosenArgs)
-            sender.Text = args.ChosenSuggestion
         End Sub
 
         Private Async Sub OnStorage_DeleteSuggestion(sender As UserControls.AdvancedAutoSuggestBox, e As UserControls.AdvancedAutoSuggestBoxDeleteSuggestionArgs)

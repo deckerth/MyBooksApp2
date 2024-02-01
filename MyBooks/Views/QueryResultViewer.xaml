@@ -6,6 +6,7 @@
     xmlns:viewmodels="using:MyBooks.App.ViewModels"
     xmlns:converters="using:MyBooks.App.ValueConverters"
     xmlns:telerikGrid="using:Telerik.UI.Xaml.Controls.Grid"        
+    xmlns:telerikCore="using:Telerik.Data.Core"
     xmlns:gridPrimitives="using:Telerik.UI.Xaml.Controls.Grid.Primitives"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -68,7 +69,6 @@
                 ColumnDataOperationsMode="Flyout"
                 GridLinesVisibility="Horizontal"
                 GroupPanelPosition="Left"
-                Margin="0,20,0,0"
                 ItemsSource="{x:Bind ViewModel.AllItems,Mode=OneWay}"
                 SelectedItem="{x:Bind ViewModel.CurrentItem,Mode=TwoWay}"
                 CurrentItemChanged="OnCurrentItemOfGridChanged"
@@ -76,6 +76,11 @@
                 AutoGenerateColumns="False"
                 SelectionMode="{x:Bind ViewModel.SelectionMode,Mode=OneWay}"
                 >
+
+            <telerikGrid:RadDataGrid.SortDescriptors>
+                <telerikCore:PropertySortDescriptor PropertyName="Authors"/>
+                <telerikCore:PropertySortDescriptor PropertyName="Title"/>
+            </telerikGrid:RadDataGrid.SortDescriptors>
 
             <telerikGrid:RadDataGrid.Columns>
                 <telerikGrid:DataGridTextColumn x:Uid="BookTitle" PropertyName="Title" SizeMode="Fixed" Width="300">

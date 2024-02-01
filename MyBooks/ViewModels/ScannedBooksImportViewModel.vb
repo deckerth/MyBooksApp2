@@ -1,6 +1,7 @@
 ﻿Imports Microsoft.Toolkit.Uwp.Helpers
 Imports MyBooks.App.Commands
 Imports MyBooks.App.Views
+Imports MyBooks.Models
 Imports MyBooks.Repository
 Imports MyBooks.Repository.Libraries
 Imports Telerik.UI.Xaml.Controls.Grid
@@ -29,6 +30,7 @@ Namespace Global.MyBooks.App.ViewModels
         Private currentBook As Integer = 0
         Private scannedBooks As New ScannedBooks()
         Private kindleLib As New KindleLibrary()
+        Private audibleLib As New AudibleLibrary()
 
         Public Property PrevBookCommand As RelayCommand
         Public Property NextBookCommand As RelayCommand
@@ -50,18 +52,6 @@ Namespace Global.MyBooks.App.ViewModels
             End Get
             Set(value As String)
                 SetProperty(Of String)(_currentBookPosition, value)
-            End Set
-        End Property
-
-        Private _selectAllVisibility As Visibility
-        Public Property SelectAllVisibility As Visibility
-            Get
-                Return _selectAllVisibility
-            End Get
-            Set(value As Visibility)
-                If value <> _selectAllVisibility Then
-                    SetProperty(Of Visibility)(_selectAllVisibility, value)
-                End If
             End Set
         End Property
 
@@ -207,6 +197,7 @@ Namespace Global.MyBooks.App.ViewModels
 
         Public Property ImportScannedBooksCommand As RelayCommand
         Public Property ImportKindleBooksCommand As RelayCommand
+        Public Property ImportAudibleBooksCommand As RelayCommand
 
         Private _filename As String
         Public Property Filename As String
@@ -221,6 +212,7 @@ Namespace Global.MyBooks.App.ViewModels
         Private Sub InitializeImportCommands()
             ImportScannedBooksCommand = New RelayCommand(AddressOf OnImportScannedBooksCommand)
             ImportKindleBooksCommand = New RelayCommand(AddressOf OnImportKindleBooksCommand)
+            ImportAudibleBooksCommand = New RelayCommand(AddressOf OnImportAudibleBooksCommand)
         End Sub
 
         Private Async Function OnImportScannedBooksCommand() As Task
@@ -264,7 +256,7 @@ Namespace Global.MyBooks.App.ViewModels
         Private Async Function OnImportKindleBooksCommand() As Task
 
             Dim infoDialog = New ImportInfoDialog("KindleImportInfo")
-            Await infoDialog.EnableKindleNameInputBox()
+            Await infoDialog.EnableKindleNameInputBox("KindleName", "KindleOf")
             Await infoDialog.ShowAsync()
             If infoDialog.DialogCancelled() Then
                 Return
@@ -309,7 +301,7 @@ Namespace Global.MyBooks.App.ViewModels
                         Filename = library.Name
                         Dim source As String = Await Windows.Storage.FileIO.ReadTextAsync(library)
                         kindleLib.ImportKindleLibrary(source)
-                        Dim kindleName = infoDialog.GetKindleName()
+                        Dim kindleName = infoDialog.GetLibraryName()
                         If Not String.IsNullOrEmpty(kindleName) Then
                             SetStorage(kindleLib, kindleName)
                         End If
@@ -330,9 +322,58 @@ Namespace Global.MyBooks.App.ViewModels
 
         End Function
 
-        Private Sub SetStorage(kindleLib As KindleLibrary, kindleName As String)
-            For Each b In kindleLib.BookItems
-                b.Storage = kindleName
+        Private Async Function OnImportAudibleBooksCommand() As Task
+            Dim infoDialog = New ImportInfoDialog("AudibleImportInfo")
+            Await infoDialog.EnableKindleNameInputBox("AudibleName", "AudibleOf")
+            Await infoDialog.ShowAsync()
+            If infoDialog.DialogCancelled() Then
+                Return
+            End If
+
+            Dim openPicker = New Windows.Storage.Pickers.FileOpenPicker()
+            openPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary
+            openPicker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail
+
+            ' Filter to include a sample subset of file types.
+            openPicker.FileTypeFilter.Clear()
+            openPicker.FileTypeFilter.Add(".xlsx")
+
+            ' Open the file picker.
+            Dim libraryFile = Await openPicker.PickSingleFileAsync()
+
+            ' file is null if user cancels the file picker.
+            If libraryFile IsNot Nothing Then
+                Try
+                    Await Progress.SetIndeterministicAsync()
+
+                    Filename = libraryFile.Name
+                    App.Repository.ImportExportService.ImportAudibleBooksAsync(Await libraryFile.OpenStreamForReadAsync(), audibleLib.BookItems)
+
+                    Dim libraryName = infoDialog.GetLibraryName()
+                    If Not String.IsNullOrEmpty(libraryName) Then
+                        SetStorage(audibleLib, libraryName)
+                    End If
+
+                    audibleLib.NoOfEntries = audibleLib.BookItems.Count
+                    audibleLib.NoOfPages = 1
+                    audibleLib.CurrentPage = 1
+                    Await QueryResult.SetItemsAsync(Progress, audibleLib)
+
+                    QueryResult.NoOfEntries = audibleLib.NoOfEntries
+                    QueryResult.NoOfPages = 1
+                    QueryResult.CurrentPosition = ""
+                    QueryResult.HasNextPage = False
+                    QueryResult.HasPreviousPage = False
+                    QueryResult.SelectionMode = DataGridSelectionMode.Multiple
+                Catch ex As Exception
+                End Try
+                Await Progress.HideAsync()
+            End If
+        End Function
+
+        Private Sub SetStorage(library As LibraryAccessBase, name As String)
+            For Each b In library.BookItems
+                b.Storage = name
             Next
         End Sub
 

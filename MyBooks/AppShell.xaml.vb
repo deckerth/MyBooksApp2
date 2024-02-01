@@ -323,9 +323,10 @@ Namespace Global.MyBooks.App
             Await Windows.System.Launcher.LaunchUriAsync(New Uri(WebViewer.Source.OriginalString))
         End Sub
 
-        Private Sub HelpButton_Click(sender As Object, e As RoutedEventArgs)
-            HelpPage.CloneTo(ViewModel)
-            ViewModel.BrowserPaneOpen = True
+        Private Async Sub HelpButton_Click(sender As Object, e As RoutedEventArgs)
+            'HelpPage.CloneTo(ViewModel)
+            'ViewModel.BrowserPaneOpen = True
+            Await Windows.System.Launcher.LaunchUriAsync(New Uri(App.Texts.GetString("HelpPageOverview")))
         End Sub
     End Class
 

@@ -23,15 +23,12 @@
                     <ColumnDefinition Width="48" />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <Rectangle
-                    x:Name="SelectedPipe"
-                    Width="6"
-                    Height="24"
-                    Margin="-2,0,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Fill="{ThemeResource NavMenuAccentForegroundColor}"
-                    Visibility="{x:Bind SelectedVis, Mode=TwoWay}" />
+                <Border x:Name="SelectedPipe"
+                    Visibility="{x:Bind SelectedVis, Mode=TwoWay}"
+                    Background="{ThemeResource NavMenuAccentForegroundColor}" BorderThickness="0" 
+                    CornerRadius="3"
+                    Margin="5,0,-10,0" 
+                    Width="4" Height="18" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                 <!--
                     Showing a ToolTip and the Label is redundant.  We put the ToolTip on the icon.
                     It appears when the user hovers over the icon, but not the label which provides

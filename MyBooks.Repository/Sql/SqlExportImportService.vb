@@ -1,6 +1,10 @@
 ﻿Imports System.IO
+Imports System.Net
+Imports System.Text.RegularExpressions
 Imports MyBooks.Models
 Imports OfficeOpenXml
+Imports OfficeOpenXml.FormulaParsing.Excel.Functions.Text
+Imports Windows.Globalization.DateTimeFormatting
 
 Namespace Global.MyBooks.Repository.Sql
 
@@ -289,6 +293,125 @@ Namespace Global.MyBooks.Repository.Sql
             End If
             Return counters
         End Function
+
+        Public Sub ImportAudibleBooksAsync(InputStream As Stream, ByRef importedBooks As List(Of Book)) Implements IImportExportService.ImportAudibleBooksAsync
+            If InputStream IsNot Nothing Then
+                Using package = New ExcelPackage(InputStream)
+                    ImportAudibleBooksFromExcelAsync(package.Workbook.Worksheets(0), importedBooks)
+                End Using
+            End If
+        End Sub
+
+        Private Sub ImportAudibleBooksFromExcelAsync(worksheet As ExcelWorksheet, ByRef books As List(Of Book))
+
+            ' 1 Added	
+            ' 2 Cover	
+            ' 3 Sample	
+            ' 4 Web Player	
+            ' 5 Search In Goodreads	
+            ' 6 Title	
+            ' 7 Title Short
+            ' 8 Series	
+            ' 9Book Numbers	
+            '10 Blurb	
+            '11 Authors	
+            '12 Narrators	
+            '13 Tags	
+            '14 Categories	
+            '15 Parent Category	
+            '16 Child Category	
+            '17 Length	
+            '18 Progress	
+            '19 Release Date	
+            '20 Publishers	
+            '21 My Rating	
+            '22 Rating	
+            '23 Ratings	
+            '24 Favorite	
+            '25 Format	
+            '26 Language	
+            '27 Whispersync	
+            '28 From Plus Catalog	
+            '29 Unavailable	
+            '30 Archived	
+            '31 Downloaded	
+            '32 Store Page Changed	
+            '33 Store Page Missing	
+            '34 ASIN	
+            '35 ISBN10	
+            '36 ISBN13	
+            '37 Summary	
+            '38 People Also Bought	
+            '39 Subtitle	
+            '40 Collection Ids
+
+            Dim rows = worksheet.Dimension.Rows
+            books.Clear()
+            For i = 2 To rows
+                Dim errorFlag As Boolean = False
+                Dim book As New Book
+                Try
+                    'Dim hyperlink = worksheet.Cells(i, 7).Value.ToString() 'Title Short
+
+                    ''=HYPERLINK("https://audible.de/pd/B0857FDF48?ipRedirectOverride=true&overrideBaseCountry=true";"Der &Uuml;bergangsmanager")
+                    ''https://regex101.com/
+                    ''=HYPERLINK\("[a-zA-Z0-9\:\/\.\?\=\&]*";"([a-zA-Z0-9\:\/\.\?\=\&\;\s]*)"\)
+
+                    'Dim pattern As String = "=HYPERLINK\(""[a-zA-Z0-9\:\/\.\?\=\&]*"";""(?<Title>[a-zA-Z0-9\:\/\.\?\=\&\;\s]*)""\)"
+
+                    'Dim regex = New Regex(pattern)
+                    'Dim match = regex.Match(hyperlink)
+                    'If match.Success Then
+                    '    book.Title = WebUtility.HtmlDecode(match.Groups("Title").Value)
+                    'Else
+                    '    errorFlag = True
+                    'End If
+                    book.Title = WebUtility.HtmlDecode(worksheet.Cells(i, 7).Value.ToString()) 'Title Short
+                Catch ex As Exception
+                    errorFlag = True
+                End Try
+                If Not errorFlag Then
+                    Try
+                        book.Authors = worksheet.Cells(i, 11).Value.ToString()
+                    Catch ex As Exception
+                    End Try
+                    Try
+                        book.Keywords = worksheet.Cells(i, 8).Value.ToString()
+                    Catch ex As Exception
+                    End Try
+                    Try
+                        book.Storage = "Audible"
+                    Catch ex As Exception
+                    End Try
+                    Try
+                        Dim val As Double = worksheet.Cells(i, 19).Value
+                        Dim conv = DateTime.FromOADate(val)
+                        Dim dto As DateTimeOffset = New DateTimeOffset(conv)
+                        book.Published = DateTimeFormatter.ShortDate.Format(dto)
+                    Catch ex As Exception
+                    End Try
+                    Try
+                        book.ISBN = worksheet.Cells(i, 36).Value.ToString()
+                    Catch ex As Exception
+                    End Try
+                    Try
+                        'input: =HYPERLINK("https://www.goodreads.com/search?q=Andrzej%20Sapkowski%20-%20Die%20Dame%20vom%20See"; IMAGE("https://i.imgur.com/RPJRqNX.png"; 4; 20; 20))
+                        Dim pattern As String = "=HYPERLINK\(""(?<Url>[a-zA-Z0-9\:\/\.\?\=\&\%\-]*)"";\s*IMAGE\(""[a-zA-Z0-9\:\/\.\?\=\&\;\s\%\-]*"";\s*[0-9]*;\s*[0-9]*;\s*[0-9]*\)\)"
+
+                        Dim regex = New Regex(pattern)
+                        Dim input = worksheet.Cells(i, 5).Value.ToString
+                        Dim match = regex.Match(input)
+                        If match.Success Then
+                            book.Url = match.Groups("Url").Value
+                        End If
+                    Catch ex As Exception
+                    End Try
+                    book.Medium = Book.MediaType.AudioBook
+                    books.Add(book)
+                End If
+            Next
+        End Sub
+
     End Class
 
 End Namespace

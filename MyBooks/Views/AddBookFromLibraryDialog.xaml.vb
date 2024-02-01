@@ -43,13 +43,9 @@ Namespace Global.MyBooks.App.Views
             Await App.Repository.Authors.DeleteAsyncExact(e.SuggestionToDelete)
         End Sub
 
-        Private Async Sub OnStorage_TextChanged(sender As RadAutoCompleteBox, args As TextChangedEventArgs)
-
-            ' Only get results when it was a user typing,
-            ' otherwise assume the value got filled in by TextMemberPath
-            ' Or the handler for SuggestionChosen.
+        Private Async Sub OnStorage_TextChanged(sender As UserControls.AdvancedAutoSuggestBox, e As AutoSuggestBoxTextChangedEventArgs)
             Dim hits = Await App.Repository.Storages.GetAsync(sender.Text)
-            Dim dataset As New List(Of String)
+            Dim dataset As New Collection(Of String)
             For Each a In hits
                 dataset.Add(a.Name)
             Next
@@ -59,19 +55,22 @@ Namespace Global.MyBooks.App.Views
             ViewModel.CheckExistence()
         End Sub
 
-        Private Async Sub OnKeywords_TextChanged(sender As RadAutoCompleteBox, args As TextChangedEventArgs)
+        Private Async Sub OnStorage_DeleteSuggestion(sender As UserControls.AdvancedAutoSuggestBox, e As UserControls.AdvancedAutoSuggestBoxDeleteSuggestionArgs)
+            Await App.Repository.Storages.DeleteAsyncExact(e.SuggestionToDelete)
+        End Sub
 
-            ' Only get results when it was a user typing,
-            ' otherwise assume the value got filled in by TextMemberPath
-            ' Or the handler for SuggestionChosen.
+        Private Async Sub OnKeywords_TextChanged(sender As UserControls.AdvancedAutoSuggestBox, e As AutoSuggestBoxTextChangedEventArgs)
             Dim hits = Await App.Repository.Keywords.GetAsync(sender.Text)
-            Dim dataset As New List(Of String)
+            Dim dataset As New Collection(Of String)
             For Each a In hits
                 dataset.Add(a.Name)
             Next
             ' Set the ItemsSource to be your filtered dataset
             sender.ItemsSource = dataset
+        End Sub
 
+        Private Async Sub OnKeywords_DeleteSuggestion(sender As UserControls.AdvancedAutoSuggestBox, e As UserControls.AdvancedAutoSuggestBoxDeleteSuggestionArgs)
+            Await App.Repository.Keywords.DeleteAsyncExact(e.SuggestionToDelete)
         End Sub
 
         Private Sub Published_TextChanged(sender As Object, e As TextChangedEventArgs)
